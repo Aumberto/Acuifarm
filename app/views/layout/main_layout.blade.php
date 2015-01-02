@@ -57,7 +57,7 @@
 <body>
 
 <div class='menudes'>
-  {{HTML::link('propuesta', 'Propuesta')}}
+  {{HTML::link('propuesta', 'Propuestas')}}
   {{HTML::link('traslado', 'Traslados')}}
   {{HTML::link('pedido', 'Pedidos')}}
   {{HTML::link('consumo/proveedores', 'Stock Proveedores')}}
