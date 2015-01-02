@@ -1,0 +1,5 @@
+1. Crear el fichero que genera una tabla.
+php artisan migrate:make create_users_table --table=users --create
+
+Una vez modificado el fichero, que se encuentra en "/app/database/migrations/"  ejecutamos
+php artisan migrate

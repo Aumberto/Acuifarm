@@ -1,0 +1,246 @@
+@font-face {
+  font-family: 'Glyphicons Halflings';
+
+  src: url('../fonts/glyphicons-halflings-regular.eot');
+  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+body{
+	font-size: 0.85em;
+}
+h1 {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;;
+	font-size: 0.95em;
+}
+
+table {
+	font-family: verdana;
+	font-size: 0.80em;
+}
+
+input{
+	text-align: center;
+	font-family: verdana;
+	font-size: 1em;
+	text-align: center;
+
+}
+select {
+	text-align: center;
+	font-family: verdana;
+	font-size: 1em;
+	text-align: center;
+	
+}
+
+.contenedor {
+	background: #D5CABF;
+    float: left;
+    width: 100%;
+    padding:0%;
+
+}
+
+.barra_lateral{
+	width: 300px;
+	padding: 0%;
+	
+	float: left;
+	
+}
+
+.contenido{
+	width: 70%;
+	padding: 0%;
+	float: left;
+	
+
+}
+#container3, #container4 {
+	width: 825px;
+}
+#container, #container1{
+	width: 40%;
+    height: 300px;
+    border: 1px solid #000;
+    padding: 20px;
+    margin: 10px;
+    float: left;
+    position: relative;
+}
+
+
+.datos_reales {
+	background: white;
+	border: 1px solid rgb(14, 150, 41);
+	width: 30%;
+	float:left;
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+	
+}
+
+.datos_estrategia_anterior{
+	background: white;
+	float:left;
+	border: 1px solid rgb(14, 150, 41);
+	padding: 0;
+	margin: 0;
+}
+
+.datos_propuesta_estrategia{
+	background: white;
+	float:right;
+	width: 45%;
+	border: 1px solid rgb(14, 150, 41);
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+}
+
+.datos_reales tr,
+.datos_reales table,
+.datos_estrategia_anterior tr,
+.datos_estrategia_anterior table,
+.datos_estrategia_anterior input,
+.datos_propuesta_estrategia tr, 
+.datos_propuesta_estrategia table
+{
+	font-family: verdana;
+	font-size: 0.850em;
+	text-align: center;
+	width: 100%;
+	float:none;
+	height: 25px;
+}
+
+
+
+.datos_estrategia_anterior h1,
+.datos_reales h1,
+.datos_propuesta_estrategia h1 {
+	font-family: verdana;
+	font-size: 1.25em;
+	text-align: center;
+	width: 100%;
+}
+
+
+	
+
+
+.menudes {
+	position: relative;
+	overflow: hidden;
+	width: 70%;
+	margin: 10px auto 10px;
+	border-radius: 8px;
+	background: #025BA3;
+    text-align:center;
+}
+
+.menudes a {
+display: inline-block;
+width: 16%; /* 100% dividido por el número de elementos del menú */
+box-sizing: border-box;
+padding: 10px 5px;
+color: #fff;
+text-decoration: none;
+font-family: verdana;
+font-size: 1em;
+
+}
+
+.marca {
+position: absolute;
+bottom: 4px;
+left: -8%; /* Al menos 1/2 del ancho de cada enlace */
+width: 8%; /* 1/2 del ancho de cada enlace */
+height: 4px;
+background: #fff;
+transition: 0.5s ease-in-out; 
+}
+
+.menudes a:nth-child(1):hover ~ .marca {
+left: 4%; /* 1/4 Ancho del enlace */
+}
+.menudes a:nth-child(2):hover ~ .marca {
+left: 20%; /* 1/4 Ancho del enlace + 1 vez ancho enlace */
+}
+.menudes a:nth-child(3):hover ~ .marca {
+left: 36%; /* 1/4 Ancho del enlace + 2 veces ancho enlace */
+}
+.menudes a:nth-child(4):hover ~ .marca {
+left: 52%; /* 1/4 Ancho del enlace + 3 veces ancho enlace */
+}
+.menudes a:nth-child(5):hover ~ .marca {
+left: 68%; /* 1/4 Ancho del enlace + 4 veces ancho enlace */
+}
+
+
+/* By removing the float:left; each calendar will stack vertically */
+#calendar-container .ui-datepicker-multi .ui-datepicker-group { float:none; }
+
+/* This is 100% by default, which we now set to a specific pixel value so the container looks right */
+#calendar-container .ui-datepicker-inline.ui-datepicker.ui-widget { width:50px; }
+
+/* In my case this value was originally 33.3% (100% / 3 calendars). I want each calendar to fill the parent container */
+#calendar-container .ui-datepicker-multi-3 .ui-datepicker-group { width:30%; }
+
+#calendar-container .ui-datepicker-inline .ui-datepicker .ui-widget .ui-widget-content .ui-helper-clearfix .ui-corner-all .ui-datepicker-multi-3 .ui-datepicker-multi { width:30%; }
+
+#progressbar {
+    margin-top: 20px;
+  }
+ 
+  .progress-label {
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+  }
+ 
+  .ui-dialog-titlebar-close {
+    display: none;
+  }
+
+.slider {
+  background-color: rgb(255,0,0);
+  background-image: none;
+
+}
+
+.range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: rgb(255,192,0);
+}
+
+.range_verde_claro {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: rgb(146,208,80);
+}
+
+.range_verde_oscuro {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: rgb(0,176,80);
+}
+
+.range_rojo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: rgb(255,0,0);
+}
+
+.ui-slider
+{
+width: 400px;
+background-color: rgb(255,0,0);
+background-image: none;
+}
+
+
