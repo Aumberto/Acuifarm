@@ -118,3 +118,6 @@ Route::get('siembras/eliminar/{id}', array('uses' => 'SiembraController@getElimi
 // Rutas para los ayunos
 Route::get('ayunos', array('uses' => 'AyunoController@getIndex'));
 Route::post('ayunos', array('uses' => 'AyunoController@getIndex'));
+
+// Rutas para los estadillos
+Route::get('estadillos', array('uses' => 'EstadilloController@getIndex'));

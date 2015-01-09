@@ -798,3 +798,28 @@ Select *
 from produccion_simulado
 where date >= '2014-12-08'
 and groupid = '1469'
+
+
+
+select j.nombre, g.nombre, ifnull(ps.groupid,'-'), ifnull(ps.stock_count_ini,0), 
+       ifnull(ps.stock_avg_ini,0), ifnull(ps.stock_bio_ini,0), ifnull(ps.cantidad_toma,0), ifnull(c.pienso,'-'), ifnull(c.diametro_pienso,'-'), ifnull(c.cantidad,0)
+  from jaulas j left join produccion_simulado ps on j.nombre = ps.unitname and ps.date =  '2014-12-31' 
+                left join consumos c on j.nombre = c.jaula and c.fecha =  '2014-12-31' , granjas g
+ where j.granja_id = 2
+  and j.granja_id = g.id
+   order by j.nombre
+
+
+Select week(fecha, 3), fecha, produccion_simulado.granja, produccion_simulado.granja_id, 
+       jaulas.nombre, jaulas.id, produccion_simulado.lote, produccion_simulado.lote_id, 
+       diametro_pienso, proveedor, 
+       stock_avg_ini, stock_count_ini, sum(cantidad)
+  from jaulas left join consumos on jaulas.nombre = conumos.unitname, produccion_simulado
+ where fecha = '2015-01-12'
+   and granja_id = 1
+   and fecha = date
+   and site = granja
+   and unitname = jaula
+   and groupid = lote
+group by  week(fecha, 3), fecha, granja, granja_id, jaula, jaula_id, lote, lote_id, diametro_pienso, proveedor, stock_avg_ini, stock_count_ini
+order by jaula
