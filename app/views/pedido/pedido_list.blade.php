@@ -28,7 +28,7 @@
   		    <td>{{date("d-m-Y",strtotime($pedido->fecha_pedido))}}</td>
   		    <td>{{date("d-m-Y",strtotime($pedido->fecha_descarga))}}</td>
             <td>{{$pedido->importe}} €</td>
-            <td>{{$pedido->pagado}} </td>
+            <td><input type='checkbox' disabled @if ($pedido->pagado == 1) checked @endif ></td>
             <td>{{$pedido->estado}} </td>
   		    <td>
   		      {{Html::link('pedido/ver/'. $pedido->id, 'Ver', array('class' =>'btn btn-mini btn-primary'))}}

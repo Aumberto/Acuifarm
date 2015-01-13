@@ -797,7 +797,7 @@ Select *
 Select * 
 from produccion_simulado
 where date >= '2014-12-08'
-and groupid = '1469'
+and groupid = '1468'
 
 
 

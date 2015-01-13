@@ -30,8 +30,6 @@
   <input type='radio' name='estado' value='En preparación' @if ($pedido->estado == 'En preparación') checked='checked' @endif/>En preparación
   <input type='radio' name='estado' value='En tránsito' @if ($pedido->estado == 'En tránsito') checked='checked' @endif/>En tránsito
   <input type='radio' name='estado' value='Pendiente de descarga' @if ($pedido->estado == 'Pendiente de descarga') checked='checked' @endif/>Pendiente de descarga
-  <input type='radio' name='estado' value='En tránsito' @if ($pedido->estado == 'En tránsito') checked='checked' @endif/>En tránsito
-  <input type='radio' name='estado' value='Pendiente de descarga' @if ($pedido->estado == 'Pendiente de descarga') checked='checked' @endif/>Pendiente de descarga
   <input type='radio' name='estado' value='Descargado' @if ($pedido->estado == 'Descargado') checked='checked' @endif/>Descargado <br>
 
   <label for='fecha_pedido'>Fecha del Pedido:</label>

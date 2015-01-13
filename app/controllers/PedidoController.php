@@ -4,7 +4,7 @@ class PedidoController extends BaseController{
 
   public function getIndex(){
 
-  		$pedidos = Pedido::where('estado', '<>', 'Descargado')->get();
+  		$pedidos = Pedido::where('estado', '<>', 'Descargado')->orderby('fecha_descarga')->get();
   		return View::make('pedido.pedido_list')->with('pedidos', $pedidos);
   }
 
@@ -33,11 +33,11 @@ class PedidoController extends BaseController{
           //'pagado' => Input::get('pagado'),
           //'estado' => Input::get('estado'),
           'fecha_pedido' => $fecha_pedido,
-          //'fecha_confirmacion' => date("Y-m-d", strtotime(Input::get('fecha_confirmacion'))),
-          //'fecha_carga' => date("Y-m-d", strtotime(Input::get('fecha_carga'))),
-          //'fecha_llegada' => date("Y-m-d", strtotime(Input::get('fecha_llegada'))),
-          'fecha_descarga' => $fecha_descarga
-          //'fecha_pago' => date("Y-m-d", strtotime(Input::get('fecha_pago')))
+          'fecha_confirmacion' => $fecha_pedido,
+          'fecha_carga' => $fecha_pedido,
+          'fecha_llegada' => $fecha_pedido,
+          'fecha_descarga' => $fecha_descarga,
+          'fecha_pago' => $fecha_pedido
           ));
 
   	   // Obtenemos el id del último pedido insertado
