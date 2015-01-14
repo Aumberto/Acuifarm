@@ -4,10 +4,11 @@
 
 
   <div class="container">
-  	<h1>Ayunos para el día {{Form::open(array('url' => 'ayunos', 'class' =>'form-horizontal'))}} 
+  	<h1>Ayunos para el día
+      <form action="ayunos" id="formulario_ayuno">
       <input type="text" name="fecha_pedido" id="fecha_pedido" value="{{date("d-m-Y",strtotime($fecha))}}"> 
-      {{Form::submit('...', array('class' =>'btn'))}}
-      {{Form::close()}}
+      </form>
+      
     </h1>
     <div class="datos_reales">
     <table>
@@ -28,6 +29,12 @@
   <script>
     $(function() 
     {
+      $("#fecha_pedido").change(function(){
+        //alert($(this).val());
+        $("#formulario_ayuno").submit();
+        //$.post('/acuifarm/public/ayunos',
+        //  $("#formulario_ayuno").serialize());
+      });
       $("#cargando").css('display', 'none');
       $(".ayuno").click(function(){
            var id = $(this).attr('data-id');
