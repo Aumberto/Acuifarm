@@ -295,22 +295,24 @@
                ${'fila'.$x}[4] = $dato_stock->consumo_simulado;
                ${'fila'.$x}[5] = $dato_stock->pedidos;
                ${'fila'.$x}[6] = ($dato_stock->stock_real)+ ($dato_stock->pedidos) - ($dato_stock->consumo_simulado);
+               /*
                if ((($dato_stock->consumo_simulado)*2) - ($dato_stock->stock_real)+ ($dato_stock->pedidos) - ($dato_stock->consumo_simulado) < 0 )
                {
-                  ${'fila'.$x}[7] = 0;
+                  ${'fila'.$x}[] = 0;
                }
                else
                {
                   ${'fila'.$x}[7] = (($dato_stock->consumo_simulado)*2) - ($dato_stock->stock_real)+ ($dato_stock->pedidos) - ($dato_stock->consumo_simulado);
                }
-               
+               */
              }
              else
              {
                ${'fila'.$x}[$j] = $dato_stock->consumo_simulado;
                ${'fila'.$x}[$j+1] = $dato_stock->pedidos;
                //echo ' A la j le sumamos 1 ' . ($j+1); 
-               ${'fila'.$x}[$j+2] = ${'fila'.$x}[$j-2] + ($dato_stock->pedidos) - ($dato_stock->consumo_simulado);
+               ${'fila'.$x}[$j+2] = ${'fila'.$x}[$j-1] + ($dato_stock->pedidos) - ($dato_stock->consumo_simulado);
+               /*
                if ((($dato_stock->consumo_simulado)*2) - (${'fila'.$x}[$j-2] + ($dato_stock->pedidos) - ($dato_stock->consumo_simulado)) < 0)
                {
                   ${'fila'.$x}[$j+3] = 0;
@@ -319,11 +321,11 @@
                {
                   ${'fila'.$x}[$j+3] = (($dato_stock->consumo_simulado)*2) - (${'fila'.$x}[$j-2] + ($dato_stock->pedidos) - ($dato_stock->consumo_simulado));
                }
-               
+               */
              }
              $x++;
            }
-          $j=$j+4;
+          $j=$j+3;
           array_push($semanas, $num_semana);
           //$num_semana++;
           $i++;

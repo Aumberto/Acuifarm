@@ -8,7 +8,7 @@
         
         <td colspan="3" >Datos a partir del {{$fecha}} </td>
         @foreach($semanas as $semana)
-         <td colspan="4"> Semana {{$semana}} </td>
+         <td colspan="3"> Semana {{$semana}} </td>
         @endforeach
 		</tr>
     <tr>
@@ -18,7 +18,7 @@
       <td>Consumo</td>
       <td>Entradas</td>
       <td>Stock Final</td>
-      <td>Pedido</td>
+      
       @endfor
     </tr>
 		@foreach($datos as $fila)
