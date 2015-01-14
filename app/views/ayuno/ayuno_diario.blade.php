@@ -24,9 +24,11 @@
     </table>
     </div>
   </div>
+  <div id='cargando'><div id='imagen-cargando'>Actualizando <img src="/acuifarm/public/images/ajax-loader.gif"></div></div>
   <script>
     $(function() 
     {
+      $("#cargando").css('display', 'none');
       $(".ayuno").click(function(){
            var id = $(this).attr('data-id');
            var ayuno;
@@ -40,13 +42,23 @@
                 ayuno = 0;
            }
            // Hacemos la petición por ajax
-           $.post('/acuifarm/public/ajax/ayunos',
-                   'id=' + id + '&ayuno=' + ayuno,
-                   function(data)
-                   {
+           //$.post('/acuifarm/public/ajax/ayunos',
+           //        'id=' + id + '&ayuno=' + ayuno,
+           //        function(data)
+           //        {
                     //alert(data);
-                   },
-                   'json');
+           //        },
+           //        'json');
+           $("#cargando").css('display', 'block');
+           $.ajax({
+            type: 'POST',
+            url: '/acuifarm/public/ajax/ayunos',
+            data: { id: id, ayuno: ayuno},
+            datatype : 'JSON'
+           })
+           .done(function(){
+            $("#cargando").css('display', 'none');
+           });
            
       });
     });
