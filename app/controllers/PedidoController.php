@@ -56,7 +56,7 @@ class PedidoController extends BaseController{
      // Obtenemos el id del proveedor de dicho pedido
   	 $proveedor_id = $pedido->proveedor_id;
   	 $proveedor = Proveedorpienso::find($proveedor_id);
-     $piensos = Proveedorpienso::find($proveedor_id)->piensos;
+     $piensos = Pienso::where('proveedor_id', '=', $proveedor_id)->orderby('nombre')->get();
 
      $pedido_total=PedidoDetalle::with('pedido')->where('pedido_id','=',$id)->sum('total');
      if ($pedido_total <> $pedido->importe)
