@@ -57,7 +57,7 @@
      	                                   where almacenes.id = movimientos_almacenes.almacen_id
      	                                     and piensos.id   = movimientos_almacenes.pienso_id
      	                                     and movimientos_almacenes.fecha <= ?
-     	                                group by almacenes.nombre, piensos.id, piensos.nombre', array($fecha));
+     	                                group by almacenes.nombre, piensos.id, piensos.nombre order by almacenes.nombre, piensos.nombre', array($fecha));
 
      	return View::make('almacen.stock')->with('estado_almacen', $estado_almacen)->with('fecha', $fecha->format('d-m-Y'));
      }
