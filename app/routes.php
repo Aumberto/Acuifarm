@@ -121,3 +121,4 @@ Route::post('ayunos', array('uses' => 'AyunoController@getIndex'));
 
 // Rutas para los estadillos
 Route::get('estadillos', array('uses' => 'EstadilloController@getIndex'));
+Route::post('estadillos', array('uses' => 'EstadilloController@getIndex'));
