@@ -4,7 +4,7 @@
   
 
 <div class="container">
-<h1>Pedidos</h1>
+<h1>Pedidos pendientes de pagar</h1>
 {{HTML::link('/pedido/add', 'Nuevo Pedido')}}
 <table class="table table-hover">
   	<thead>

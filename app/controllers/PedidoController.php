@@ -4,7 +4,7 @@ class PedidoController extends BaseController{
 
   public function getIndex(){
 
-  		$pedidos = Pedido::where('estado', '<>', 'Descargado')->orderby('fecha_descarga')->get();
+  		$pedidos = Pedido::where('pagado', '<>', '1')->orderby('fecha_descarga')->get();
   		return View::make('pedido.pedido_list')->with('pedidos', $pedidos);
   }
 

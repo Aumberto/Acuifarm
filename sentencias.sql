@@ -802,9 +802,11 @@ and groupid = '1468'
 
 
 select j.nombre, g.nombre, ifnull(ps.groupid,'-'), ifnull(ps.stock_count_ini,0), 
-       ifnull(ps.stock_avg_ini,0), ifnull(ps.stock_bio_ini,0), ifnull(ps.cantidad_toma,0), ifnull(c.pienso,'-'), ifnull(c.diametro_pienso,'-'), ifnull(c.cantidad,0)
+       ifnull(ps.stock_avg_ini,0), ifnull(ps.stock_bio_ini,0), ifnull(ps.cantidad_toma,0), ifnull(c.pienso,'-'), ifnull(c.diametro_pienso,'-'), ifnull(c.cantidad,0),
+       ifnull(e.num_tomas, 0), ifnull(e.num_tomas, 0)
   from jaulas j left join produccion_simulado ps on j.nombre = ps.unitname and ps.date =  '2014-12-31' 
-                left join consumos c on j.nombre = c.jaula and c.fecha =  '2014-12-31' , granjas g
+                left join consumos c on j.nombre = c.jaula and c.fecha =  '2014-12-31'
+                left join estadillos e on j.id = e.jaula_id and e.fecha =  '2014-12-31',  granjas g
  where j.granja_id = 2
   and j.granja_id = g.id
    order by j.nombre
