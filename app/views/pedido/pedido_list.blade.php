@@ -35,7 +35,7 @@
             @if ($pedido->estado <> 'Descargado')  
               {{Html::link('pedido/edit/'. $pedido->id, 'Editar', array('class' =>'btn btn-mini btn-primary'))}}
             @else
-               Editar
+               {{Html::link('pedido/edit/'. $pedido->id, 'Editar', array('class' =>'btn btn-mini btn-primary'))}}
             @endif
   		      {{Html::link('pedido/delete/'. $pedido->id, 'Eliminar', array('class'=>'btn btn-mini btn-primary'))}}
             </td>
