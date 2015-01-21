@@ -118,8 +118,8 @@ class PedidoController extends BaseController{
        $fecha_pago=$year."-".$mes."-".$dia;
 
        $pedido= Pedido::find($id);
-       $pedido->estado = Input::get('estado');
- 
+       
+       $estado_pedido_antes_actualizar = $pedido->estado;
        
 
        $pedido->num_contenedor = Input::get('num_contenedor'); 
@@ -130,7 +130,7 @@ class PedidoController extends BaseController{
        $pedido->fecha_llegada = $fecha_llegada;
        $pedido->fecha_descarga = $fecha_descarga;
        $pedido->fecha_pago = $fecha_pago;
-
+       
        
        if (isset($_POST['pagado']))
        {
@@ -140,13 +140,16 @@ class PedidoController extends BaseController{
        {
          $pedido->pagado = 0;
        }
-       //$pedido->pagado = Input::get('pagado');
+
+       
+       $pedido->estado = Input::get('estado');
        $pedido->save();
 
-       if (Input::get('estado') == 'Descargado')
+       if ((Input::get('estado') == 'Descargado') and ($estado_pedido_antes_actualizar <> 'Descargado'))
        {
          $this->Descargar_Pedido($id);
        }
+
        
        return Redirect::to('/pedido');
     }
