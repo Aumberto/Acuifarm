@@ -15,10 +15,11 @@
     <!-- Optional theme -->
     {{ HTML::style('css/jumbotron-narrow.css')}}
     <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <!-- Fin Bootstrap -->
 	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	 <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> -->
 	{{ HTML::script('http://code.jquery.com/ui/1.10.1/jquery-ui.js') }}
 	
     <script src="http://code.highcharts.com/highcharts.js"></script>
@@ -71,13 +72,23 @@
 <body>
 <div class='container'>
   <div class='header'>
-    <ul class='nav nav-pills pull-right'>
-  <li>{{HTML::link('propuesta', 'Propuestas')}}</li>
-  <li>{{HTML::link('traslado', 'Traslados')}}</li>
-  <li>{{HTML::link('pedido', 'Pedidos')}}</li>
-  <li>{{HTML::link('consumo/proveedores', 'Stock Proveedores')}}</li>
-  <li>{{HTML::link('consumo/almacenes', 'Stock Almacenes')}}</li>
-  <li><a id="downloadButton" href="#">Actualizar Simulación</a></li>
+  <ul class='nav nav-pills pull-right'>
+   <li>{{HTML::link('propuesta', 'Propuestas')}}</li>
+   <li>{{HTML::link('traslado', 'Traslados')}}</li>
+   <li>{{HTML::link('pedido', 'Pedidos')}}</li>
+   <li>{{HTML::link('consumo/proveedores', 'Stock Proveedores')}}</li>
+   <li>{{HTML::link('consumo/almacenes', 'Stock Almacenes')}}</li>
+   <li class="dropdown">
+     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Mantenimiento<span class="caret"></span></a>
+     <ul class="dropdown-menu" role="menu">
+            <li>{{HTML::link('pienso', 'Piensos')}}</li>
+            <li>{{HTML::link('proveedor', 'Proveedores')}}</li>
+            <li><a href="#">Tablas de Piensos</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li class="divider"></li>
+            <li><a id="downloadButton" href="#">Actualizar Simulación</a></li>
+      </ul>
   <div class='marca'></div>
 <!-- </div> -->
 </ul>
