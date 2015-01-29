@@ -7,19 +7,19 @@
 		<thead>
     <tr>
         
-        <th colspan="3" >Datos a partir del {{$fecha}} </th>
+        <th colspan="3" class="text-center">Datos a partir del {{$fecha}} </th>
         @foreach($semanas as $semana)
-         <th colspan="3"> Semana {{$semana}} </th>
+         <th colspan="3" class="text-center"> Semana {{$semana}} </th>
         @endforeach
 		</tr>
   
     <tr>
       <th colspan="2"></th>
-      <th>Stock Inicial</th>
+      <th class="text-center">Stock Inicial</th>
       @for($j=0; $j<7; $j++)
-      <th>Consumo</th>
-      <th>Entradas</th>
-      <th>Stock Final</th>
+      <th class="text-center">Consumo</th>
+      <th class="text-center">Entradas</th>
+      <th class="text-center">Stock Final</th>
       
       @endfor
     </tr>
@@ -32,7 +32,7 @@
               @else
                  @if ((($i == 5) and $fila[$i] > 0) or (($i == 8) and $fila[$i] > 0) or (($i == 11) and $fila[$i] > 0) or (($i == 14) and $fila[$i] > 0) or
                       (($i == 17) and $fila[$i] > 0) or (($i == 20) and $fila[$i] > 0) or (($i == 23) and $fila[$i] > 0)) 
-                    <td class="success">{{$fila[$i]}}</td>
+                    <td class="success"><b>{{$fila[$i]}}</b></td>
                  @else
                     <td>{{$fila[$i]}}</td>
                  @endif

@@ -83,7 +83,7 @@
 </ul>
 <h3 class='text-muted'>Acuifarm</h3>
 </div>
-
+<br>
 @yield('content')
 
 <div id="dialog" title="File Download">
