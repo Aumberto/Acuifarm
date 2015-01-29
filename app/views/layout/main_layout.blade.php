@@ -1,13 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Acuifarm</title>
 	
     {{ HTML::style('css/style.css') }}
-	{{ HTML::style('http://code.jquery.com/ui/1.10.1/themes/start/jquery-ui.css') }}
-
+	  {{ HTML::style('http://code.jquery.com/ui/1.10.1/themes/start/jquery-ui.css') }}
+    
+    <!-- Inicio Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    {{ HTML::style('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')}}
+    <!-- Optional theme -->
+    {{ HTML::style('css/jumbotron-narrow.css')}}
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <!-- Fin Bootstrap -->
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	{{ HTML::script('http://code.jquery.com/ui/1.10.1/jquery-ui.js') }}
@@ -51,19 +60,28 @@
       
       });
 	</script> 
-	
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 	
 </head>
 <body>
-
-<div class='menudes'>
-  {{HTML::link('propuesta', 'Propuestas')}}
-  {{HTML::link('traslado', 'Traslados')}}
-  {{HTML::link('pedido', 'Pedidos')}}
-  {{HTML::link('consumo/proveedores', 'Stock Proveedores')}}
-  {{HTML::link('consumo/almacenes', 'Stock Almacenes')}}
-  <a id="downloadButton" href="#">Actualizar Simulación</a>
+<div class='container'>
+  <div class='header'>
+    <ul class='nav nav-pills pull-right'>
+  <li>{{HTML::link('propuesta', 'Propuestas')}}</li>
+  <li>{{HTML::link('traslado', 'Traslados')}}</li>
+  <li>{{HTML::link('pedido', 'Pedidos')}}</li>
+  <li>{{HTML::link('consumo/proveedores', 'Stock Proveedores')}}</li>
+  <li>{{HTML::link('consumo/almacenes', 'Stock Almacenes')}}</li>
+  <li><a id="downloadButton" href="#">Actualizar Simulación</a></li>
   <div class='marca'></div>
+<!-- </div> -->
+</ul>
+<h3 class='text-muted'>Acuifarm</h3>
 </div>
 
 @yield('content')
