@@ -27,7 +27,7 @@
   		    <td class="text-center">{{date("d-m-Y",strtotime($propuesta->fecha_ini))}}</td>
   		    <td class="text-center">{{date("d-m-Y",strtotime($propuesta->fecha_fin))}}</td>
   		    <td class="text-center">
-  		        {{Html::link('propuesta/ver/'. $propuesta->id, 'Ver', array('class' =>'btn btn-mini btn-primary'))}}
+  		        {{Html::link('propuesta/ver/'. $propuesta->id, 'Ver', array('class' =>'btn btn-primary btn-sm'))}}
           </td>
   		  </tr>
   		@endforeach

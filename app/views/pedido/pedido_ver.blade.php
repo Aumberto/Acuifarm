@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-  <h2>{{$pedido->num_pedido}}</h1>
+  <h2>{{$pedido->num_pedido}}</h2>
   <h4>{{$proveedor->nombre}}</h4> 
 <div class="table-responsive">
 <table class="table table-striped table-bordered">
