@@ -4,24 +4,41 @@
 
 
   <div class="container">
-  	<h1>Ayunos para el día
-      <form action="ayunos" id="formulario_ayuno">
-      <input type="text" name="fecha_pedido" id="fecha_pedido" value="{{date("d-m-Y",strtotime($fecha))}}"> 
+  	
+      <form action="ayunos" id="formulario_ayuno" class="form-horizontal">
+      <div class="form-group">  
+        {{Form::label('fecha_pedido', 'Ayunos del día ', array('class' => 'col-sm-2 control-label'))}}
+        <div class="col-sm-2">
+      <input type="text" class="form-control input-sm" name="fecha_pedido" id="fecha_pedido" value="{{date("d-m-Y",strtotime($fecha))}}"> 
+      </div>
+      </div>
       </form>
       
-    </h1>
-    <div class="datos_reales">
-    <table>
+   
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th class="text-center">Granja</th>
+        <th class="text-center">Jaula</th>
+        <th class="text-center">Lote</th>
+        <th class="text-center">Número de peces</th>
+        <th class="text-center">Peso Medio</th>
+        <th class="text-center">Ayuno</th>
+      </tr>
+    </thead>
+    <tbody>
       @foreach($datos as $dato)
       <tr>
-        <td>{{$dato->site}}</td>
-        <td>{{$dato->unitname}}</td>
-        <td>{{$dato->groupid}} </td> 
-        <td>{{$dato->stock_count_ini}} </td>
-        <td>{{$dato->stock_avg_ini}} gr. </td>
-        <td><input type="checkbox" class='ayuno' value='{{$dato->ayuno}}' @if ($dato->ayuno == 1) checked="checked" @endif data-id='{{$dato->id}}'></td>
+        <td class="text-center">{{$dato->site}}</td>
+        <td class="text-center">{{$dato->unitname}}</td>
+        <td class="text-center">{{$dato->groupid}} </td> 
+        <td class="text-right">{{$dato->stock_count_ini}} </td>
+        <td class="text-right">{{$dato->stock_avg_ini}} gr. </td>
+        <td class="text-center"><input type="checkbox" class='ayuno' value='{{$dato->ayuno}}' @if ($dato->ayuno == 1) checked="checked" @endif data-id='{{$dato->id}}'></td>
       </tr>
       @endforeach
+    </tbody>
     </table>
     </div>
   </div>
