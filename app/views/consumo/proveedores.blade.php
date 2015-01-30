@@ -1,33 +1,41 @@
 @extends('layout.main_layout')
 
 @section('content')
-<div class='contenedor'>
-	<div class='datos_reales2'>
-<table border='1'>
-		<tr>
+<div class='container'>
+ 
+   <table class="table table-striped table-bordered table-condensed">
+		<thead>
+    <tr>
         
-        <td colspan="3" >Datos a partir del {{$fecha}} </td>
+        <th colspan="3" class="text-center">Datos a partir del {{$fecha}} </th>
         @foreach($semanas as $semana)
-         <td colspan="3"> Semana {{$semana}} </td>
+         <th colspan="3" class="text-center"> Semana {{$semana}} </th>
         @endforeach
 		</tr>
+  
     <tr>
-      <td colspan="2"></td>
-      <td>Stock Inicial</td>
+      <th colspan="2"></th>
+      <th class="text-center">Stock Inicial</th>
       @for($j=0; $j<7; $j++)
-      <td>Consumo</td>
-      <td>Entradas</td>
-      <td>Stock Final</td>
+      <th class="text-center">Consumo</th>
+      <th class="text-center">Entradas</th>
+      <th class="text-center">Stock Final</th>
       
       @endfor
     </tr>
+    </thead>
 		@foreach($datos as $fila)
   		<tr>
   			@for($i=1; $i <= count($fila); $i++)
               @if ($fila[$i] < 0)
-                <td><b>{{$fila[$i]}}</b></td>
+                <td class="danger"><b>{{$fila[$i]}}</b></td>
               @else
-                <td>{{$fila[$i]}}</td>
+                 @if ((($i == 5) and $fila[$i] > 0) or (($i == 8) and $fila[$i] > 0) or (($i == 11) and $fila[$i] > 0) or (($i == 14) and $fila[$i] > 0) or
+                      (($i == 17) and $fila[$i] > 0) or (($i == 20) and $fila[$i] > 0) or (($i == 23) and $fila[$i] > 0)) 
+                    <td class="success"><b>{{$fila[$i]}}</b></td>
+                 @else
+                    <td>{{$fila[$i]}}</td>
+                 @endif
               @endif
               
   			@endfor
@@ -37,7 +45,7 @@
 		
 	</table>
   
-	</div>
+	
 
 	</div>
   <select id='id_semana'>

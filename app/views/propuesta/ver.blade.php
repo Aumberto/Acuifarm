@@ -1,105 +1,119 @@
 @extends('layout.main_layout')
 
 @section('content')
-<div class='contenedor'>
-  <h1 align='center'>{{$titulo_cabecera_propuesta}}</h1>
-	<div class='datos_reales'>
-	<h1>{{$mensaje_cabecera_status}} </h1>
+<div class='container'>
+  <h3 align='center'>{{$titulo_cabecera_propuesta}}</h3>
+	<div class="row">
+  <div class='col-md-5'>
+	<h5 class="text-center">{{$mensaje_cabecera_status}} </h5>
 	
-	<table>
-		<tr>
-			<td>Unidad</td>
-			<td>Nº Lote</td>
-			<td>Nº peces</td>
-			<td>pm (g)</td>
-			<td>Biomasa (Kg)</td>
-			<td>Pienso (Kg)</td>
-			<td>SFR%</td>
-      <td></td>
+	<table class="table table-striped table-bordered">
+	 <thead>
+    <tr>
+			<th class="text-center">Unidad</th>
+			<th class="text-center">Nº Lote</th>
+			<th class="text-center">Nº peces</th>
+			<th class="text-center">pm (g)</th>
+			<th class="text-center">Biomasa (Kg)</th>
+			<th class="text-center">Pienso (Kg)</th>
+			<th class="text-center">SFR%</td>
+      <th class="text-center"></td>
 		</tr>
+   </thead>
+   <tbody>
 		@foreach($resultado_status as $status)
-  		<tr>
-  			 <td>{{$status->nombre}}</td>
-  			 <td>{{$status->groupid}}</td>
-  			 <td>{{number_format($status->stock_count_ini, 0, ',', '.')}}</td>
-  			 <td>{{number_format($status->stock_avg_ini, 2, ',', '.')}}</td>
-             <td class='bio_status' jaula='{{$status->nombre}}'>{{number_format($status->stock_bio_ini, 0, ',', '.')}}</td>
-             <td class='cantidad_modelo_status' jaula='{{$status->nombre}}'>{{$status->cantidad_toma_modelo}}</td>
-             <td class='sfr_status' jaula='{{$status->nombre}}'>{{$status->sfr}} %</td>
+  		<tr class="detalle_propuesta">
+  			 <td class="text-center">{{$status->nombre}}</td>
+  			 <td class="text-center">{{$status->groupid}}</td>
+  			 <td class="text-right">{{number_format($status->stock_count_ini, 0, ',', '.')}}</td>
+  			 <td class="text-right">{{number_format($status->stock_avg_ini, 2, ',', '.')}}</td>
+             <td class='bio_status text-right' jaula='{{$status->nombre}}'>{{number_format($status->stock_bio_ini, 0, ',', '.')}}</td>
+             <td class='cantidad_modelo_status text-right' jaula='{{$status->nombre}}'>{{$status->cantidad_toma_modelo}}</td>
+             <td class='sfr_status text-right' jaula='{{$status->nombre}}'>{{$status->sfr}}%</td>
   			     <td><button class="btn_grafica" fechaIni='{{$fechaIni}}' jaula='{{$status->nombre}}'></button> </td>
   	     </tr>
   		@endforeach
     @foreach($total_resultado_status as $trs)
 		 <tr>
-     <td colspan='2'>Total:</td>
-     <td>{{number_format($trs->total_stock_ini, 0, ',', '.')}}</td>  
-     <td>{{number_format($trs->total_avg_ini, 2, ',', '.')}}</td>
-     <td>{{number_format($trs->total_bio_ini, 0, ',', '.')}}</td>
-     <td>{{number_format($trs->cantidad_toma, 0, ',', '.')}}</td>
+     <td colspan='2' class="text-right info"><b>Total:</b></td>
+     <td class="text-right info"><b>{{number_format($trs->total_stock_ini, 0, ',', '.')}}</b></td>  
+     <td class="text-right info"><b>{{number_format($trs->total_avg_ini, 2, ',', '.')}}</b></td>
+     <td class="text-right info"><b>{{number_format($trs->total_bio_ini, 0, ',', '.')}}</b></td>
+     <td class="text-right info"><b>{{number_format($trs->cantidad_toma, 0, ',', '.')}}</b></td>
      @if ($trs->total_bio_ini == 0)
-     <td>0%</td>
+     <td class="text-right info"><b>0%</b></td>
      @else
-     <td>{{number_format(($trs->cantidad_toma)/($trs->total_bio_ini)*100, 2, ',', '.') }}%</td>
+     <td class="text-right info"><b>{{number_format(($trs->cantidad_toma)/($trs->total_bio_ini)*100, 2, ',', '.') }}%</b></td>
      @endif
-     <td></td>
-     <td></td>
+     <td class="text-right info"></td>
+     
 
      </tr>
      @endforeach
+   </tbody>
 	</table>
 	</div>
 	
-	<div class='datos_propuesta_estrategia'>
-      <h1>{{$mensaje_cabecera_propuesta}}</h1>
-      <table>
-      	<tr>
-          <td>Unidad</td>
-      		<td>Proveedor</td>
-			<td>Pellet</td>
-			<td>Pienso (Kg)</td>
-			<td>Estrategia (%)</td>
-			<td>Sacos</td>
-			<td>Total Pienso</td>
-			<td>SFR%</td>
-			<td>% vs Modelo</td>
+	<div class='col-md-7'>
+      <h5 class="text-center">{{$mensaje_cabecera_propuesta}}</h5>
+      <table class="table table-striped table-bordered">
+      	<thead>
+         <tr>
+          <th class="text-center">Unidad</th>
+      		<th class="text-center">Proveedor</th>
+			    <th class="text-center">Pellet</th>
+			    <th class="text-center">Pienso (Kg)</th>
+			    <th class="text-center">Estrategia (%)</th>
+			    <th class="text-center">Sacos</th>
+			    <th class="text-center">Total Pienso</th>
+			    <th class="text-center">SFR%</th>
+			    <th class="text-center" colspan="2">% vs Modelo</th>
       	</tr>
+      </thead>
+
+      <tbody>
       	@foreach($resultado_propuesta as $propuesta)
-  		<tr>
-        <td>{{$propuesta["nombre"]}}</td>
-  			 <td><select class='rango' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}'>
-           @foreach($rangos as $rango)
+  		  <tr class="detalle_propuesta">
+         <td class="text-center">{{$propuesta["nombre"]}}</td>
+  			 <td class="text-center">
+           <select class='rango' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}'>
+            @foreach($rangos as $rango)
               @if($rango->id == $propuesta["rango"])
                 <option value="{{$rango->id}}" selected>{{$rango->nombre}}</option>
               @else
                 <option value="{{$rango->id}}">{{$rango->nombre}}</option>
               @endif
-              
-          @endforeach
-         </select>
-          </td>
+            @endforeach
+           </select>
+         </td>
+         <td class='diametro_pienso text-center' jaula='{{$propuesta["nombre"]}}'>{{$propuesta["diametro_pienso"]}}</td>
+  			 <td class='cantidad_modelo text-right' jaula='{{$propuesta["nombre"]}}'>{{$propuesta["cantidad_recomendada"]}}</td>
+  			 
+         @if ( number_format(ceil(($propuesta["cantidad_recomendada"]/25))*25, 0, ',', '.') == 0)
+  			  <td class="text-center"><input size="3" class='porcentaje' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}' value=''>%</td>
+  			 @else
+ 			    <td class="text-center"> <input size="3" class='porcentaje' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}' value='{{$propuesta["porcentaje_toma"] }}'>%</td>
+  			 @endif
          
-  			 <td class='diametro_pienso' jaula='{{$propuesta["nombre"]}}'>{{$propuesta["diametro_pienso"]}}</td>
-  			 <td class='cantidad_modelo' jaula='{{$propuesta["nombre"]}}'>{{$propuesta["cantidad_recomendada"]}}</td>
-  			 @if ( number_format(ceil(($propuesta["cantidad_recomendada"]/25))*25, 0, ',', '.') == 0)
-  			  <td><input size="4" class='porcentaje' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}' value=''>%</td>
+         <td class='sacos text-right' jaula='{{$propuesta["nombre"]}}'>{{$propuesta["cantidad"] / 25}}</td>
+         <td class='cantidad text-right' jaula='{{$propuesta["nombre"]}}'>{{$propuesta["cantidad"]}}</td>
+         <td class='sfr text-right' jaula='{{$propuesta["nombre"]}}'></td>
+         
+         @if ($propuesta["cantidad_recomendada"] == 0)
+  			   <td class='porcentaje_modelo text-right' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' cantidadmodelo='{{$propuesta["cantidad_recomendada"]}}'> - </td>
   			 @else
-
-  			  <td> <input size="4" class='porcentaje' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}' value='{{$propuesta["porcentaje_toma"] }}'>%</td>
+  			   <td class='porcentaje_modelo text-right' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' cantidadmodelo='{{$propuesta["cantidad_recomendada"]}}'>{{ number_format(($propuesta["cantidad"] /$propuesta["cantidad_recomendada"]) *100, 0, '.', '') }}%</td>
   			 @endif
-             <td class='sacos' jaula='{{$propuesta["nombre"]}}'>{{$propuesta["cantidad"] / 25}}</td>
-             <td class='cantidad' jaula='{{$propuesta["nombre"]}}'>{{$propuesta["cantidad"]}}</td>
-             <td class='sfr' jaula='{{$propuesta["nombre"]}}'></td>
-             @if ($propuesta["cantidad_recomendada"] == 0)
-  			  <td class='porcentaje_modelo' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' cantidadmodelo='{{$propuesta["cantidad_recomendada"]}}'> - </td>
-  			 @else
-  			  <td class='porcentaje_modelo' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' cantidadmodelo='{{$propuesta["cantidad_recomendada"]}}'>{{ number_format(($propuesta["cantidad"] /$propuesta["cantidad_recomendada"]) *100, 0, '.', '') }} %</td>
-  			 @endif
-  			 <td><button class="btn_consumo" fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}' jaula='{{$propuesta["nombre"]}}'></button> </td>
-  	     </tr>
-  		@endforeach
-      </table>
+  			 
+         <td><button class="btn_consumo" fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}' jaula='{{$propuesta["nombre"]}}'></button> </td>
+  	    </tr>
+  		  @endforeach
+      <tbody>
+    </table>
 	</div>
 	</div>
+  {{HTML::link('/propuesta', 'Volver',  array('class' =>'btn btn-primary'))}}
+  </div>
    <div id="dialog" title="Gráficas">
     <div id="tabs">
       <ul>
@@ -295,21 +309,21 @@
                                             options.xAxis.type = 'datetime';
                                             options.title.text = data.titulo;
                                             options.subtitle.text = data.subtitulo;
-                                            options.series[0].name = 'Real';
+                                            options.series[0].name = 'Real Kg.';
                                             options.series[0].data = data.real;
                                             options.series[0].type ='column';
-                                            options.series[1].name = 'Estrategia';
+                                            options.series[1].name = 'Estrategia Kg.';
                                             options.series[1].data = data.estrategia;
                                             options.series[1].type = 'column';
-                                            options.series[2].name = 'Modelo';
+                                            options.series[2].name = 'Modelo Kg.';
                                             options.series[2].data = data.modelo;
                                             options.series[2].type = 'column';
                                             options.series[3].yAxis = 1;
-                                            options.series[3].name = 'Estrategia Vs Modelo';
+                                            options.series[3].name = 'Estrategia %';
                                             options.series[3].data = data.propuestaVsModelo;
                                             options.series[3].type ='spline';
                                             options.series[4].yAxis = 1;
-                                            options.series[4].name = 'Real Vs Modelo';
+                                            options.series[4].name = 'Real %';
                                             options.series[4].data = data.realVsModelo;
                                             options.series[4].type ='spline';
                                             $('#container3').highcharts(options);

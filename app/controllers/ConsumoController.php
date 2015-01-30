@@ -279,11 +279,47 @@
                                                          and p.fecha_descarga > ?
                                                          and p.fecha_descarga >= ?
                                                          and p.fecha_descarga <= ?
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos
+                                        from proveedores_pienso, tamanio_pellets
+                                       where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
+                                       order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $fecha_inicial, $fecha_fin_semana, $fecha, $fecha_inicial, $fecha_fin_semana));
+/*
+$datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
+                                              ifnull((Select sum(cantidad)
+                                                        from movimientos_almacenes ma, almacenes a, piensos p , tamanio_pellets tp, proveedores_pienso pp
+                                                       where a.id = ma.almacen_id
+                                                         and p.id   = ma.pienso_id
+                                                         and p.diametro_pellet_id = tp.id
+                                                         and ma.fecha <= ?
+                                                         and pp.id = p.proveedor_id
+                                                         and tamanio_pellets.id = tp.id
+                                                    group by pp.nombre, tp.diametro),0) as stock_real, 
+                                              ifnull((Select sum(cantidad)
+                                                        from piensos p , tamanio_pellets tp, proveedores_pienso pp, consumos c
+                                                       where c.proveedor_id = pp.id
+                                                         and c.pienso_id = p.id
+                                                         and tp.id = p.diametro_pellet_id
+                                                         and tamanio_pellets.id = tp.id
+                                                         and fecha > ?
+                                                         and fecha  >= ?
+                                                         and fecha  <= ?
+                                                    group by pp.nombre, tp.diametro),0) as consumo_simulado,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga > ?
+                                                         and p.fecha_descarga >= ?
+                                                         and p.fecha_descarga <= ?
                                                          and p.estado <> ?
                                                     group by pp.nombre, tp.diametro ) ,0) as pedidos
                                         from proveedores_pienso, tamanio_pellets
                                        where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
                                        order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $fecha_inicial, $fecha_fin_semana, $fecha, $fecha_inicial, $fecha_fin_semana, 'Descargado'));
+          */
           $x=1;
           foreach ($datos_stock as $dato_stock)
            {
