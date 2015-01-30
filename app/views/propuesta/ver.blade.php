@@ -5,7 +5,7 @@
   <h3 align='center'>{{$titulo_cabecera_propuesta}}</h3>
 	<div class="row">
   <div class='col-md-5'>
-	<h4>{{$mensaje_cabecera_status}} </h4>
+	<h5 class="text-center">{{$mensaje_cabecera_status}} </h5>
 	
 	<table class="table table-striped table-bordered">
 	 <thead>
@@ -22,7 +22,7 @@
    </thead>
    <tbody>
 		@foreach($resultado_status as $status)
-  		<tr height=15px>
+  		<tr class="detalle_propuesta">
   			 <td class="text-center">{{$status->nombre}}</td>
   			 <td class="text-center">{{$status->groupid}}</td>
   			 <td class="text-right">{{number_format($status->stock_count_ini, 0, ',', '.')}}</td>
@@ -35,17 +35,17 @@
   		@endforeach
     @foreach($total_resultado_status as $trs)
 		 <tr>
-     <td colspan='2'>Total:</td>
-     <td>{{number_format($trs->total_stock_ini, 0, ',', '.')}}</td>  
-     <td>{{number_format($trs->total_avg_ini, 2, ',', '.')}}</td>
-     <td>{{number_format($trs->total_bio_ini, 0, ',', '.')}}</td>
-     <td>{{number_format($trs->cantidad_toma, 0, ',', '.')}}</td>
+     <td colspan='2' class="text-right info"><b>Total:</b></td>
+     <td class="text-right info"><b>{{number_format($trs->total_stock_ini, 0, ',', '.')}}</b></td>  
+     <td class="text-right info"><b>{{number_format($trs->total_avg_ini, 2, ',', '.')}}</b></td>
+     <td class="text-right info"><b>{{number_format($trs->total_bio_ini, 0, ',', '.')}}</b></td>
+     <td class="text-right info"><b>{{number_format($trs->cantidad_toma, 0, ',', '.')}}</b></td>
      @if ($trs->total_bio_ini == 0)
-     <td>0%</td>
+     <td class="text-right info"><b>0%</b></td>
      @else
-     <td>{{number_format(($trs->cantidad_toma)/($trs->total_bio_ini)*100, 2, ',', '.') }}%</td>
+     <td class="text-right info"><b>{{number_format(($trs->cantidad_toma)/($trs->total_bio_ini)*100, 2, ',', '.') }}%</b></td>
      @endif
-     <td></td>
+     <td class="text-right info"></td>
      
 
      </tr>
@@ -55,7 +55,7 @@
 	</div>
 	
 	<div class='col-md-7'>
-      <h4>{{$mensaje_cabecera_propuesta}}</h4>
+      <h5 class="text-center">{{$mensaje_cabecera_propuesta}}</h5>
       <table class="table table-striped table-bordered">
       	<thead>
          <tr>
@@ -73,7 +73,7 @@
 
       <tbody>
       	@foreach($resultado_propuesta as $propuesta)
-  		  <tr>
+  		  <tr class="detalle_propuesta">
          <td class="text-center">{{$propuesta["nombre"]}}</td>
   			 <td class="text-center">
            <select class='rango' jaula='{{$propuesta["nombre"]}}' lote='{{$propuesta["lote"]}}' fechaIni='{{$fechaIni}}' fechaFin='{{$fechaFin}}'>
@@ -112,6 +112,7 @@
     </table>
 	</div>
 	</div>
+  {{HTML::link('/propuesta', 'Volver',  array('class' =>'btn btn-primary'))}}
   </div>
    <div id="dialog" title="Gráficas">
     <div id="tabs">

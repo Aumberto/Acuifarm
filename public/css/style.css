@@ -14,7 +14,7 @@ h1 {
 
 table {
 	font-family: verdana;
-	font-size: 0.65em;
+	font-size: 0.70em;
 }
 
 input{
@@ -30,6 +30,10 @@ select {
 	font-size: 1em;
 	text-align: center;
 	
+}
+
+.detalle_propuesta{
+	height: 60px;
 }
 
 .contenedor {
