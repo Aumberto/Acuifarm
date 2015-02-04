@@ -24,6 +24,7 @@
       @endfor
     </tr>
     </thead>
+    <tbody>
 		@foreach($datos as $fila)
   		<tr>
   			@for($i=1; $i <= count($fila); $i++)
@@ -42,7 +43,7 @@
   			 
   	     </tr>
   		@endforeach
-		
+		</tbody>
 	</table>
   
 	

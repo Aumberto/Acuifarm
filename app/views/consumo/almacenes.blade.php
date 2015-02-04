@@ -1,7 +1,7 @@
 @extends('layout.main_layout')
 
 @section('content')
-<div class='contenedor'>
+<div class='container'>
   {{ Form::open(array('url' => 'consumo/almacenes', 'method' => 'post')) }}
   
     <label for='id_almacen'>Almacén</label>
@@ -12,24 +12,29 @@
     </select>
     <input type='submit' value='Ver'>
   {{ Form::close() }}
-	<div class='datos_reales2'>
-<table border='1'>
-		<tr>
+	
+<table class="table table-striped table-bordered table-condensed">
+		
+    <thead>
+      <tr>
         
-        <td colspan="2" >{{$granja->nombre}}</td>
+        <th colspan="2" class="text-center">{{$granja->nombre}}</th>
         @foreach($semanas as $semana)
-         <td colspan="4" align='center'>{{$semana}} </td>
+         <th colspan="4" class="text-center">{{$semana}} </th>
         @endforeach
 		</tr>
+  
     <tr>
-      <td colspan="2" ></td>
+      <th colspan="2" ></th>
       @for($j=0; $j<8; $j++)
-      <td>Consumo</td>
-      <td>Entradas</td>
-      <td>Stock Final</td>
-      <td>Pedido</td>
+      <th class="text-center">Consumo</th>
+      <th class="text-center">Entradas</th>
+      <th class="text-center">Stock Final</th>
+      <th class="text-center">Pedido</th>
       @endfor
     </tr>
+    </thead>
+    <tbody>
 		@foreach($datos as $fila)
   		<tr>
   			@for($i=1; $i <= count($fila); $i++)
@@ -43,8 +48,8 @@
   			 
   	     </tr>
   		@endforeach
-		
+		</tbody>
 	</table>
-	</div>
+	
 	</div>
 @stop
