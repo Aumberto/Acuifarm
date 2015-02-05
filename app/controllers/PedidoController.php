@@ -4,8 +4,95 @@ class PedidoController extends BaseController{
 
   public function getIndex(){
 
-  		$pedidos = Pedido::where('pagado', '<>', '1')->orderby('fecha_descarga')->get();
-  		return View::make('pedido.pedido_list')->with('pedidos', $pedidos);
+  		$pedidos = Pedido::where('pagado', '<>', '1')->orderby('proveedor_id')->orderby('fecha_descarga')->get();
+  		$proveedor ='';
+      $primerafila = True;
+      $pedidos_proveedor_array = array();
+      $pedidos_proveedor = array();
+      foreach ($pedidos as $pedido) 
+      {
+        if ($proveedor <> $pedido->proveedor->nombre)
+         {
+            
+            if ($primerafila)
+             {
+                //echo "Primrera fila";
+                $primerafila = False;
+                /*
+                $datos_pedido = array( 'id'             => $pedido->id,
+                                       'pagado'         => $pedido->pagado,
+                                       'num_pedido'     => $pedido->num_pedido, 
+                                       'fecha_pedido'   => $pedido->fecha_pedido, 
+                                       'fecha_carga'    => $pedido->fecha_carga, 
+                                       'fecha_descarga' => $pedido->fecha_descarga, 
+                                       'fecha_pago'     => $pedido->fecha_pago, 
+                                       'importe'        => $pedido->importe, 
+                                       'estado'         => $pedido->estado);
+                array_push($pedidos_proveedor_array, $datos_pedido); */
+             }
+             else
+             {
+
+                $datos_proveedor = array('proveedor' => $proveedor,
+                                         'pedidos' =>  $pedidos_proveedor_array);
+                array_push($pedidos_proveedor, $datos_proveedor);
+                $pedidos_proveedor_array = array();
+             }
+             $proveedor = $pedido->proveedor->nombre;
+             if ( (($pedido->proveedor_id == 1) and ($pedido->estado == 'Descargado') and ($pedido->pagado == 0)) or 
+                  (($pedido->proveedor_id == 2) and ($pedido->estado <> 'En preparación') and ($pedido->pagado == 0))
+                )
+             {
+               $color = "class='danger'";
+             }
+             else
+             {
+               $color = " ";
+             }
+             $datos_pedido = array( 'id'             => $pedido->id,
+                                    'pagado'         => $pedido->pagado,
+                                    'num_pedido'     => $pedido->num_pedido, 
+                                    'fecha_pedido'   => $pedido->fecha_pedido, 
+                                    'fecha_carga'    => $pedido->fecha_carga, 
+                                    'fecha_descarga' => $pedido->fecha_descarga, 
+                                    'fecha_pago'     => $pedido->fecha_pago, 
+                                    'importe'        => $pedido->importe, 
+                                    'estado'         => $pedido->estado,
+                                    'clase'          => $color);
+                array_push($pedidos_proveedor_array, $datos_pedido);
+         }
+         else
+         {
+             if ( (($pedido->proveedor_id == 1) and ($pedido->estado == 'Descargado') and ($pedido->pagado == 0)) or 
+                  (($pedido->proveedor_id == 2) and ($pedido->estado <> 'En preparación') and ($pedido->pagado == 0))
+                )
+              {
+               $color = "class='danger'";
+              }
+              else
+              {
+               $color = " ";
+              }
+
+             $datos_pedido = array( 'id'             => $pedido->id,
+                                    'pagado'         => $pedido->pagado,
+                                    'num_pedido'     => $pedido->num_pedido, 
+                                    'fecha_pedido'   => $pedido->fecha_pedido, 
+                                    'fecha_carga'    => $pedido->fecha_carga, 
+                                    'fecha_descarga' => $pedido->fecha_descarga, 
+                                    'fecha_pago'     => $pedido->fecha_pago, 
+                                    'importe'        => $pedido->importe, 
+                                    'estado'         => $pedido->estado,
+                                    'clase'          => $color);
+             array_push($pedidos_proveedor_array, $datos_pedido);
+         }
+      }
+      $datos_proveedor = array('proveedor' => $proveedor,
+                               'pedidos' =>  $pedidos_proveedor_array);
+      array_push($pedidos_proveedor, $datos_proveedor);
+      //print_r($pedidos_proveedor);
+      return View::make('pedido.pedido_list')->with('pedidos', $pedidos)
+                                             ->with('listado_pedidos', $pedidos_proveedor);
   }
 
   public function getAdd(){

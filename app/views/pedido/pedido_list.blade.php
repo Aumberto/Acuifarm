@@ -7,53 +7,59 @@
 <h1>Pedidos pendientes de pagar</h1>
 {{HTML::link('/pedido/add', 'Nuevo Pedido',  array('class' =>'btn btn-primary'))}}
 <br><br>
+
+@foreach($listado_pedidos as $listado_pedido)
 <div class="table-responsive">
-<table class="table table-striped table-bordered">
-  	<thead>
-  		<tr>
-  		  <th class="text-center">Número Pedido</th>
-  		  <th class="text-center">Proveedor</th>
-  		  <th class="text-center">Fecha Pedido</th>
+<h5>{{$listado_pedido['proveedor']}}</h5>
+ <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th class="text-center">Número Pedido</th>
+        <th class="text-center">Fecha Pedido</th>
         <th class="text-center">Fecha Carga</th>
         <th class="text-center">Fecha Descarga</th>
         <th class="text-center">Fecha Pago</th>
         <th class="text-center">Importe</th>
-  		  <th class="text-center">Pagado</th>
-  		  <th class="text-center">Estado</th>
-  		  <th class="text-center">Acciones</th>
-       
-  	    </tr>
-  	</thead>
-  	<tbody>
-  		@foreach($pedidos as $pedido)
-  		  <tr>
-  		    <td>{{$pedido->num_pedido}}</td>
-  		    <td>{{$pedido->proveedor->nombre}} </td>
-  		    <td class="text-center">{{date("d-m-Y",strtotime($pedido->fecha_pedido))}}</td>
-          <td class="text-center">{{date("d-m-Y",strtotime($pedido->fecha_carga))}}</td>
-  		    <td class="text-center">{{date("d-m-Y",strtotime($pedido->fecha_descarga))}}</td>
-          <td class="text-center">{{date("d-m-Y",strtotime($pedido->fecha_pago))}}</td>
-          <td class="text-right">{{$pedido->importe}} €</td>
-          <td class="text-center"><input type='checkbox' disabled @if ($pedido->pagado == 1) checked @endif ></td>
-          <td class="text-center">{{$pedido->estado}} </td>
-  		    <td class="text-center">
-  		      {{Html::link('pedido/ver/'. $pedido->id, 'Ver', array('class' =>'btn btn-primary btn-sm'))}}
-            @if ($pedido->estado <> 'Descargado')  
-              {{Html::link('pedido/edit/'. $pedido->id, 'Editar', array('class' =>'btn btn-primary btn-sm'))}}
+        <th class="text-center">Pagado</th>
+        <th class="text-center">Estado</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach($listado_pedido['pedidos'] as $detalle_pedido)
+        <tr {{$detalle_pedido['clase']}}>
+          <td>{{$detalle_pedido['num_pedido']}}</td>
+          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_pedido']))}}</td>
+          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_carga']))}}</td>
+          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_descarga']))}}</td>
+          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_pago']))}}</td>
+          <td class="text-right">{{$detalle_pedido['importe']}} €</td>
+          <td class="text-center"><input type='checkbox' disabled @if ($detalle_pedido['pagado'] == 1) checked @endif ></td>
+          <td class="text-center">{{$detalle_pedido['estado']}} </td>
+          <td class="text-center">
+            {{Html::link('pedido/ver/'. $detalle_pedido['id'], 'Ver', array('class' =>'btn btn-primary btn-sm'))}}
+            @if ($detalle_pedido['estado'] <> 'Descargado')  
+              {{Html::link('pedido/edit/'. $detalle_pedido['id'], 'Editar', array('class' =>'btn btn-primary btn-sm'))}}
             @else
-               {{Html::link('pedido/edit/'. $pedido->id, 'Editar', array('class' =>'btn btn-primary btn-sm'))}}
+               {{Html::link('pedido/edit/'. $detalle_pedido['id'], 'Editar', array('class' =>'btn btn-primary btn-sm'))}}
             @endif
-  		      {{Html::link('pedido/delete/'. $pedido->id, 'Eliminar', array('class'=>'btn btn-primary btn-sm'))}}
+            {{Html::link('pedido/delete/'. $detalle_pedido['id'], 'Eliminar', array('class'=>'btn btn-primary btn-sm'))}}
           </td>
-  		  </tr>
-  		@endforeach
-  	</tbody>
-
-  </table>
-  </div>
-  
-  {{HTML::link('/pedido/add', 'Nuevo Pedido',  array('class' =>'btn btn-primary'))}}
+        </tr>
+      @endforeach
+    </tbody>
+</table>
 </div>
+
+@endforeach
+  
+{{HTML::link('/pedido/add', 'Nuevo Pedido',  array('class' =>'btn btn-primary'))}}
+
+
+
+</div>
+
+
 
 
 
