@@ -16,19 +16,9 @@ class PedidoController extends BaseController{
             
             if ($primerafila)
              {
-                //echo "Primrera fila";
+                
                 $primerafila = False;
-                /*
-                $datos_pedido = array( 'id'             => $pedido->id,
-                                       'pagado'         => $pedido->pagado,
-                                       'num_pedido'     => $pedido->num_pedido, 
-                                       'fecha_pedido'   => $pedido->fecha_pedido, 
-                                       'fecha_carga'    => $pedido->fecha_carga, 
-                                       'fecha_descarga' => $pedido->fecha_descarga, 
-                                       'fecha_pago'     => $pedido->fecha_pago, 
-                                       'importe'        => $pedido->importe, 
-                                       'estado'         => $pedido->estado);
-                array_push($pedidos_proveedor_array, $datos_pedido); */
+                
              }
              else
              {

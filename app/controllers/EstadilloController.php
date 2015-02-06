@@ -45,8 +45,63 @@
                                                  left join estadillos e on j.id = e.jaula_id and e.fecha = ? , granjas g
                                            where j.granja_id = 2
                                              and j.granja_id = g.id
-                                        order by j.nombre', array($fecha_estadillo, $fecha_estadillo, $fecha_estadillo));
-          
+                                        order by j.granja_id, j.nombre', array($fecha_estadillo, $fecha_estadillo, $fecha_estadillo));
+          $granja = '';
+          $jaula = '';
+          $primerafila = True;
+          $estadillos_granja = array();
+          $estadillos_granja_jaula = array();
+          $estadillos_granja_jaula_array = array();
+          $jaula_consumos = array();
+
+          foreach ($datos_estadillos as $linea_estadillo) 
+          {
+            if ($granja <> $linea_estadillo->granja)
+              {
+                 if ($primerafila)
+                   {
+                      $primerafila = False;
+                      $consumos = array('pellet' => $linea_estadillo->diametro_pienso,
+                                        'cantidad' => $linea_estadillo->cantidad
+                                        );
+                      array_push($jaula_consumos, $consumos);
+                      $jaula = $linea_estadillo->jaula;
+                      
+                   }
+                 else
+                   {
+                      $datos_granja = array('granja' => $granja,
+                                            'jaulas' =>  $estadillos_granja_jaula);
+                      array_push($estadillos_granja, $datos_granja);
+                      $estadillos_granja_jaula = array();
+                   }  
+                   $granja = $linea_estadillo->granja;
+                   if ($jaula <> $linea_estadillo->jaula)
+                    {
+
+                    }
+                   else
+                    {
+
+                    }
+                   $jaula = $linea_estadillo->jaula;
+                   $datos_jaula = array( 'jaula' => $linea_estadillo->jaula,
+                                         'lote'  => $linea_estadillo->lote
+                                       );
+                   array_push($estadillos_granja_jaula, $datos_jaula);
+              }
+            else
+              {
+                  $datos_jaula = array( 'jaula' => $linea_estadillo->jaula,
+                                         'lote'  => $linea_estadillo->lote
+                                       );
+                   array_push($estadillos_granja_jaula, $datos_jaula);
+              }
+          }
+          $datos_granja = array('granja' => $granja,
+                                            'jaulas' =>  $estadillos_granja_jaula);
+                      array_push($estadillos_granja, $datos_granja);
+          print_r($estadillos_granja);
           return View::make('estadillo.estadillo_diario')->with('fecha', $fecha_estadillo)
                                                          ->with('datos', $datos_estadillos);
      }
