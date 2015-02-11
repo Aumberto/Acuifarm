@@ -4,8 +4,14 @@ class PedidoController extends BaseController{
 
   public function getIndex(){
 
-  		$pedidos = Pedido::where('pagado', '<>', '1')->orderby('proveedor_id')->orderby('fecha_descarga')->get();
-  		$proveedor ='';
+  		$pedidos = Pedido::where('pagado', '<>', '1')->orWhere(function($query)
+                                                             {
+                                                               $query->where('pagado', '=', '1')->where('estado', '<>', 'Descargado');
+                                                             })->orderby('proveedor_id')->orderby('fecha_descarga')->get();
+  		/*$pedidos = DB::select('select *
+                               from pedidos
+                               where (pagado = 0) or (pagado = 1 and estado <> ?)  order by proveedor_id, fecha_descarga ', array('Descargado'));*/
+      $proveedor ='';
       $primerafila = True;
       $pedidos_proveedor_array = array();
       $pedidos_proveedor = array();
