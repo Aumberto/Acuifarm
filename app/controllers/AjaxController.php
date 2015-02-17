@@ -462,7 +462,7 @@ class AjaxController extends BaseController{
                                                          and ps.proveedor_id = pp.id
                                                          and p.fecha_descarga > ?
                                                          and p.fecha_descarga >= ? and p.fecha_descarga <= ?
-                                                         and p.estado <> ?
+                                                         
                                                     group by pp.nombre, tp.diametro ) ,0) as pedidos, 
                                               ifnull((Select sum(cantidad)
                                                         from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
@@ -473,7 +473,7 @@ class AjaxController extends BaseController{
                                                          and ps.proveedor_id = pp.id
                                                          and p.fecha_descarga > ?
                                                          and p.fecha_descarga < ?
-                                                         and p.estado <> ?
+                                                         
                                                     group by pp.nombre, tp.diametro ) ,0) as pedidos_acumulados
                                         from proveedores_pienso, tamanio_pellets
                                        where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
@@ -489,10 +489,9 @@ class AjaxController extends BaseController{
                                                                                                             $fecha_real,
                                                                                                             $fecha_inicial_semana_actual, 
                                                                                                             $fecha_final_semana_actual,
-                                                                                                            'Descargado',
+                                                                                                            
                                                                                                             $fecha_real,
-                                                                                                            $fecha_inicial_semana_actual, 
-                                                                                                            'Descargado'));
+                                                                                                            $fecha_inicial_semana_actual));
 
 
 
