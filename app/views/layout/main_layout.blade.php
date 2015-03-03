@@ -76,6 +76,14 @@
    <li>{{HTML::link('propuesta', 'Propuestas')}}</li>
    <li>{{HTML::link('traslado', 'Traslados')}}</li>
    <li>{{HTML::link('pedido', 'Pedidos')}}</li>
+   <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pedidos<span class="caret"></span></a>
+     <ul class="dropdown-menu" role="menu">
+            <li>{{HTML::link('pedido', 'Listado de Pedidos')}}</li>
+            <li>{{HTML::link('pedido/solicitudpago', 'Pedidos a Pagar')}}</li>
+            
+      </ul>
+   </li>
    <li>{{HTML::link('consumo/proveedores', 'Stock Proveedores')}}</li>
    <li>{{HTML::link('consumo/almacenes', 'Stock Almacenes')}}</li>
    <li class="dropdown">
@@ -88,7 +96,7 @@
             <li><a href="#">Separated link</a></li>
             <li class="divider"></li>
             <li><a id="downloadButton" href="#">Actualizar Simulación</a></li>
-      </ul>
+      </ul></li>
   <div class='marca'></div>
 <!-- </div> -->
 </ul>
