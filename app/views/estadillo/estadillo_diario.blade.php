@@ -56,7 +56,7 @@
     </div>
     @foreach($estadillos_granja as $estadillo_granja)
      <div class="table-responsive">
-       <h5>{{$estadillo_granja['granja']}}</h5>
+       <h5>{{$estadillo_granja['granja']}} <span class="glyphicon glyphicon-print" fecha="{{date("d-m-Y",strtotime($fecha))}}" granja="{{$estadillo_granja['granja']}}"><a href="/acuifarm/public/ajax/estadillos/excel/{{date("d-m-Y",strtotime($fecha))}}/{{$estadillo_granja['granja']}}">Imprimir</a></span></h5>
        <table class="table table-striped table-bordered">
         <thead>
        <tr>
@@ -122,9 +122,24 @@
           var id = $(this).attr('estadillo');
           var atributo = 'estadillo=' +  id;
           var porcentaje = $('.porcentaje_primera_toma[' + atributo +']').val();
-          $('.porcentaje_primera_toma[' + atributo +']').val(id);
+          
+          $.post('/acuifarm/public/ajax/estadillos',
+                  'idestadillo=' + id + '&numtomas=' + $(this).val(),
+                  function(data)
+                   {
+                     
+                     $('.porcentaje_primera_toma[' + atributo +']').val(data.porcentaje);
+                   },
+                  'json'
+                 );
           //alert(porcentaje);
         });
+
+      $("#glyphicon-print").click(function(){
+        //salert($(this).attr('fecha') + ' ' + $(this).attr('granja'));
+        $.post('/acuifarm/public/ajax/estadillos/excel',
+                  'fecha=' + $(this).attr('fecha') + '&granja=' + $(this).attr('granja'));
+      });
     
     });
   </script>

@@ -78,6 +78,17 @@
                  }
                 else
                  {
+                    $datos_jaula = array('jaula' => $jaula,
+                                      'lote' => $lote,
+                                      'consumos' => $jaula_consumos,
+                                      'stock_count_ini' => $stock_count_ini,
+                                      'stock_avg_ini' => $stock_avg_ini,
+                                      'stock_bio_ini' => $stock_bio_ini,
+                                      'cantidad_toma' => $cantidad_toma,
+                                      'num_tomas' => $num_tomas, 
+                                      'porcentaje_primera_toma' => $porcentaje_primera_toma, 
+                                      'estadillo_id' => $estadillo_id);
+                    array_push($estadillos_granja_jaula, $datos_jaula);
                     $datos_granjas = array('granja' => $granja,
                                            'jaulas' => $estadillos_granja_jaula);
                     array_push($estadillos_granja, $datos_granjas);
@@ -86,6 +97,8 @@
                     $datos_consumo = array('pellet' => $linea_estadillo->diametro_pienso,
                                            'cantidad' => $linea_estadillo->cantidad);
                     array_push($jaula_consumos, $datos_consumo);
+                    //echo 'Cambio de granja: granja actual ' . $granja . ' nueva granja: ' . $linea_estadillo->granja;
+                    //print_r($datos_granjas) ;
                     $jaula = $linea_estadillo->jaula;
                     $granja = $linea_estadillo->granja;
                     $lote = $linea_estadillo->lote;
@@ -96,6 +109,7 @@
                     $num_tomas = $linea_estadillo->num_tomas;
                     $porcentaje_primera_toma = $linea_estadillo->porcentaje_primera_toma;
                     $estadillo_id = $linea_estadillo->estadillo_id;
+
                  }
                 
              }
@@ -119,6 +133,7 @@
                  $datos_consumo = array('pellet' => $linea_estadillo->diametro_pienso,
                                         'cantidad' => $linea_estadillo->cantidad);
                  array_push($jaula_consumos, $datos_consumo);
+                 //echo 'Nueva jaula: actual ' . $jaula . ' nueva: ' . $linea_estadillo->jaula;
                  $jaula = $linea_estadillo->jaula;
                  $lote = $linea_estadillo->lote;
                  $stock_count_ini = $linea_estadillo->stock_count_ini;

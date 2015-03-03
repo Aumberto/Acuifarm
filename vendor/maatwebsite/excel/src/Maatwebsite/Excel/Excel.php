@@ -24,10 +24,10 @@ class Excel {
      * Filter
      * @var array
      */
-    protected $filters = [
-        'registered' =>  [],
-        'enabled'    =>  []
-    ];
+    protected $filters = array(
+        'registered' =>  array(),
+        'enabled'    =>  array()
+    );
 
     /**
      * Excel object
@@ -97,10 +97,10 @@ class Excel {
      * @param  string        $file The file we want to load
      * @param  callback|null $callback
      * @param  string|null   $encoding
+     * @param bool           $noBasePath
      * @return LaravelExcelReader
-     *
      */
-    public function load($file, $callback = null, $encoding = null)
+    public function load($file, $callback = null, $encoding = null, $noBasePath = false)
     {
         // Reader instance
         $reader = clone $this->reader;
@@ -115,7 +115,7 @@ class Excel {
         $encoding = is_string($callback) ? $callback : $encoding;
 
         // Start loading
-        $reader->load($file, $encoding);
+        $reader->load($file, $encoding, $noBasePath);
 
         // Do the callback
         if ($callback instanceof Closure)
@@ -193,7 +193,7 @@ class Excel {
      * @param   array $filters
      * @return  Excel
      */
-    public function registerFilters($filters = [])
+    public function registerFilters($filters = array())
     {
         // If enabled array key exists
         if(array_key_exists('enabled', $filters))
@@ -263,7 +263,14 @@ class Excel {
         if (method_exists($this->excel, $method))
         {
             // Call the method from the excel object with the given params
-            return call_user_func_array([$this->excel, $method], $params);
+            return call_user_func_array(array($this->excel, $method), $params);
+        }
+
+        // If reader method exists, call that one
+        if (method_exists($this->reader, $method))
+        {
+            // Call the method from the reader object with the given params
+            return call_user_func_array(array($this->reader, $method), $params);
         }
 
         throw new LaravelExcelException('Laravel Excel method [' . $method . '] does not exist');

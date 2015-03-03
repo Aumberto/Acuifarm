@@ -77,6 +77,8 @@ Route::post('ajax/actualizarsimulacion', array('uses' => 'AjaxController@Actuali
 Route::post('ajax/estrategia', array('uses' => 'AjaxController@NuevaEstrategia'));
 Route::post('ajax/pedidos', array('uses' => 'AjaxController@PropuestaPedido'));
 Route::post('ajax/ayunos', array('uses' => 'AjaxController@UpdateAyuno'));
+Route::post('ajax/estadillos', array('uses' => 'AjaxController@CambioNumeroTomas'));
+Route::get('ajax/estadillos/excel/{fecha}/{granja}', array('uses' => 'AjaxController@GenerarExcel'));
 
 
 // Rutas para el objeto Producción

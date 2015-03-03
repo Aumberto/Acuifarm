@@ -3,7 +3,10 @@
 use Cache;
 use Config;
 use Maatwebsite\Excel\Classes\PHPExcel;
+use PHPExcel_Cell;
 use PHPExcel_IOFactory;
+use PHPExcel_Cell_IValueBinder;
+use PHPExcel_Cell_DefaultValueBinder;
 use Illuminate\Filesystem\Filesystem;
 use Maatwebsite\Excel\Parsers\ExcelParser;
 use Maatwebsite\Excel\Classes\FormatIdentifier;
@@ -75,12 +78,6 @@ class LaravelExcelReader {
      * @var SheetCollection|RowCollection
      */
     public $parsed;
-
-    /**
-     * Delimiter
-     * @var string
-     */
-    public $delimiter;
 
     /**
      * Calculate [true/false]
@@ -170,9 +167,9 @@ class LaravelExcelReader {
      * Filters
      * @var array
      */
-    public $filters = [
-        'registered' => []
-    ];
+    public $filters = array(
+        'registered' => array()
+    );
 
     /**
      * @var LaravelExcelWorksheet
@@ -183,6 +180,21 @@ class LaravelExcelReader {
      * @var LaravelExcelWriter
      */
     protected $writer;
+
+    /**
+     * @var bool|string
+     */
+    protected $delimiter;
+
+    /**
+     * @var bool|string
+     */
+    protected $lineEnding;
+
+    /**
+     * @var bool|string
+     */
+    protected $enclosure;
 
     /**
      * Construct new reader
@@ -200,12 +212,13 @@ class LaravelExcelReader {
      * Load a file
      * @param  string        $file
      * @param string|boolean $encoding
+     * @param bool           $noBasePath
      * @return LaravelExcelReader
      */
-    public function load($file, $encoding = false)
+    public function load($file, $encoding = false, $noBasePath = false)
     {
         // init the loading
-        $this->_init($file, $encoding);
+        $this->_init($file, $encoding, $noBasePath);
 
         // Only fetch selected sheets if necessary
         if ($this->sheetsSelected())
@@ -253,6 +266,40 @@ class LaravelExcelReader {
         // Return the sheet
         return $this->sheet;
     }
+
+    /**
+     * Set csv delimiter
+     * @param $delimiter
+     * @return $this
+     */
+    public function setDelimiter($delimiter)
+    {
+        $this->delimiter = $delimiter;
+        return $this;
+    }
+
+    /**
+     * Set csv enclosure
+     * @param $enclosure
+     * @return $this
+     */
+    public function setEnclosure($enclosure)
+    {
+        $this->enclosure = $enclosure;
+        return $this;
+    }
+
+    /**
+     * Set csv line ending
+     * @param $lineEnding
+     * @return $this
+     */
+    public function setLineEnding($lineEnding)
+    {
+        $this->lineEnding = $lineEnding;
+        return $this;
+    }
+
 
     /**
      * set selected sheets
@@ -453,19 +500,20 @@ class LaravelExcelReader {
         $this->reader->setReadDataOnly(true);
 
         // Start the chunking
-        for ($startRow = 1; $startRow <= $totalRows; $startRow += $size)
+        for ($startRow = 0; $startRow < $totalRows; $startRow += $chunkSize)
         {
+            // Set start index
+            $startIndex = ($startRow == 0) ? $startRow : $startRow - 1;
+            $chunkSize = ($startRow == 0)? $size + 1 : $size;
+
             // Set the rows for the chunking
-            $this->filter->setRows($startRow, $size);
+            $this->filter->setRows($startRow, $chunkSize);
 
             // Load file with chunk filter enabled
             $this->excel = $this->reader->load($this->file);
-
-            // Set start index
-            $startIndex = ($startRow == 1) ? $startRow : $startRow - 1;
-
+            
             // Slice the results
-            $results = $this->get()->slice($startIndex, $size);
+            $results = $this->get()->slice($startIndex, $chunkSize);
 
             // Do a callback
             if(is_callable($callback))
@@ -533,12 +581,12 @@ class LaravelExcelReader {
      * Init the loading
      * @param      $file
      * @param bool $encoding
-     * @return void
+     * @param bool $noBasePath
      */
-    protected function _init($file, $encoding = false)
+    protected function _init($file, $encoding = false, $noBasePath = false)
     {
         // Set the extension
-        $this->_setFile($file)
+        $this->_setFile($file, $noBasePath)
               ->setExtension()
               ->setTitle()
               ->_setFormat()
@@ -561,8 +609,9 @@ class LaravelExcelReader {
     /**
      * Set filters
      * @param array $filters
+     *
      */
-    public function setFilters($filters = [])
+    public function setFilters($filters = array())
     {
         $this->filters = $filters;
     }
@@ -597,12 +646,13 @@ class LaravelExcelReader {
     /**
      * Set the file
      * @param string $file
-     * @return  LaraveExcelReader
+     * @param bool   $noBasePath
+     * @return $this
      */
-    protected function _setFile($file)
+    protected function _setFile($file, $noBasePath = false)
     {
         // check if we have a correct path
-        if (!realpath($file))
+        if (!$noBasePath && !realpath($file))
             $file = base_path($file);
 
         $this->file = $file;
@@ -630,6 +680,29 @@ class LaravelExcelReader {
     public function setExtension($ext = false)
     {
         $this->ext = $ext ? $ext : $this->filesystem->extension($this->file);
+
+        return $this;
+    }
+
+    /**
+     * Set custom value binder
+     * @param string|boolean $ext
+     * @return void
+     */
+    public function setValueBinder(PHPExcel_Cell_IValueBinder $binder)
+    {
+        PHPExcel_Cell::setValueBinder($binder);
+
+        return $this;
+    }
+
+    /**
+     * Reset the value binder back to default
+     * @return void
+     */
+    public function resetValueBinder()
+    {
+        PHPExcel_Cell::setValueBinder(new PHPExcel_Cell_DefaultValueBinder);
 
         return $this;
     }
@@ -706,19 +779,6 @@ class LaravelExcelReader {
     public function setSeperator($separator)
     {
         return $this->setSeparator($separator);
-    }
-
-    /**
-     * Set the delimiter
-     * Calling this after the ->load() will have no effect
-     * @param  string $delimiter
-     * @return LaraveExcelReader
-     */
-    public function setDelimiter($delimiter)
-    {
-        $this->reader->setDelimiter($delimiter);
-
-        return $this;
     }
 
     /**
@@ -842,8 +902,31 @@ class LaravelExcelReader {
      */
     public function getTotalRowsOfFile()
     {
+        // Get worksheet info
+        $spreadsheetInfo = $this->getSheetInfoForActive();
+
+        // return total rows
+        return $spreadsheetInfo['totalRows'];
+    }
+
+    /**
+     * Get sheet info for active sheet
+     * @return mixed
+     */
+    public function getSheetInfoForActive()
+    {
         $spreadsheetInfo = $this->reader->listWorksheetInfo($this->file);
-        return $spreadsheetInfo[0]['totalRows'];
+
+        // Loop through the info
+        foreach($spreadsheetInfo as $key => $value)
+        {
+            // When we hit the right worksheet
+            if($value['worksheetName'] == $this->getActiveSheet()->getTitle())
+                $index = $key;
+        }
+
+        // return total rows
+        return $spreadsheetInfo[$index];
     }
 
     /**
@@ -990,9 +1073,21 @@ class LaravelExcelReader {
         // Set CSV delimiter
         if ($this->format == 'CSV')
         {
-            $this->reader->setDelimiter(Config::get('excel::csv.delimiter', ','));
-            $this->reader->setEnclosure(Config::get('excel::csv.enclosure', '"'));
-            $this->reader->setLineEnding(Config::get('excel::csv.line_ending', "\r\n"));
+            // If no delimiter was given, take from config
+            if(!$this->delimiter)
+                $this->reader->setDelimiter(Config::get('excel::csv.delimiter', ','));
+            else
+                $this->reader->setDelimiter($this->delimiter);
+
+            if(!$this->enclosure)
+                $this->reader->setEnclosure(Config::get('excel::csv.enclosure', '"'));
+            else
+                $this->reader->setEnclosure($this->enclosure);
+
+            if(!$this->lineEnding)
+                $this->reader->setLineEnding(Config::get('excel::csv.line_ending', "\r\n"));
+            else
+                $this->reader->setLineEnding($this->lineEnding);
         }
 
         // Set default calculate
@@ -1009,6 +1104,9 @@ class LaravelExcelReader {
 
         // Set default date columns
         $this->dateColumns = Config::get('excel::import.dates.columns', array());
+        
+        // Set default include charts
+        $this->reader->setIncludeCharts(Config::get('excel::import.includeCharts', false));
     }
 
     /**
@@ -1018,6 +1116,7 @@ class LaravelExcelReader {
     protected function _reset()
     {
         $this->excel->disconnectWorksheets();
+        $this->resetValueBinder();
         unset($this->parsed);
     }
 
@@ -1054,7 +1153,7 @@ class LaravelExcelReader {
 
         elseif($this->writerHasMethod($method))
         {
-            return call_user_func_array([$this->writer, $method], $params);
+            return call_user_func_array(array($this->writer, $method), $params);
         }
 
         throw new LaravelExcelException('[ERROR] Reader method [' . $method . '] does not exist.');

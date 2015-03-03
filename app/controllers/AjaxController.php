@@ -498,6 +498,898 @@ class AjaxController extends BaseController{
       //return json_encode($consulta);
       return Response::json($consulta);
     }
+
+    public function CambioNumeroTomas(){
+      
+      // Obtenemos el id del estadillo
+      $id_estadillo = Input::get('idestadillo');
+      
+      // Obtenemos un objeto estadillo con dicho id
+      $estadillo = Estadillo::find($id_estadillo);
+
+      // Obtenemos un objeto producción simulado
+      $produccion_simulada = ProduccionSimuladas::where('unitname', '=', $estadillo->jaula->nombre)->where('date', '=', $estadillo->fecha)->first();
+      
+      // Obtenemos un objeto de consumo simulado
+      $consumo = Consumo::where('jaula_id', '=', $estadillo->jaula_id)->where('fecha', '=', $estadillo->fecha)->get();
+      //echo $consumo;
+
+      //echo $estadillo;
+      // Obtenemos el nº de tomas
+      $num_tomas = Input::get('numtomas');
+      $porcentaje = 0;
+      if ($num_tomas == 1) {
+          $porcentaje = 100;
+      }elseif ($num_tomas == 2){
+          $cantidad_pienso = ceil(($produccion_simulada->cantidad_toma * 0.5)/25)*25;
+          $porcentaje = floor(($cantidad_pienso/$produccion_simulada->cantidad_toma)*100);
+            }
+      $estadillo->num_tomas = $num_tomas;
+      $estadillo->porcentaje_primera_toma = $porcentaje;
+      $estadillo->save();
+      $datos = array("porcentaje" => $porcentaje, "Kilos" => $produccion_simulada->cantidad_toma);
+      //print_r(json_encode($data));
+      return json_encode($datos);
+    }
+
+    public function GenerarExcel($fecha, $granja){
+      
+
+      
+      
+      // Generamos el objeto estadillo
+      /*
+      $datos_estadillos = DB::select('select j.nombre as jaula, g.nombre as granja, ifnull(ps.groupid,"-") as lote, ifnull(ps.stock_count_ini,0) as stock_count_ini, 
+                                                 ifnull(ps.stock_avg_ini,0) as stock_avg_ini, ifnull(ps.stock_bio_ini,0) as stock_bio_ini, ifnull(ps.cantidad_toma,0) as cantidad_toma, 
+                                                 ifnull(c.pienso,"-") as pienso, ifnull(c.diametro_pienso,"-") as diametro_pienso, ifnull(c.cantidad,0) as cantidad,
+                                                 ifnull(e.num_tomas, 0) as num_tomas, ifnull(e.porcentaje_primera_toma, 0) as porcentaje_primera_toma, e.id as estadillo_id
+                                            from jaulas j left join produccion_simulado ps on j.nombre = ps.unitname and ps.date =  ? 
+                                                 left join consumos c on j.nombre = c.jaula and c.fecha =  ? 
+                                                 left join estadillos e on j.id = e.jaula_id and e.fecha = ? , granjas g
+                                           where g.nombre = ?
+                                             and j.granja_id = g.id
+                                        order by j.granja_id, j.nombre, c.diametro_pienso', array($fecha_estadillo, $fecha_estadillo, $fecha_estadillo, $granja));
+      */
+      // Creamos el nombre del archivo
+      list($dia, $mes, $year)=explode("-", $fecha);
+      $fecha_estadillo=$year."-".$mes."-".$dia;
+      $filename = "Estadillo_" . $year.$mes.$dia. "_" . $granja;
+       Excel::create($filename, function($excel) use($fecha, $granja)
+  {
+   $excel->sheet('Sheetname', function($sheet) use($fecha, $granja)
+   {
+    
+     // Obtenemos la fecha
+      list($dia, $mes, $year)=explode("-", $fecha);
+      $fecha_estadillo=$year."-".$mes."-".$dia;
+
+     //Averiguamos el día de la semana
+      $fecha_ingles = new DateTime($fecha_estadillo);
+      $dias_semana = array("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo");
+      $dia_semana = $dias_semana[$fecha_ingles->format('N')-1];
+
+    //Obtenemos todas las jaulas de la granja
+      $jaulas = DB::select('Select jaulas.nombre as jaula, jaulas.id as jaula_id 
+                        from jaulas, granjas 
+                       where jaulas.granja_id = granjas.id 
+                         and granjas.nombre = ? 
+                    order by jaulas.nombre', array($granja));
+
+    $sheet->row(1, array('Fecha', $fecha, $dia_semana, ' ', ' ', 'T MAÑANA', ' ', ' ', ' ', ' ', ' ', ' ', 
+                                                                            'T TARDE', ' ', ' ', ' ', ' ', ' ', ' ', 
+                                                                            ' ', ' ', ' ', ' '));
+ 
+    $sheet->row(2, array('Jaula', 'Nº de Peces', '', 'Biomasa', 'Nº sacos', 'Teo/Real', 'Respuesta', 'Kilos', 'Tipo', 'Nº Lote', 'Tiempo', 'Persona', 
+                                                                            'Teo/Real', 'Respuesta', 'Kilos', 'Tipo', 'Nº Lote', 'Tiempo', 'Persona', 
+                                                                            'Total', 'M. Sup', 'M. Fondo', 'Observaciones'));
+    // Set black background
+    $sheet->row(2, function($row) {
+      // call cell manipulation methods
+      $row->setFontWeight('bold');
+    });
+    $sheet->row(1, function($row) {
+      // call cell manipulation methods
+      $row->setFontWeight('bold');
+    });
+    //$row->setBackground('#000000');
+    // Ancho de las columnas
+    $sheet->setOrientation('landscape');
+
+    $sheet->setWidth(array(
+      'A'     =>  5.77852,
+      'B'     =>  10.77852,
+      'C'     =>  10.77852,
+      'D'     =>  10.77852,
+      'E'     =>  10.77852,
+      'F'     =>  10.77852,
+      'G'     =>  10.77852,
+      'H'     =>  10.77852,
+      'I'     =>  10.77852,
+      'J'     =>  10.77852,
+      'K'     =>  10.77852,
+      'L'     =>  10.77852,
+      'M'     =>  10.77852,
+      'N'     =>  10.77852,
+      'O'     =>  10.77852,
+      'P'     =>  10.77852,
+      'Q'     =>  10.77852,
+      'R'     =>  10.77852,
+      'S'     =>  10.77852,
+      'T'     =>  10.77852,
+      'U'     =>  10.77852,
+      'V'     =>  10.77852,
+      'W'     =>  50.778520
+    ));
+
+
+
+    $i=3;
+    $estadillo_cantidad_total = 0;
+      $estadillo_cantidad_total_primera_toma = 0;
+      $estadillo_cantidad_total_segunda_toma = 0;
+    // Recorremos cada jaula y comprobamos si existen consumos.
+    foreach ($jaulas as $jaula)
+    {
+      //Inicializamos las variables para completar los estadillos
+      $estadillo_jaula = $jaula->jaula;
+      $estadillo_lote = '';
+      $estadillo_num_peces = '';
+      $estadillo_peso_medio = '';
+      $estadillo_biomasa = '';
+      $estadillo_cantidad_toma_total = '';
+      $estadillo_diametro_toma_total = '';
+      $estadillo_cantidad_toma_primera = '';
+      $estadillo_diametro_toma_primera = '';
+      $estadillo_cantidad_toma_segunda = '';
+      $estadillo_diametro_toma_segunda = '';
+      
+
+      $datos_consumos = Consumo::where('jaula', '=', $jaula->jaula)->where('fecha', '=', $fecha_estadillo)->orderby('diametro_pienso')->get();
+      if (count($datos_consumos)>0)
+        //Existen consumos
+       {
+          //Localizamos los datos de producción
+          $datos_produccion_simulados = ProduccionSimuladas::where('unitname', '=', $jaula->jaula)->where('date', '=', $fecha_estadillo)->first();
+          
+          //Obtenemos los datos del estadillo (num_tomas, %porcentaje primera toma)
+          $datos_estadillo = Estadillo::where('jaula_id', '=', $jaula->jaula_id)->where('fecha', '=', $fecha_estadillo)->first();
+          
+          // Damos valores a las variables de los estadillos
+          $estadillo_lote = $datos_produccion_simulados->groupid;
+          $estadillo_num_peces = $datos_produccion_simulados->stock_count_ini;
+          $estadillo_peso_medio = $datos_produccion_simulados->stock_avg_ini;
+          $estadillo_biomasa = $datos_produccion_simulados->stock_bio_ini;
+          $estadillo_cantidad_toma_total = $datos_produccion_simulados->cantidad_toma;
+
+          //Comprobamos si existen dos tipos de pienso en la alimentación
+          if (count($datos_consumos)==2)
+           {
+             $j=1;
+             $diametro_pienso_1 ='';
+             $diametro_pienso_2 ='';
+             $cantidad_pienso_1 = 0;
+             $cantidad_pienso_2 = 0;
+             foreach($datos_consumos as $dato_consumo)
+             {
+               if ($j==1)
+               {
+                  $diametro_pienso_1 = $dato_consumo->diametro_pienso;
+                  $cantidad_pienso_1 = $dato_consumo->cantidad;
+               }
+               else
+               {
+                  $diametro_pienso_2 = $dato_consumo->diametro_pienso;
+                  $cantidad_pienso_2 = $dato_consumo->cantidad;
+               }
+               $j++;
+             }
+               // Averiguamos cuantas tomas tenemos
+               
+               if($datos_estadillo->num_tomas == 2)
+                {
+
+                   $cantidad_total_primera_toma = ceil(($datos_produccion_simulados->cantidad_toma * ($datos_estadillo->porcentaje_primera_toma / 100))/25)*25;
+                   $cantidad_total_segunda_toma = $datos_produccion_simulados->cantidad_toma - $cantidad_total_primera_toma;
+
+                   $cantidad_pienso_1_primera_toma = ceil(($cantidad_total_primera_toma * 0.5)/25)*25;
+                   $cantidad_pienso_2_primera_toma = $cantidad_total_primera_toma - $cantidad_pienso_1_primera_toma;
+
+                   $cantidad_pienso_1_segunda_toma = $cantidad_pienso_1 - $cantidad_pienso_1_primera_toma;
+                   $cantidad_pienso_2_segunda_toma = $cantidad_pienso_2 - $cantidad_pienso_2_primera_toma; 
+
+                   // Primera Toma
+                   $estadillo_cantidad_toma_primera = $cantidad_pienso_1_primera_toma . ' + ' . $cantidad_pienso_2_primera_toma;
+                   $estadillo_diametro_toma_primera = $diametro_pienso_1 . ' + ' . $diametro_pienso_2;
+
+                   // Segunda Toma
+                   $estadillo_cantidad_toma_segunda = $cantidad_pienso_1_segunda_toma . ' + ' . $cantidad_pienso_2_segunda_toma;
+                   $estadillo_diametro_toma_segunda = $diametro_pienso_1 . ' + ' . $diametro_pienso_2;
+
+                   // Totalizamos cada toma
+                   $estadillo_cantidad_total_primera_toma = intval($estadillo_cantidad_total_primera_toma) + intval($cantidad_pienso_1_primera_toma) + intval($cantidad_pienso_2_primera_toma);
+                   $estadillo_cantidad_total_segunda_toma = intval($estadillo_cantidad_total_segunda_toma) + intval($cantidad_pienso_1_segunda_toma) + intval($cantidad_pienso_2_segunda_toma);
+
+                }
+               else
+                {
+                   $cantidad_pienso_1_primera_toma = $cantidad_pienso_1;
+                   $cantidad_pienso_2_primera_toma = $cantidad_pienso_2;
+
+                   // Primera Toma
+                   $estadillo_cantidad_toma_primera = $cantidad_pienso_1_primera_toma . ' + ' . $cantidad_pienso_2_primera_toma;
+                   $estadillo_diametro_toma_primera = $diametro_pienso_1 . ' + ' . $diametro_pienso_2;
+
+                   // Segunda Toma
+                   $estadillo_cantidad_toma_segunda = '';
+                   $estadillo_diametro_toma_segunda = '';
+
+                   // Totalizamos cada toma
+                   $estadillo_cantidad_total_primera_toma = intval($estadillo_cantidad_total_primera_toma) + intval($cantidad_pienso_1_primera_toma) + intval($cantidad_pienso_2_primera_toma);
+                   
+                   
+                }
+
+                $estadillo_diametro_toma_total = $diametro_pienso_1 . ' + ' . $diametro_pienso_2;
+             
+           }
+          else
+           {
+             foreach($datos_consumos as $dato_consumo)
+               {
+                 $estadillo_cantidad_toma_total = $dato_consumo->cantidad;
+                 $estadillo_diametro_toma_total = $dato_consumo->diametro_pienso;
+               }
+             if($datos_estadillo->num_tomas == 2)
+              {
+                 $cantidad_total_primera_toma = ceil(($datos_produccion_simulados->cantidad_toma * ($datos_estadillo->porcentaje_primera_toma / 100))/25)*25;
+                 $cantidad_total_segunda_toma = $datos_produccion_simulados->cantidad_toma - $cantidad_total_primera_toma;
+                 
+                 // Primera Toma
+                 $estadillo_cantidad_toma_primera = $cantidad_total_primera_toma;
+                 $estadillo_diametro_toma_primera = $estadillo_diametro_toma_total;
+
+                 // Segunda Toma
+                 $estadillo_cantidad_toma_segunda = $cantidad_total_segunda_toma;
+                 $estadillo_diametro_toma_segunda = $estadillo_diametro_toma_total;
+
+                 // Totalizamos cada toma
+                 $estadillo_cantidad_total_primera_toma = $estadillo_cantidad_total_primera_toma + intval($estadillo_cantidad_toma_primera);
+                 $estadillo_cantidad_total_segunda_toma = $estadillo_cantidad_total_segunda_toma + intval($estadillo_cantidad_toma_segunda);
+
+              }
+             else
+              {
+                 // Primera Toma
+                 $estadillo_cantidad_toma_primera = $datos_produccion_simulados->cantidad_toma;
+                 $estadillo_diametro_toma_primera = $estadillo_diametro_toma_total;
+
+                 // Segunda Toma
+                 $estadillo_cantidad_toma_segunda = '';
+                 $estadillo_diametro_toma_segunda = '';
+
+                 // Totalizamos cada toma
+                 $estadillo_cantidad_total_primera_toma = $estadillo_cantidad_total_primera_toma + intval($estadillo_cantidad_toma_primera);
+                 
+
+              }  
+           }
+       }
+
+       //Insertamos los datos en la hoja
+       $sheet->appendRow(array(
+                               $estadillo_jaula,
+                               $estadillo_num_peces,
+                               $estadillo_cantidad_toma_total,
+                               $estadillo_biomasa,
+                               $estadillo_cantidad_toma_total/25,
+                               $estadillo_cantidad_toma_primera,
+                               '',
+                               '',
+                               '',
+                               '',
+                               '',
+                               '',
+                               $estadillo_cantidad_toma_segunda
+                               ));
+
+       $sheet->appendRow(array(
+                               $estadillo_lote,
+                               $estadillo_peso_medio,
+                               $estadillo_diametro_toma_total,
+                               '',
+                               '',
+                               $estadillo_diametro_toma_primera,
+                               '',
+                               '',
+                               '',
+                               '',
+                               '',
+                               '',
+                               $estadillo_diametro_toma_segunda
+                               )); 
+
+       $string = "D" . $i . ":D" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "E" . $i . ":E" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "G" . $i . ":G" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "H" . $i . ":H" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "I" . $i . ":I" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "J" . $i . ":J" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "K" . $i . ":K" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "L" . $i . ":L" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "N" . $i . ":N" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "O" . $i . ":O" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "P" . $i . ":P" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "Q" . $i . ":Q" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "R" . $i . ":R" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "S" . $i . ":S" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "T" . $i . ":T" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "U" . $i . ":U" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "V" . $i . ":V" . ($i+1);
+       $sheet->mergeCells($string);
+       $string = "W" . $i . ":W" . ($i+1);
+       $sheet->mergeCells($string);
+       
+       $sheet->setHeight($i, 21);
+       $sheet->setHeight($i+1, 21);
+
+       // Bordes de A*
+       $celda = 'A'. $i;
+       $sheet->cell($celda, function($cells) {
+   
+       // Set all borders (top, right, bottom, left)
+       $cells->setBorder('thin', 'thin', 'none', 'thin');
+
+         });
+       
+       $celda = 'A'. ($i+1);
+       $sheet->cell($celda, function($cells) {
+  
+       // Set all borders (top, right, bottom, left)
+       $cells->setBorder('none', 'thin', 'thin', 'thin');
+
+       });
+
+       // Bordes de B*
+       $celda = 'B'. $i;
+       $sheet->cell($celda, function($cells) {
+   
+       // Set all borders (top, right, bottom, left)
+       $cells->setBorder('thin', 'thin', 'none', 'thin');
+
+         });
+       
+       $celda = 'B'. ($i+1);
+       $sheet->cell($celda, function($cells) {
+  
+       // Set all borders (top, right, bottom, left)
+       $cells->setBorder('none', 'thin', 'thin', 'thin');
+
+       });
+
+       $celda = 'C'. ($i+1);
+       $sheet->cell($celda, function($cells) {
+  
+       // Set all borders (top, right, bottom, left)
+       $cells->setFontWeight('bold');
+       $cells->setBackground('#D9D9D9');
+
+       });
+       $celda = 'F'. ($i+1);
+       $sheet->cell($celda, function($cells) {
+  
+       // Set all borders (top, right, bottom, left)
+       $cells->setFontWeight('bold');
+       $cells->setBackground('#D9D9D9');
+
+       });
+       $celda = 'M'. ($i+1);
+       $sheet->cell($celda, function($cells) {
+  
+       // Set all borders (top, right, bottom, left)
+       $cells->setFontWeight('bold');
+       $cells->setBackground('#D9D9D9');
+
+
+       });
+       
+       $i= $i+2;
+    }
+   // Actualizamos los totales 
+    // Totalizamos cada toma
+    $estadillo_cantidad_total = $estadillo_cantidad_total_primera_toma + $estadillo_cantidad_total_segunda_toma;
+                  
+   $celdas = 'A1:W' . ($i-1);
+   $sheet->cells($celdas, function($cells) {
+
+    // manipulate the range of cells
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+
+       }); 
+
+   $celdas = 'C3:W' . ($i-1);
+   $sheet->setBorder($celdas, 'thin');
+   $sheet->appendRow(array(
+                               '',
+                               '',
+                               $estadillo_cantidad_total . ' Kg.',
+                               '',
+                               '',
+                               $estadillo_cantidad_total_primera_toma . ' Kg.',
+                               '',
+                               '',
+                               '',
+                               '',
+                               '',
+                               '',
+                               $estadillo_cantidad_total_segunda_toma . ' Kg.'
+                               )); 
+   $celdas = 'C' . ($i);
+   $sheet->cells($celdas, function($cells) {
+
+    // manipulate the range of cells
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+
+       }); 
+   $celdas = 'F' . ($i);
+   $sheet->cells($celdas, function($cells) {
+
+    // manipulate the range of cells
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+
+       }); 
+   $celdas = 'M' . ($i);
+   $sheet->cells($celdas, function($cells) {
+
+    // manipulate the range of cells
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+
+       }); 
+
+   // Ahora totalizamos por cada tipo de grano.
+   $tipos_granos = DB::select('select diametro_pienso, sum(cantidad) as cantidad
+                                 from consumos 
+                                where fecha = ? 
+                                  and granja= ? 
+                             group by diametro_pienso 
+                             ORDER BY diametro_pienso', array($fecha_estadillo, $granja));
+   $j=1;
+   $letra_celda_tipo_grano = 'B';
+   $letra_celda_cantidad = 'C';
+   foreach($tipos_granos as $tipo_grano)
+    {
+      
+       $celdas = $letra_celda_tipo_grano . ($i+2+$j);
+       $sheet->setCellValue($celdas, 'Pellet '. $tipo_grano->diametro_pienso);
+       $sheet->cells($celdas, function($cells) {
+
+    // manipulate the range of cells
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'none', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+
+       }); 
+       
+
+       $celdas = $letra_celda_cantidad . ($i+2+$j);
+       $sheet->setCellValue($celdas, $tipo_grano->cantidad . ' Kg.');
+       $sheet->cells($celdas, function($cells) {
+
+    // manipulate the range of cells
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'none');
+        $cells->setFontWeight('bold');
+
+       }); 
+
+       $j++;
+    }
+
+    // Pie de página
+
+    // Combinamos Celdas
+    $rango = 'E' . ($i+3) . ':F' . ($i+4);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'E' . ($i+5) . ':F' . ($i+6);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'E' . ($i+7) . ':F' . ($i+9);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'G' . ($i+3) . ':I' . ($i+4);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'G' . ($i+7) . ':I' . ($i+9);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'O' . ($i+1) . ':Q' . ($i+3);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        //$cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'T' . ($i+3) . ':W' . ($i+3);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        //$cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'T' . ($i+2) . ':W' . ($i+2);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        //$cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'G' . ($i+5) . ':H' . ($i+5);
+    $sheet->mergeCells($rango);
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'G' . ($i+6) . ':H' . ($i+6);
+    $sheet->mergeCells($rango); 
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+
+    $rango = 'P' . ($i+4) . ':Q' . ($i+4);
+    $sheet->mergeCells($rango); 
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'P' . ($i+5) . ':Q' . ($i+5);
+    $sheet->mergeCells($rango); 
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'P' . ($i+6) . ':Q' . ($i+6);
+    $sheet->mergeCells($rango); 
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+    $rango = 'P' . ($i+7) . ':Q' . ($i+7);
+    $sheet->mergeCells($rango); 
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+
+    $rango = 'K' . ($i+4) . ':M' . ($i+4);
+    $sheet->mergeCells($rango); 
+    $sheet->cells($rango, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        });
+
+
+    
+    
+
+    // Escribimos Celdas
+    $celdas = 'E' . ($i+3);
+    $sheet->setCellValue($celdas, 'Tipo embarcación');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'E' . ($i+5);
+    $sheet->setCellValue($celdas, 'Turno');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+    $celdas = 'E' . ($i+7);
+    $sheet->setCellValue($celdas, 'Firma del responsable');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+    
+    $celdas = 'G' . ($i+5);
+    $sheet->setCellValue($celdas, 'Mañana');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'I' . ($i+5);
+    $sheet->cells($celdas, function($cells) {
+    $cells->setAlignment('center');
+    $cells->setValignment('center');
+    $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+    }); 
+
+    $celdas = 'G' . ($i+6);
+    $sheet->setCellValue($celdas, 'Tarde');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'I' . ($i+6);
+    $sheet->cells($celdas, function($cells) {
+    $cells->setAlignment('center');
+    $cells->setValignment('center');
+    $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+    }); 
+
+    $celdas = 'O' . ($i+1);
+    $sheet->setCellValue($celdas, 'En la casilla "Respuesta" se debe anotar la numeración acorde al comportamiento');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('distributed');
+        //$cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'T' . ($i+2);
+    $sheet->setCellValue($celdas, 'La dirección se marca como N,NE, SE, S,...');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        //$cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'T' . ($i+3);
+    $sheet->setCellValue($celdas, 'La fuerza se marca como nula, muy baja, baja, alta, muy alta.');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        //$cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'O' . ($i+4);
+    $sheet->setCellValue($celdas, '1');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'O' . ($i+5);
+    $sheet->setCellValue($celdas, '2');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'O' . ($i+6);
+    $sheet->setCellValue($celdas, '3');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       }); 
+    $celdas = 'O' . ($i+7);
+    $sheet->setCellValue($celdas, '4');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       }); 
+    $celdas = 'P' . ($i+4);
+    $sheet->setCellValue($celdas, 'Chapoteo');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'P' . ($i+5);
+    $sheet->setCellValue($celdas, 'Superficie (0-2 m.)');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'P' . ($i+6);
+    $sheet->setCellValue($celdas, 'Por debajo de 2m.');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+    $celdas = 'P' . ($i+7);
+    $sheet->setCellValue($celdas, 'No se ve el pescado');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        //$cells->setFontWeight('bold');
+       }); 
+
+    $celdas = 'T' . ($i+4);
+    $sheet->setCellValue($celdas, 'PARÁMETRO');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       });
+
+    $celdas = 'U' . ($i+4);
+    $sheet->setCellValue($celdas, 'DIRECCIÓN');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       });
+
+    $celdas = 'V' . ($i+4);
+    $sheet->setCellValue($celdas, 'FUERZA');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       });
+
+
+    $celdas = 'T' . ($i+5);
+    $sheet->setCellValue($celdas, 'Oleaje');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       });
+
+    $celdas = 'T' . ($i+6);
+    $sheet->setCellValue($celdas, 'Viento');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       });
+
+    $celdas = 'U' . ($i+5) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'V' . ($i+5) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'U' . ($i+6) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'V' . ($i+6) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+
+    $celdas = 'K' . ($i+4);
+    $sheet->setCellValue($celdas, 'Temperatura agua');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('center');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        $cells->setFontWeight('bold');
+       });
+
+    $celdas = 'K' . ($i+5);
+    $sheet->setCellValue($celdas, '1 m.');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('left');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        
+       });
+    $celdas = 'L' . ($i+5) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+
+    $celdas = 'M' . ($i+5);
+    $sheet->setCellValue($celdas, '10 m.');
+    $sheet->cells($celdas, function($cells) {
+        $cells->setAlignment('right');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+        
+       });
+
+    $celdas = 'K' . ($i+6) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'L' . ($i+6) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'M' . ($i+6) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'K' . ($i+7) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'L' . ($i+7) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'M' . ($i+7) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+
+
+    
+   });
+  })->download('xlsx');
+       //return Redirect::to('estadillos');
+    }
 }
 
  ?>
