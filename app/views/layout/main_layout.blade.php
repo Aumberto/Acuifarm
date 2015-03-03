@@ -75,7 +75,6 @@
   <ul class='nav nav-pills pull-right'>
    <li>{{HTML::link('propuesta', 'Propuestas')}}</li>
    <li>{{HTML::link('traslado', 'Traslados')}}</li>
-   <li>{{HTML::link('pedido', 'Pedidos')}}</li>
    <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pedidos<span class="caret"></span></a>
      <ul class="dropdown-menu" role="menu">
