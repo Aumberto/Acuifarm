@@ -44,6 +44,8 @@ Route::get('/pedido/edit/{id}', array('uses' =>'PedidoController@getEdit'));
 Route::post('/pedido/edit/{id}', array('uses' =>'PedidoController@getEdit'));
 Route::get('/pedido/solicitudpago', array('uses' =>'PedidoController@Pedidos_a_pagar'));
 Route::post('/pedido/solicitudpago', array('uses' =>'PedidoController@Pedidos_a_pagar'));
+Route::get('/pedido/solicitudcarga', array('uses' =>'PedidoController@Pedidos_a_cargar'));
+Route::post('/pedido/solicitudcarga', array('uses' =>'PedidoController@Pedidos_a_cargar'));
 
 // Rutas para añadir detalles a los pedidos
 Route::post('pedidodetalle/add', array('uses' => 'PedidodetalleController@getAdd'));

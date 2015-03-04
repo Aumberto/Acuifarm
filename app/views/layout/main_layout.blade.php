@@ -80,6 +80,7 @@
      <ul class="dropdown-menu" role="menu">
             <li>{{HTML::link('pedido', 'Listado de Pedidos')}}</li>
             <li>{{HTML::link('pedido/solicitudpago', 'Pedidos a Pagar')}}</li>
+            <li>{{HTML::link('pedido/solicitudcarga', 'Pedidos a Cargar')}}</li>
             
       </ul>
    </li>
