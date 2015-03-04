@@ -31,18 +31,18 @@
           <td>{{$detalle_pedido['num_pedido']}}</td>
           <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_pedido']))}}</td>
           <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_carga']))}}
-             @if( (date("d-m-Y",strtotime($detalle_pedido['fecha_carga'])) <= date("d-m-Y")) and ($detalle_pedido['estado'] == 'En tránsito')) 
+             @if( ($detalle_pedido['fecha_carga'] <= date('Y-m-d')) and ($detalle_pedido['estado'] == 'En preparación')) 
               <span class="glyphicon glyphicon-warning-sign"></span>
              @endif
           </td>
           <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_descarga']))}}
-             @if( (date("d-m-Y",strtotime($detalle_pedido['fecha_descarga'])) <= date("d-m-Y")) and ($detalle_pedido['estado'] == 'Pendiente de descarga')) 
+             @if( ($detalle_pedido['fecha_descarga'] <= date('Y-m-d')) and ($detalle_pedido['estado'] == 'Pendiente de descarga')) 
               <span class="glyphicon glyphicon-warning-sign"></span>
              @endif
           </td>
           <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_pago']))}}
-            @if (date("d-m-Y",strtotime($detalle_pedido['fecha_pago'])) <= date("d-m-Y"))
-            <span class="glyphicon glyphicon-warning-sign"></span>
+            @if ($detalle_pedido['fecha_pago'] <= date('Y-m-d'))
+              <span class="glyphicon glyphicon-warning-sign"> </span>
             @endif
           </td>
           <td class="text-right">{{$detalle_pedido['importe']}} €</td>
