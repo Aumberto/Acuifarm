@@ -30,9 +30,21 @@
         <tr {{$detalle_pedido['clase']}}>
           <td>{{$detalle_pedido['num_pedido']}}</td>
           <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_pedido']))}}</td>
-          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_carga']))}}</td>
-          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_descarga']))}}</td>
-          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_pago']))}}</td>
+          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_carga']))}}
+             @if( (date("d-m-Y",strtotime($detalle_pedido['fecha_carga'])) <= date("d-m-Y")) and ($detalle_pedido['estado'] == 'En tránsito')) 
+              <span class="glyphicon glyphicon-warning-sign"></span>
+             @endif
+          </td>
+          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_descarga']))}}
+             @if( (date("d-m-Y",strtotime($detalle_pedido['fecha_descarga'])) <= date("d-m-Y")) and ($detalle_pedido['estado'] == 'Pendiente de descarga')) 
+              <span class="glyphicon glyphicon-warning-sign"></span>
+             @endif
+          </td>
+          <td class="text-center">{{date("d-m-Y",strtotime($detalle_pedido['fecha_pago']))}}
+            @if (date("d-m-Y",strtotime($detalle_pedido['fecha_pago'])) <= date("d-m-Y"))
+            <span class="glyphicon glyphicon-warning-sign"></span>
+            @endif
+          </td>
           <td class="text-right">{{$detalle_pedido['importe']}} €</td>
           <td class="text-center"><input type='checkbox' disabled @if ($detalle_pedido['pagado'] == 1) checked @endif ></td>
           <td class="text-center">{{$detalle_pedido['estado']}} </td>
