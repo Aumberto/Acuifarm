@@ -106,6 +106,22 @@ class PedidoController extends BaseController{
        $fecha=Input::get('fecha_descarga');
        list($dia, $mes, $year)=explode("-", $fecha);
        $fecha_descarga=$year."-".$mes."-".$dia;
+       $fecha_descarga_date = date($year."-".$mes."-".$dia);
+       
+       $fecha_llegada = strtotime ( '-6 day' , strtotime ($fecha_descarga_date) ) ;
+       $fecha_llegada = date ( 'Y-m-d' , $fecha_llegada ); 
+
+       $fecha=Input::get('fecha_carga');
+       list($dia, $mes, $year)=explode("-", $fecha);
+       $fecha_carga=$year."-".$mes."-".$dia;
+
+       
+
+       /* $fecha=Input::get('fecha_llegada');
+       list($dia, $mes, $year)=explode("-", $fecha);
+       $fecha_llegada=$year."-".$mes."-".$dia;
+       */
+
        
        Pedido::create(
         array(
@@ -117,10 +133,10 @@ class PedidoController extends BaseController{
           //'estado' => Input::get('estado'),
           'fecha_pedido' => $fecha_pedido,
           'fecha_confirmacion' => $fecha_pedido,
-          'fecha_carga' => $fecha_pedido,
-          'fecha_llegada' => $fecha_pedido,
+          'fecha_carga' => $fecha_carga,
+          'fecha_llegada' => $fecha_llegada,
           'fecha_descarga' => $fecha_descarga,
-          'fecha_pago' => $fecha_pedido
+          'fecha_pago' => $fecha_carga
           ));
 
   	   // Obtenemos el id del último pedido insertado

@@ -8,7 +8,7 @@
   <div class="form-group">
       <label for='num_pedido' class="col-sm-3 control-label">Número de Pedido:</label>
       <div class="col-sm-2">
-        <input type="text" class="form-control input-sm" name="num_pedido" id="num_pedido" placeholder="Número de Pedido:" value='{{$pedido->num_pedido}}' disabled>
+        <input type="text" class="form-control input-sm" name="num_pedido" id="num_pedido" placeholder="Número de Pedido:" value='{{$pedido->num_pedido}}'>
       </div>
   </div>
 
@@ -46,10 +46,10 @@
 <div class="form-group">
   <label class="col-sm-3 control-label" for='estado'>Estado:</label>
   <div class="col-sm-8">
-    <input  type='radio' name='estado' value='En preparación' @if ($pedido->estado == 'En preparación') checked='checked' @endif/> En preparación
-    <input  type='radio' name='estado' value='En tránsito' @if ($pedido->estado == 'En tránsito') checked='checked' @endif/> En tránsito
-    <input  type='radio' name='estado' value='Pendiente de descarga' @if ($pedido->estado == 'Pendiente de descarga') checked='checked' @endif/> Pendiente de descarga
-    <input  type='radio' name='estado' value='Descargado' @if ($pedido->estado == 'Descargado') checked='checked' @endif/> Descargado 
+    <input  class="checkbox_estado" type='radio' id='estado_en_preparacion' name='estado' value='En preparación' @if ($pedido->estado == 'En preparación') checked='checked' @endif/> En preparación
+    <input  class="checkbox_estado" type='radio' id='estado_en_transito' name='estado' value='En tránsito' @if ($pedido->estado == 'En tránsito') checked='checked' @endif/> En tránsito
+    <input  class="checkbox_estado" type='radio' id='estado_en_pendiente_descarga' name='estado' value='Pendiente de descarga' @if ($pedido->estado == 'Pendiente de descarga') checked='checked' @endif/> Pendiente de descarga
+    <input  class="checkbox_estado" type='radio' id='estado_en_descargado' name='estado' value='Descargado' @if ($pedido->estado == 'Descargado') checked='checked' @endif/> Descargado 
   </div>
 </div>
 
@@ -117,6 +117,148 @@
 
 
 </div>
+<script>
+    $(function() 
+    {
+      //alert('Página cargada');
+      if ( $("#estado_en_preparacion").is(":checked") ){
+        $( "#fecha_pedido" ).prop( "disabled", false );
+        $( "#fecha_confirmacion" ).prop( "disabled", false );
+        $( "#fecha_carga" ).prop( "disabled", false );
+        $( "#fecha_llegada" ).prop( "disabled", false );
+        $( "#fecha_descarga" ).prop( "disabled", false );
+      }
 
+      if ( $("#estado_en_transito").is(":checked") ){
+        $( "#fecha_pedido" ).prop( "disabled", true );
+        $( "#fecha_confirmacion" ).prop( "disabled", true );
+        $( "#fecha_carga" ).prop( "disabled", true );
+        $( "#fecha_llegada" ).prop( "disabled", false );
+        $( "#fecha_descarga" ).prop( "disabled", false );
+      }
+
+      if ( $("#estado_en_pendiente_descarga").is(":checked") ){
+        $( "#fecha_pedido" ).prop( "disabled", true );
+        $( "#fecha_confirmacion" ).prop( "disabled", true );
+        $( "#fecha_carga" ).prop( "disabled", true );
+        $( "#fecha_llegada" ).prop( "disabled", true );
+        $( "#fecha_descarga" ).prop( "disabled", false );
+      }
+
+      if ( $("#estado_en_descargado").is(":checked") ){
+        $( "#fecha_pedido" ).prop( "disabled", true );
+        $( "#fecha_confirmacion" ).prop( "disabled", true );
+        $( "#fecha_carga" ).prop( "disabled", true );
+        $( "#fecha_llegada" ).prop( "disabled", true );
+        $( "#fecha_descarga" ).prop( "disabled", true );
+      }
+
+
+
+      $("#fecha_carga").change(function()
+      {
+        //alert('Cambiamos la fecha de carga');
+        // La fecha de llegada automáticamente cambia al primer viernes siguiente a la fecha de carga
+        var fecha = $(this).val()
+        var elem = fecha.split('-');
+        dia = elem[0];
+        mes = elem[1];
+        año = elem[2];
+        //alert(dia);
+        //alert(mes);
+        var Hoy = new Date(año + '/' + mes + '/' + dia);
+        //alert(Hoy.getDay())
+        if (Hoy.getDay() < 5)
+         {
+           //alert(Hoy.getDay())
+           var numdias = (5 - Hoy.getDay())+8;
+           //var nuevafecha = new Date(Hoy + milisegundos);
+           
+         }else{
+           var numdias = (6 - Hoy.getDay())+6+8;
+         }
+         nuevafecha = new Date(Hoy.setDate(Hoy.getDate()+numdias));
+         var dd = nuevafecha.getDate();
+         var mm = nuevafecha.getMonth() + 1;
+         var yyyy = nuevafecha.getFullYear();
+         if (dd<10){
+            dd = '0'+dd;
+          }
+         if (mm<10){
+            mm = '0' +mm;
+          }
+         //alert(dd+ '-' +mm+ '-' +yyyy );
+         $("#fecha_llegada").val(dd+ '-' +mm+ '-' +yyyy);
+         $("#fecha_llegada").change();
+
+      });
+
+      $("#fecha_llegada").change(function()
+      {
+        //alert('Cambiamos la fecha de llegada');
+        var fecha = $(this).val()
+        var elem = fecha.split('-');
+        dia = elem[0];
+        mes = elem[1];
+        año = elem[2];
+        var Hoy = new Date(año + '/' + mes + '/' + dia);
+        //alert(Hoy.getDay())
+        
+         nuevafecha = new Date(Hoy.setDate(Hoy.getDate()+6));
+         var dd = nuevafecha.getDate();
+         var mm = nuevafecha.getMonth() + 1;
+         var yyyy = nuevafecha.getFullYear();
+         if (dd<10){
+            dd = '0'+dd;
+          }
+         if (mm<10){
+            mm = '0' +mm;
+          }
+         //alert(dd+ '-' +mm+ '-' +yyyy );
+         $("#fecha_descarga").val(dd+ '-' +mm+ '-' +yyyy);
+         $("#fecha_descarga").change();
+      });
+
+      $("#fecha_descarga").change(function()
+      {
+        //alert('Cambiamos la fecha de descarga');
+      });
+
+      $(".checkbox_estado").click(function() {  
+        if ( $("#estado_en_preparacion").is(":checked") ){
+        $( "#fecha_pedido" ).prop( "disabled", false );
+        $( "#fecha_confirmacion" ).prop( "disabled", false );
+        $( "#fecha_carga" ).prop( "disabled", false );
+        $( "#fecha_llegada" ).prop( "disabled", false );
+        $( "#fecha_descarga" ).prop( "disabled", false );
+      }
+
+      if ( $("#estado_en_transito").is(":checked") ){
+        $( "#fecha_pedido" ).prop( "disabled", true );
+        $( "#fecha_confirmacion" ).prop( "disabled", true );
+        $( "#fecha_carga" ).prop( "disabled", true );
+        $( "#fecha_llegada" ).prop( "disabled", false );
+        $( "#fecha_descarga" ).prop( "disabled", false );
+      }
+
+      if ( $("#estado_en_pendiente_descarga").is(":checked") ){
+        $( "#fecha_pedido" ).prop( "disabled", true );
+        $( "#fecha_confirmacion" ).prop( "disabled", true );
+        $( "#fecha_carga" ).prop( "disabled", true );
+        $( "#fecha_llegada" ).prop( "disabled", true );
+        $( "#fecha_descarga" ).prop( "disabled", false );
+      }
+
+      if ( $("#estado_en_descargado").is(":checked") ){
+        $( "#fecha_pedido" ).prop( "disabled", true );
+        $( "#fecha_confirmacion" ).prop( "disabled", true );
+        $( "#fecha_carga" ).prop( "disabled", true );
+        $( "#fecha_llegada" ).prop( "disabled", true );
+        $( "#fecha_descarga" ).prop( "disabled", true );
+      }  
+    });  
+    
+    });
+  </script>
 
 @stop
