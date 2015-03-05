@@ -122,35 +122,35 @@
     {
       //alert('Página cargada');
       if ( $("#estado_en_preparacion").is(":checked") ){
-        $( "#fecha_pedido" ).prop( "disabled", false );
-        $( "#fecha_confirmacion" ).prop( "disabled", false );
-        $( "#fecha_carga" ).prop( "disabled", false );
-        $( "#fecha_llegada" ).prop( "disabled", false );
-        $( "#fecha_descarga" ).prop( "disabled", false );
+        $( "#fecha_pedido" ).prop( "readonly", false );
+        $( "#fecha_confirmacion" ).prop( "readonly", false );
+        $( "#fecha_carga" ).prop( "readonly", false );
+        $( "#fecha_llegada" ).prop( "readonly", false );
+        $( "#fecha_descarga" ).prop( "readonly", false );
       }
 
       if ( $("#estado_en_transito").is(":checked") ){
-        $( "#fecha_pedido" ).prop( "disabled", true );
-        $( "#fecha_confirmacion" ).prop( "disabled", true );
-        $( "#fecha_carga" ).prop( "disabled", true );
-        $( "#fecha_llegada" ).prop( "disabled", false );
-        $( "#fecha_descarga" ).prop( "disabled", false );
+        $( "#fecha_pedido" ).prop( "readonly", true );
+        $( "#fecha_confirmacion" ).prop( "readonly", true );
+        $( "#fecha_carga" ).prop( "readonly", true );
+        $( "#fecha_llegada" ).prop( "readonly", false );
+        $( "#fecha_descarga" ).prop( "readonly", false );
       }
 
       if ( $("#estado_en_pendiente_descarga").is(":checked") ){
-        $( "#fecha_pedido" ).prop( "disabled", true );
-        $( "#fecha_confirmacion" ).prop( "disabled", true );
-        $( "#fecha_carga" ).prop( "disabled", true );
-        $( "#fecha_llegada" ).prop( "disabled", true );
-        $( "#fecha_descarga" ).prop( "disabled", false );
+        $( "#fecha_pedido" ).prop( "readonly", true );
+        $( "#fecha_confirmacion" ).prop( "readonly", true );
+        $( "#fecha_carga" ).prop( "readonly", true );
+        $( "#fecha_llegada" ).prop( "readonly", true );
+        $( "#fecha_descarga" ).prop( "readonly", false );
       }
 
       if ( $("#estado_en_descargado").is(":checked") ){
-        $( "#fecha_pedido" ).prop( "disabled", true );
-        $( "#fecha_confirmacion" ).prop( "disabled", true );
-        $( "#fecha_carga" ).prop( "disabled", true );
-        $( "#fecha_llegada" ).prop( "disabled", true );
-        $( "#fecha_descarga" ).prop( "disabled", true );
+        $( "#fecha_pedido" ).prop( "readonly", true );
+        $( "#fecha_confirmacion" ).prop( "readonly", true );
+        $( "#fecha_carga" ).prop( "readonly", true );
+        $( "#fecha_llegada" ).prop( "readonly", true );
+        $( "#fecha_descarga" ).prop( "readonly", true );
       }
 
 
@@ -226,35 +226,35 @@
 
       $(".checkbox_estado").click(function() {  
         if ( $("#estado_en_preparacion").is(":checked") ){
-        $( "#fecha_pedido" ).prop( "disabled", false );
-        $( "#fecha_confirmacion" ).prop( "disabled", false );
-        $( "#fecha_carga" ).prop( "disabled", false );
-        $( "#fecha_llegada" ).prop( "disabled", false );
-        $( "#fecha_descarga" ).prop( "disabled", false );
+        $( "#fecha_pedido" ).prop( "readonly", false );
+        $( "#fecha_confirmacion" ).prop( "readonly", false );
+        $( "#fecha_carga" ).prop( "readonly", false );
+        $( "#fecha_llegada" ).prop( "readonly", false );
+        $( "#fecha_descarga" ).prop( "readonly", false );
       }
 
       if ( $("#estado_en_transito").is(":checked") ){
-        $( "#fecha_pedido" ).prop( "disabled", true );
-        $( "#fecha_confirmacion" ).prop( "disabled", true );
-        $( "#fecha_carga" ).prop( "disabled", true );
-        $( "#fecha_llegada" ).prop( "disabled", false );
-        $( "#fecha_descarga" ).prop( "disabled", false );
+        $( "#fecha_pedido" ).prop( "readonly", true );
+        $( "#fecha_confirmacion" ).prop( "readonly", true );
+        $( "#fecha_carga" ).prop( "readonly", true );
+        $( "#fecha_llegada" ).prop( "readonly", false );
+        $( "#fecha_descarga" ).prop( "readonly", false );
       }
 
       if ( $("#estado_en_pendiente_descarga").is(":checked") ){
-        $( "#fecha_pedido" ).prop( "disabled", true );
-        $( "#fecha_confirmacion" ).prop( "disabled", true );
-        $( "#fecha_carga" ).prop( "disabled", true );
-        $( "#fecha_llegada" ).prop( "disabled", true );
-        $( "#fecha_descarga" ).prop( "disabled", false );
+        $( "#fecha_pedido" ).prop( "readonly", true );
+        $( "#fecha_confirmacion" ).prop( "readonly", true );
+        $( "#fecha_carga" ).prop( "readonly", true );
+        $( "#fecha_llegada" ).prop( "readonly", true );
+        $( "#fecha_descarga" ).prop( "readonly", false );
       }
 
       if ( $("#estado_en_descargado").is(":checked") ){
-        $( "#fecha_pedido" ).prop( "disabled", true );
-        $( "#fecha_confirmacion" ).prop( "disabled", true );
-        $( "#fecha_carga" ).prop( "disabled", true );
-        $( "#fecha_llegada" ).prop( "disabled", true );
-        $( "#fecha_descarga" ).prop( "disabled", true );
+        $( "#fecha_pedido" ).prop( "readonly", true );
+        $( "#fecha_confirmacion" ).prop( "readonly", true );
+        $( "#fecha_carga" ).prop( "readonly", true );
+        $( "#fecha_llegada" ).prop( "readonly", true );
+        $( "#fecha_descarga" ).prop( "readonly", true );
       }  
     });  
     

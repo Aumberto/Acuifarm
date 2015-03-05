@@ -193,6 +193,7 @@ class PedidoController extends BaseController{
 
       // Procesamos las fechas 
        $fecha=Input::get('fecha_pedido');
+       echo $fecha;
        list($dia, $mes, $year)=explode("-", $fecha);
        $fecha_pedido=$year."-".$mes."-".$dia;
 
