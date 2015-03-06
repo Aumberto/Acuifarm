@@ -102,6 +102,7 @@ class PedidoController extends BaseController{
        $fecha=Input::get('fecha_pedido');
        list($dia, $mes, $year)=explode("-", $fecha);
        $fecha_pedido=$year."-".$mes."-".$dia;
+       $fecha_pedido_semana = date("W", strtotime($year."-".$mes."-".$dia));
 
        $fecha=Input::get('fecha_descarga');
        list($dia, $mes, $year)=explode("-", $fecha);
@@ -115,8 +116,18 @@ class PedidoController extends BaseController{
        list($dia, $mes, $year)=explode("-", $fecha);
        $fecha_carga=$year."-".$mes."-".$dia;
 
-       
+       // Obtenemos los datos del proveedor y el número de pedido
+       $num_pedido = Input::get('num_pedido');
+       $proveedor_id = Input::get('proveedor_id');
 
+       // Buscamos el último pedido de dicho proveedor
+       $pedido_anterior = Pedido::where('proveedor_id', '=', $proveedor_id)->orderby('fecha_pedido', 'DESC')->first();
+       if (date("W", strtotime($pedido_anterior->fecha_pedido)) == $fecha_pedido_semana ){
+         $fecha_pago = $pedido_anterior->fecha_pago;
+       }else{
+         $fecha_pago = strtotime ( '+7 day' , strtotime ($pedido_anterior->fecha_pago) ) ;
+         $fecha_pago = date ( 'Y-m-d' , $fecha_pago ); 
+       }
        /* $fecha=Input::get('fecha_llegada');
        list($dia, $mes, $year)=explode("-", $fecha);
        $fecha_llegada=$year."-".$mes."-".$dia;
@@ -125,9 +136,9 @@ class PedidoController extends BaseController{
        
        Pedido::create(
         array(
-          'num_pedido' => Input::get('num_pedido'),
+          'num_pedido' => $num_pedido,
           'num_contenedor' => 0, //Input::get('num_pedido'),
-          'proveedor_id' => Input::get('proveedor_id'),
+          'proveedor_id' => $proveedor_id,
           'importe' => 0, //Input::get('importe'),
           //'pagado' => Input::get('pagado'),
           //'estado' => Input::get('estado'),
@@ -136,7 +147,7 @@ class PedidoController extends BaseController{
           'fecha_carga' => $fecha_carga,
           'fecha_llegada' => $fecha_llegada,
           'fecha_descarga' => $fecha_descarga,
-          'fecha_pago' => $fecha_carga
+          'fecha_pago' => $fecha_pago
           ));
 
   	   // Obtenemos el id del último pedido insertado
