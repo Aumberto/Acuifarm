@@ -319,7 +319,7 @@ class PedidoController extends BaseController{
     //creamos un objeto con el listado de semanas. 5 máximo
     $listado_semanas = Semana::where('last_day', '>=', date("Y-m-d"))->orderby('first_day')->take(5)->get();
     // creamos un objeto con todos los pedidos sin pagar y cuya fecha de pago sea menor o igual a la semana que estamos buscando
-    $pedidos = Pedido::where('fecha_pago', '>=', $semana->first_day)->where('fecha_pago', '<=', $semana->last_day)->where('pagado', '=', 0)->orderby('proveedor_id')->get();
+    $pedidos = Pedido::where('fecha_pago', '>=', $semana->first_day)->where('fecha_pago', '<=', $semana->last_day)->where('pagado', '=', 0)->orderby('proveedor_id')->orderby('fecha_pago', 'ASC')->get();
     //echo 'Pedidos a pagar ' . $pedidos;
     $proveedor ='';
     $primerafila = True;
@@ -425,7 +425,7 @@ class PedidoController extends BaseController{
     //creamos un objeto con el listado de semanas. 5 máximo
     $listado_semanas = Semana::where('last_day', '>=', date("Y-m-d"))->orderby('first_day')->take(5)->get();
     // creamos un objeto con todos los pedidos sin pagar y cuya fecha de pago sea menor o igual a la semana que estamos buscando
-    $pedidos = Pedido::where('fecha_carga', '>=', $semana->first_day)->where('fecha_carga', '<=', $semana->last_day)->where('estado', '=', 'En preparación')->orderby('proveedor_id')->get();
+    $pedidos = Pedido::where('fecha_carga', '>=', $semana->first_day)->where('fecha_carga', '<=', $semana->last_day)->where('estado', '=', 'En preparación')->orderby('proveedor_id')->orderby('fecha_carga')->get();
     //echo 'Pedidos a pagar ' . $pedidos;
     $proveedor ='';
     $primerafila = True;
