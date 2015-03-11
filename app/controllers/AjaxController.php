@@ -594,31 +594,33 @@ class AjaxController extends BaseController{
     //$row->setBackground('#000000');
     // Ancho de las columnas
     $sheet->setOrientation('landscape');
+    $sheet->setPageMargin(0,25);
+    $sheet->setFontFamily('Arial');
 
     $sheet->setWidth(array(
-      'A'     =>  5.77852,
+      'A'     =>  6.77852,
       'B'     =>  10.77852,
-      'C'     =>  10.77852,
-      'D'     =>  10.77852,
-      'E'     =>  10.77852,
-      'F'     =>  10.77852,
-      'G'     =>  10.77852,
-      'H'     =>  10.77852,
+      'C'     =>  11.77852,
+      'D'     =>  7.77852,
+      'E'     =>  7.77852,
+      'F'     =>  11.77852,
+      'G'     =>  9.77852,
+      'H'     =>  15.77852,
       'I'     =>  10.77852,
-      'J'     =>  10.77852,
-      'K'     =>  10.77852,
-      'L'     =>  10.77852,
-      'M'     =>  10.77852,
-      'N'     =>  10.77852,
-      'O'     =>  10.77852,
+      'J'     =>  15.77852,
+      'K'     =>  7.77852,
+      'L'     =>  7.77852,
+      'M'     =>  11.77852,
+      'N'     =>  9.77852,
+      'O'     =>  15.77852,
       'P'     =>  10.77852,
-      'Q'     =>  10.77852,
-      'R'     =>  10.77852,
-      'S'     =>  10.77852,
+      'Q'     =>  15.77852,
+      'R'     =>  7.77852,
+      'S'     =>  7.77852,
       'T'     =>  10.77852,
-      'U'     =>  10.77852,
-      'V'     =>  10.77852,
-      'W'     =>  50.778520
+      'U'     =>  8.77852,
+      'V'     =>  8.77852,
+      'W'     =>  60.778520
     ));
 
 
@@ -627,6 +629,8 @@ class AjaxController extends BaseController{
     $estadillo_cantidad_total = 0;
       $estadillo_cantidad_total_primera_toma = 0;
       $estadillo_cantidad_total_segunda_toma = 0;
+      $jaula_vacia = false;
+
     // Recorremos cada jaula y comprobamos si existen consumos.
     foreach ($jaulas as $jaula)
     {
@@ -773,6 +777,10 @@ class AjaxController extends BaseController{
 
               }  
            }
+           $jaula_vacia = false;
+       } else {
+        
+          $jaula_vacia = true;
        }
 
        //Insertamos los datos en la hoja
@@ -807,7 +815,24 @@ class AjaxController extends BaseController{
                                '',
                                $estadillo_diametro_toma_segunda
                                )); 
+       if ($jaula_vacia)
+       {
+          // Set black background
+          $sheet->row($i, function($row) {
 
+           // call cell manipulation methods
+           $row->setBackground('#D9D9D9');
+
+          });
+
+          // Set black background
+          $sheet->row($i+1, function($row) {
+
+           // call cell manipulation methods
+           $row->setBackground('#D9D9D9');
+
+          });
+       }
        $string = "D" . $i . ":D" . ($i+1);
        $sheet->mergeCells($string);
        $string = "E" . $i . ":E" . ($i+1);
@@ -854,7 +879,9 @@ class AjaxController extends BaseController{
    
        // Set all borders (top, right, bottom, left)
        $cells->setBorder('thin', 'thin', 'none', 'thin');
-
+       $cells->setFontWeight('bold');
+       $cells->setFontSize(13);
+       $cells->setBackground('#D9D9D9');
          });
        
        $celda = 'A'. ($i+1);
@@ -888,6 +915,7 @@ class AjaxController extends BaseController{
        // Set all borders (top, right, bottom, left)
        $cells->setFontWeight('bold');
        $cells->setBackground('#D9D9D9');
+       $cells->setFontSize(13);
 
        });
        $celda = 'F'. ($i+1);
@@ -896,6 +924,7 @@ class AjaxController extends BaseController{
        // Set all borders (top, right, bottom, left)
        $cells->setFontWeight('bold');
        $cells->setBackground('#D9D9D9');
+       $cells->setFontSize(13);
 
        });
        $celda = 'M'. ($i+1);
@@ -904,6 +933,7 @@ class AjaxController extends BaseController{
        // Set all borders (top, right, bottom, left)
        $cells->setFontWeight('bold');
        $cells->setBackground('#D9D9D9');
+       $cells->setFontSize(13);
 
 
        });
@@ -978,18 +1008,50 @@ class AjaxController extends BaseController{
                                   and granja= ? 
                              group by diametro_pienso 
                              ORDER BY diametro_pienso', array($fecha_estadillo, $granja));
+   $celdas = 'B' . ($i+2);
+   $sheet->setCellValue($celdas, 'Pellet');
+   $sheet->cells($celdas, function($cells) {
+       $cells->setAlignment('center');
+       $cells->setValignment('center');
+       $cells->setBorder('thin', 'none', 'thin', 'thin');
+       $cells->setFontWeight('bold');
+       //$cells->setFontWeight('bold');
+   }); 
+
+   $celdas = 'C' . ($i+2);
+   $sheet->setCellValue($celdas, 'Kilos');
+   $sheet->cells($celdas, function($cells) {
+       $cells->setAlignment('center');
+       $cells->setValignment('center');
+       $cells->setBorder('thin', 'none', 'thin', 'none');
+       $cells->setFontWeight('bold');
+       //$cells->setFontWeight('bold');
+   }); 
+
+   $celdas = 'D' . ($i+2);
+   $sheet->setCellValue($celdas, 'Sacos');
+   $sheet->cells($celdas, function($cells) {
+       $cells->setAlignment('center');
+       $cells->setValignment('center');
+       $cells->setBorder('thin', 'thin', 'thin', 'none');
+       $cells->setFontWeight('bold');
+       //$cells->setFontWeight('bold');
+   }); 
+
+
    $j=1;
    $letra_celda_tipo_grano = 'B';
    $letra_celda_cantidad = 'C';
+   $letra_celda_sacos = 'D';
    foreach($tipos_granos as $tipo_grano)
     {
       
        $celdas = $letra_celda_tipo_grano . ($i+2+$j);
-       $sheet->setCellValue($celdas, 'Pellet '. $tipo_grano->diametro_pienso);
+       $sheet->setCellValue($celdas, $tipo_grano->diametro_pienso);
        $sheet->cells($celdas, function($cells) {
 
     // manipulate the range of cells
-        $cells->setAlignment('center');
+        $cells->setAlignment('right');
         $cells->setValignment('center');
         $cells->setBorder('thin', 'none', 'thin', 'thin');
         $cells->setFontWeight('bold');
@@ -998,11 +1060,22 @@ class AjaxController extends BaseController{
        
 
        $celdas = $letra_celda_cantidad . ($i+2+$j);
-       $sheet->setCellValue($celdas, $tipo_grano->cantidad . ' Kg.');
+       $sheet->setCellValue($celdas, $tipo_grano->cantidad);
        $sheet->cells($celdas, function($cells) {
 
     // manipulate the range of cells
-        $cells->setAlignment('center');
+        $cells->setAlignment('right');
+        $cells->setValignment('center');
+        $cells->setBorder('thin', 'none', 'thin', 'none');
+        $cells->setFontWeight('bold');
+
+       }); 
+       $celdas = $letra_celda_sacos . ($i+2+$j);
+       $sheet->setCellValue($celdas, ($tipo_grano->cantidad / 25));
+       $sheet->cells($celdas, function($cells) {
+
+    // manipulate the range of cells
+        $cells->setAlignment('right');
         $cells->setValignment('center');
         $cells->setBorder('thin', 'thin', 'thin', 'none');
         $cells->setFontWeight('bold');
@@ -1015,32 +1088,32 @@ class AjaxController extends BaseController{
     // Pie de página
 
     // Combinamos Celdas
-    $rango = 'E' . ($i+3) . ':F' . ($i+4);
+    $rango = 'F' . ($i+3) . ':G' . ($i+4);
     $sheet->mergeCells($rango);
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'E' . ($i+5) . ':F' . ($i+6);
+    $rango = 'F' . ($i+5) . ':G' . ($i+6);
     $sheet->mergeCells($rango);
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'E' . ($i+7) . ':F' . ($i+9);
+    $rango = 'F' . ($i+7) . ':G' . ($i+9);
     $sheet->mergeCells($rango);
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'G' . ($i+3) . ':I' . ($i+4);
+    $rango = 'H' . ($i+3) . ':J' . ($i+4);
     $sheet->mergeCells($rango);
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'G' . ($i+7) . ':I' . ($i+9);
+    $rango = 'H' . ($i+7) . ':J' . ($i+9);
     $sheet->mergeCells($rango);
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'O' . ($i+1) . ':Q' . ($i+3);
+    $rango = 'P' . ($i+2) . ':R' . ($i+3);
     $sheet->mergeCells($rango);
     $sheet->cells($rango, function($cells) {
         //$cells->setBorder('thin', 'thin', 'thin', 'thin');
@@ -1055,39 +1128,39 @@ class AjaxController extends BaseController{
     $sheet->cells($rango, function($cells) {
         //$cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'G' . ($i+5) . ':H' . ($i+5);
+    $rango = 'H' . ($i+5) . ':I' . ($i+5);
     $sheet->mergeCells($rango);
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'G' . ($i+6) . ':H' . ($i+6);
+    $rango = 'H' . ($i+6) . ':I' . ($i+6);
     $sheet->mergeCells($rango); 
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
 
-    $rango = 'P' . ($i+4) . ':Q' . ($i+4);
+    $rango = 'Q' . ($i+4) . ':R' . ($i+4);
     $sheet->mergeCells($rango); 
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'P' . ($i+5) . ':Q' . ($i+5);
+    $rango = 'Q' . ($i+5) . ':R' . ($i+5);
     $sheet->mergeCells($rango); 
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'P' . ($i+6) . ':Q' . ($i+6);
+    $rango = 'Q' . ($i+6) . ':R' . ($i+6);
     $sheet->mergeCells($rango); 
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
-    $rango = 'P' . ($i+7) . ':Q' . ($i+7);
+    $rango = 'Q' . ($i+7) . ':R' . ($i+7);
     $sheet->mergeCells($rango); 
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         });
 
-    $rango = 'K' . ($i+4) . ':M' . ($i+4);
+    $rango = 'L' . ($i+4) . ':N' . ($i+4);
     $sheet->mergeCells($rango); 
     $sheet->cells($rango, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
@@ -1098,7 +1171,7 @@ class AjaxController extends BaseController{
     
 
     // Escribimos Celdas
-    $celdas = 'E' . ($i+3);
+    $celdas = 'F' . ($i+3);
     $sheet->setCellValue($celdas, 'Tipo embarcación');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1107,7 +1180,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
        }); 
 
-    $celdas = 'E' . ($i+5);
+    $celdas = 'F' . ($i+5);
     $sheet->setCellValue($celdas, 'Turno');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1115,7 +1188,7 @@ class AjaxController extends BaseController{
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         //$cells->setFontWeight('bold');
        }); 
-    $celdas = 'E' . ($i+7);
+    $celdas = 'F' . ($i+7);
     $sheet->setCellValue($celdas, 'Firma del responsable');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1124,7 +1197,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
        }); 
     
-    $celdas = 'G' . ($i+5);
+    $celdas = 'H' . ($i+5);
     $sheet->setCellValue($celdas, 'Mañana');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1133,7 +1206,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
        }); 
 
-    $celdas = 'I' . ($i+5);
+    $celdas = 'J' . ($i+5);
     $sheet->cells($celdas, function($cells) {
     $cells->setAlignment('center');
     $cells->setValignment('center');
@@ -1141,7 +1214,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
     }); 
 
-    $celdas = 'G' . ($i+6);
+    $celdas = 'H' . ($i+6);
     $sheet->setCellValue($celdas, 'Tarde');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1150,7 +1223,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
        }); 
 
-    $celdas = 'I' . ($i+6);
+    $celdas = 'J' . ($i+6);
     $sheet->cells($celdas, function($cells) {
     $cells->setAlignment('center');
     $cells->setValignment('center');
@@ -1158,7 +1231,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
     }); 
 
-    $celdas = 'O' . ($i+1);
+    $celdas = 'P' . ($i+2);
     $sheet->setCellValue($celdas, 'En la casilla "Respuesta" se debe anotar la numeración acorde al comportamiento');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('left');
@@ -1185,7 +1258,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
        }); 
 
-    $celdas = 'O' . ($i+4);
+    $celdas = 'P' . ($i+4);
     $sheet->setCellValue($celdas, '1');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1194,7 +1267,7 @@ class AjaxController extends BaseController{
         $cells->setFontWeight('bold');
        }); 
 
-    $celdas = 'O' . ($i+5);
+    $celdas = 'P' . ($i+5);
     $sheet->setCellValue($celdas, '2');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1203,7 +1276,7 @@ class AjaxController extends BaseController{
         $cells->setFontWeight('bold');
        }); 
 
-    $celdas = 'O' . ($i+6);
+    $celdas = 'P' . ($i+6);
     $sheet->setCellValue($celdas, '3');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1211,7 +1284,7 @@ class AjaxController extends BaseController{
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         $cells->setFontWeight('bold');
        }); 
-    $celdas = 'O' . ($i+7);
+    $celdas = 'P' . ($i+7);
     $sheet->setCellValue($celdas, '4');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1219,7 +1292,7 @@ class AjaxController extends BaseController{
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         $cells->setFontWeight('bold');
        }); 
-    $celdas = 'P' . ($i+4);
+    $celdas = 'Q' . ($i+4);
     $sheet->setCellValue($celdas, 'Chapoteo');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('left');
@@ -1228,7 +1301,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
        }); 
 
-    $celdas = 'P' . ($i+5);
+    $celdas = 'Q' . ($i+5);
     $sheet->setCellValue($celdas, 'Superficie (0-2 m.)');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('left');
@@ -1237,7 +1310,7 @@ class AjaxController extends BaseController{
         //$cells->setFontWeight('bold');
        }); 
 
-    $celdas = 'P' . ($i+6);
+    $celdas = 'Q' . ($i+6);
     $sheet->setCellValue($celdas, 'Por debajo de 2m.');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('left');
@@ -1245,7 +1318,7 @@ class AjaxController extends BaseController{
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         //$cells->setFontWeight('bold');
        }); 
-    $celdas = 'P' . ($i+7);
+    $celdas = 'Q' . ($i+7);
     $sheet->setCellValue($celdas, 'No se ve el pescado');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('left');
@@ -1321,7 +1394,7 @@ class AjaxController extends BaseController{
      
        });
 
-    $celdas = 'K' . ($i+4);
+    $celdas = 'L' . ($i+4);
     $sheet->setCellValue($celdas, 'Temperatura agua');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('center');
@@ -1330,7 +1403,7 @@ class AjaxController extends BaseController{
         $cells->setFontWeight('bold');
        });
 
-    $celdas = 'K' . ($i+5);
+    $celdas = 'L' . ($i+5);
     $sheet->setCellValue($celdas, '1 m.');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('left');
@@ -1338,13 +1411,13 @@ class AjaxController extends BaseController{
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         
        });
-    $celdas = 'L' . ($i+5) ;
+    $celdas = 'M' . ($i+5) ;
     $sheet->cells($celdas, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
      
        });
 
-    $celdas = 'M' . ($i+5);
+    $celdas = 'N' . ($i+5);
     $sheet->setCellValue($celdas, '10 m.');
     $sheet->cells($celdas, function($cells) {
         $cells->setAlignment('right');
@@ -1353,11 +1426,6 @@ class AjaxController extends BaseController{
         
        });
 
-    $celdas = 'K' . ($i+6) ;
-    $sheet->cells($celdas, function($cells) {
-        $cells->setBorder('thin', 'thin', 'thin', 'thin');
-     
-       });
     $celdas = 'L' . ($i+6) ;
     $sheet->cells($celdas, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
@@ -1368,7 +1436,7 @@ class AjaxController extends BaseController{
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
      
        });
-    $celdas = 'K' . ($i+7) ;
+    $celdas = 'N' . ($i+6) ;
     $sheet->cells($celdas, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
      
@@ -1379,6 +1447,11 @@ class AjaxController extends BaseController{
      
        });
     $celdas = 'M' . ($i+7) ;
+    $sheet->cells($celdas, function($cells) {
+        $cells->setBorder('thin', 'thin', 'thin', 'thin');
+     
+       });
+    $celdas = 'N' . ($i+7) ;
     $sheet->cells($celdas, function($cells) {
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
      
