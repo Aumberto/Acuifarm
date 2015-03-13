@@ -100,9 +100,11 @@ Route::post('propuesta/add', array('uses' => 'PropuestaAlimentacionController@ge
 Route::get('propuesta/ver/{id}', array('uses' => 'PropuestaAlimentacionController@getVer'));
 
 // Rutas para los almacenes
-Route::get('almacenes/movimientos/nuevo', array('uses' => 'AlmacenController@InsertarMovimiento'));
 Route::get('almacenes/stock', array('uses' => 'AlmacenController@stock'));
 Route::post('almacenes/movimientos/nuevo', array('uses' => 'AlmacenController@InsertarMovimiento'));
+Route::get('almacenes/movimientos/nuevo', array('uses' => 'AlmacenController@InsertarMovimiento'));
+Route::get('almacenes/comprobacion', array('uses' => 'AlmacenController@AjusteAutomaticoAlmacenesPienso'));
+Route::post('almacenes/comprobacion', array('uses' => 'AlmacenController@AjusteAutomaticoAlmacenesPienso'));
 
 // Rutas para los traslados
 Route::get('/traslado', array('uses' => 'TrasladoController@getIndex'));

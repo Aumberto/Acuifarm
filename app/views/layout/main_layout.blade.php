@@ -54,6 +54,7 @@
         $("#fecha_llegada").datepicker();
         $("#fecha_pago").datepicker();
         $("#fecha_siembra").datepicker();
+        $("#fecha_fichero").datepicker();
         
         
 

@@ -61,6 +61,7 @@ return array(
     'CreateDetalleRangosTable' => $baseDir . '/app/database/migrations/2014_09_05_082737_create_detalle_rangos_table.php',
     'CreateEstadillosTable' => $baseDir . '/app/database/migrations/2015_01_16_140912_create_estadillos_table.php',
     'CreateGranjasTable' => $baseDir . '/app/database/migrations/2014_06_03_161734_create_granjas_table.php',
+    'CreateImportacionStockTable' => $baseDir . '/app/database/migrations/2015_03_13_095103_create_importacion_stock_table.php',
     'CreateJaulaLoteRangoTable' => $baseDir . '/app/database/migrations/2014_09_05_085948_create_jaula_lote_rango_table.php',
     'CreateJaulasTable' => $baseDir . '/app/database/migrations/2014_06_03_161805_create_jaulas_table.php',
     'CreateLotesTable' => $baseDir . '/app/database/migrations/2014_06_04_155322_create_lotes_table.php',
