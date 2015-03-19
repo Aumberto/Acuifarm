@@ -586,11 +586,13 @@ class AjaxController extends BaseController{
     $sheet->row(2, function($row) {
       // call cell manipulation methods
       $row->setFontWeight('bold');
+      $row->setFontSize(11);
+      $row->setFontFamily('Calibri');
 
     });
     $sheet->row(1, function($row) {
       // call cell manipulation methods
-      //$row->setFontWeight('bold');
+      $row->setFontFamily('Calibri');
       
     });
     //$row->setBackground('#000000');
@@ -599,6 +601,7 @@ class AjaxController extends BaseController{
     $sheet->setPageMargin(0,25);
     $sheet->setFontFamily('Arial');
     $sheet->setHeight(1, 24);
+    $sheet->setHeight(2, 16);
     $sheet->setWidth(array(
       'A'     =>  9.77852,
       'B'     =>  12.10852,
@@ -1067,6 +1070,7 @@ class AjaxController extends BaseController{
                                '',
                                $estadillo_cantidad_total_segunda_toma . ' Kg.'
                                )); 
+   $sheet->setHeight($i, 24);
    $celdas = 'C' . ($i);
    $sheet->cells($celdas, function($cells) {
 
@@ -1075,6 +1079,7 @@ class AjaxController extends BaseController{
         $cells->setValignment('center');
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         $cells->setFontWeight('bold');
+        $cells->setFontSize(16);
 
        }); 
    $celdas = 'F' . ($i);
@@ -1085,6 +1090,7 @@ class AjaxController extends BaseController{
         $cells->setValignment('center');
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         $cells->setFontWeight('bold');
+        $cells->setFontSize(16);
 
        }); 
    $celdas = 'M' . ($i);
@@ -1095,6 +1101,7 @@ class AjaxController extends BaseController{
         $cells->setValignment('center');
         $cells->setBorder('thin', 'thin', 'thin', 'thin');
         $cells->setFontWeight('bold');
+        $cells->setFontSize(16);
 
        }); 
 
@@ -1105,6 +1112,7 @@ class AjaxController extends BaseController{
                                   and granja= ? 
                              group by diametro_pienso 
                              ORDER BY diametro_pienso', array($fecha_estadillo, $granja));
+   $sheet->setHeight($i+2, 18);
    $celdas = 'B' . ($i+2);
    $sheet->setCellValue($celdas, 'Pellet');
    $sheet->cells($celdas, function($cells) {
@@ -1142,7 +1150,7 @@ class AjaxController extends BaseController{
    $letra_celda_sacos = 'D';
    foreach($tipos_granos as $tipo_grano)
     {
-      
+       $sheet->setHeight($i+2+$j, 18);
        $celdas = $letra_celda_tipo_grano . ($i+2+$j);
        $sheet->setCellValue($celdas, $tipo_grano->diametro_pienso);
        $sheet->cells($celdas, function($cells) {
@@ -1151,7 +1159,8 @@ class AjaxController extends BaseController{
         $cells->setAlignment('right');
         $cells->setValignment('center');
         $cells->setBorder('thin', 'none', 'thin', 'thin');
-        $cells->setFontWeight('bold');
+        //$cells->setFontWeight('bold');
+        $cells->setFontSize(16);
 
        }); 
        
@@ -1164,7 +1173,8 @@ class AjaxController extends BaseController{
         $cells->setAlignment('right');
         $cells->setValignment('center');
         $cells->setBorder('thin', 'none', 'thin', 'none');
-        $cells->setFontWeight('bold');
+        //$cells->setFontWeight('bold');
+        $cells->setFontSize(16);
 
        }); 
        $celdas = $letra_celda_sacos . ($i+2+$j);
@@ -1175,7 +1185,8 @@ class AjaxController extends BaseController{
         $cells->setAlignment('right');
         $cells->setValignment('center');
         $cells->setBorder('thin', 'thin', 'thin', 'none');
-        $cells->setFontWeight('bold');
+        //$cells->setFontWeight('bold');
+        $cells->setFontSize(16);
 
        }); 
 
