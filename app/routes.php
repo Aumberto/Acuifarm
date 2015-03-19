@@ -84,6 +84,7 @@ Route::post('ajax/estrategia', array('uses' => 'AjaxController@NuevaEstrategia')
 Route::post('ajax/pedidos', array('uses' => 'AjaxController@PropuestaPedido'));
 Route::post('ajax/ayunos', array('uses' => 'AjaxController@UpdateAyuno'));
 Route::post('ajax/estadillos', array('uses' => 'AjaxController@CambioNumeroTomas'));
+Route::post('ajax/estadillos_porcentaje', array('uses' => 'AjaxController@CambioPorcentajeTomas'));
 Route::get('ajax/estadillos/excel/{fecha}/{granja}', array('uses' => 'AjaxController@GenerarExcel'));
 
 

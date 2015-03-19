@@ -97,6 +97,24 @@
           //alert(porcentaje);
         });
 
+      $(".porcentaje_primera_toma").change(function()
+        {
+          var id = $(this).attr('estadillo');
+          var atributo = 'estadillo=' +  id;
+          var porcentaje = $(this).val();
+          
+          $.post('/acuifarm/public/ajax/estadillos_porcentaje',
+                  'idestadillo=' + id + '&porcentaje=' + $(this).val(),
+                  function(data)
+                   {
+                     
+                     $('.porcentaje_primera_toma[' + atributo +']').val(data.porcentaje);
+                   },
+                  'json'
+                 );
+          //alert(porcentaje);
+        });
+
       $("#glyphicon-print").click(function(){
         //salert($(this).attr('fecha') + ' ' + $(this).attr('granja'));
         $.post('/acuifarm/public/ajax/estadillos/excel',

@@ -532,6 +532,39 @@ class AjaxController extends BaseController{
       return json_encode($datos);
     }
 
+    public function CambioPorcentajeTomas(){
+      
+      // Obtenemos el id del estadillo
+      $id_estadillo = Input::get('idestadillo');
+      
+      // Obtenemos un objeto estadillo con dicho id
+      $estadillo = Estadillo::find($id_estadillo);
+
+      // Obtenemos un objeto producción simulado
+      $produccion_simulada = ProduccionSimuladas::where('unitname', '=', $estadillo->jaula->nombre)->where('date', '=', $estadillo->fecha)->first();
+      
+      // Obtenemos un objeto de consumo simulado
+      $consumo = Consumo::where('jaula_id', '=', $estadillo->jaula_id)->where('fecha', '=', $estadillo->fecha)->get();
+      //echo $consumo;
+
+      //echo $estadillo;
+      // Obtenemos el nº de tomas
+      $porcentaje_primera_toma = Input::get('porcentaje');
+      $porcentaje = 0;
+      if ($estadillo->num_tomas == 1) {
+          $porcentaje = 100;
+      }elseif ($estadillo->num_tomas == 2){
+          $cantidad_pienso = ceil(($produccion_simulada->cantidad_toma * ($porcentaje_primera_toma/100))/25)*25;
+          $porcentaje = floor(($cantidad_pienso/$produccion_simulada->cantidad_toma)*100);
+            }
+      //$estadillo->num_tomas = $num_tomas;
+      $estadillo->porcentaje_primera_toma = $porcentaje;
+      $estadillo->save();
+      $datos = array("porcentaje" => $porcentaje, "Kilos" => $produccion_simulada->cantidad_toma);
+      //print_r(json_encode($data));
+      return json_encode($datos);
+    }
+
     public function GenerarExcel($fecha, $granja){
       
 
