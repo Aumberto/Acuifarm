@@ -34,7 +34,7 @@
                 $consumo_simulado = Consumo::where('jaula_id', '=', $jaula->id)->where('fecha', '=', $fecha_estadillo)->orderby('diametro_pienso')->first();
                 if ($consumo_simulado->diametro_pienso <= 4.5) {
                   $nuevo_estadillo->num_tomas= 2;
-                  $nuevo_estadillo->porcentaje_primera_toma=50;
+                  $nuevo_estadillo->porcentaje_primera_toma=60;
                 } else { 
                   $nuevo_estadillo->num_tomas= 1;
                   $nuevo_estadillo->porcentaje_primera_toma=100;

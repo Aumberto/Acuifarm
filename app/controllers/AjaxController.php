@@ -521,7 +521,7 @@ class AjaxController extends BaseController{
       if ($num_tomas == 1) {
           $porcentaje = 100;
       }elseif ($num_tomas == 2){
-          $cantidad_pienso = ceil(($produccion_simulada->cantidad_toma * 0.5)/25)*25;
+          $cantidad_pienso = ceil(($produccion_simulada->cantidad_toma * 0.6)/25)*25;
           $porcentaje = floor(($cantidad_pienso/$produccion_simulada->cantidad_toma)*100);
             }
       $estadillo->num_tomas = $num_tomas;
@@ -586,41 +586,43 @@ class AjaxController extends BaseController{
     $sheet->row(2, function($row) {
       // call cell manipulation methods
       $row->setFontWeight('bold');
+
     });
     $sheet->row(1, function($row) {
       // call cell manipulation methods
-      $row->setFontWeight('bold');
+      //$row->setFontWeight('bold');
+      
     });
     //$row->setBackground('#000000');
     // Ancho de las columnas
     $sheet->setOrientation('landscape');
     $sheet->setPageMargin(0,25);
     $sheet->setFontFamily('Arial');
-
+    $sheet->setHeight(1, 24);
     $sheet->setWidth(array(
-      'A'     =>  6.77852,
-      'B'     =>  10.77852,
+      'A'     =>  9.77852,
+      'B'     =>  12.10852,
       'C'     =>  11.77852,
       'D'     =>  7.77852,
       'E'     =>  7.77852,
-      'F'     =>  11.77852,
-      'G'     =>  9.77852,
-      'H'     =>  15.77852,
-      'I'     =>  10.77852,
-      'J'     =>  15.77852,
-      'K'     =>  7.77852,
-      'L'     =>  7.77852,
-      'M'     =>  11.77852,
-      'N'     =>  9.77852,
-      'O'     =>  15.77852,
-      'P'     =>  10.77852,
-      'Q'     =>  15.77852,
-      'R'     =>  7.77852,
-      'S'     =>  7.77852,
-      'T'     =>  10.77852,
+      'F'     =>  13.67852,
+      'G'     =>  10.67852,
+      'H'     =>  16.67852,
+      'I'     =>  11.67852,
+      'J'     =>  16.67852,
+      'K'     =>  9.67852,
+      'L'     =>  9.67852,
+      'M'     =>  13.67852,
+      'N'     =>  10.67852,
+      'O'     =>  16.67852,
+      'P'     =>  11.67852,
+      'Q'     =>  16.67852,
+      'R'     =>  9.67852,
+      'S'     =>  9.67852,
+      'T'     =>  12.67852,
       'U'     =>  8.77852,
       'V'     =>  8.77852,
-      'W'     =>  60.778520
+      'W'     =>  66.278520
     ));
 
 
@@ -630,6 +632,7 @@ class AjaxController extends BaseController{
       $estadillo_cantidad_total_primera_toma = 0;
       $estadillo_cantidad_total_segunda_toma = 0;
       $jaula_vacia = false;
+      $varios_pellets = false;
 
     // Recorremos cada jaula y comprobamos si existen consumos.
     foreach ($jaulas as $jaula)
@@ -646,6 +649,8 @@ class AjaxController extends BaseController{
       $estadillo_diametro_toma_primera = '';
       $estadillo_cantidad_toma_segunda = '';
       $estadillo_diametro_toma_segunda = '';
+      $jaula_vacia = false;
+      $varios_pellets = false;
       
 
       $datos_consumos = Consumo::where('jaula', '=', $jaula->jaula)->where('fecha', '=', $fecha_estadillo)->orderby('diametro_pienso')->get();
@@ -669,6 +674,7 @@ class AjaxController extends BaseController{
           if (count($datos_consumos)==2)
            {
              $j=1;
+             $varios_pellets = true;
              $diametro_pienso_1 ='';
              $diametro_pienso_2 ='';
              $cantidad_pienso_1 = 0;
@@ -870,17 +876,56 @@ class AjaxController extends BaseController{
        $string = "W" . $i . ":W" . ($i+1);
        $sheet->mergeCells($string);
        
-       $sheet->setHeight($i, 21);
-       $sheet->setHeight($i+1, 21);
+       if ($jaula_vacia){
+         $sheet->setHeight($i, 21);
+         $sheet->setHeight($i+1, 21);
+        } else  {
+         $sheet->setHeight($i, 30);
+         $sheet->setHeight($i+1, 30);
+        } 
+       
 
        // Bordes de A*
+       $sheet->cell('A1', function($cells) {
+   
+         $cells->setFontSize(11);
+         $cells->setFontWeight('bold');
+       
+       });
+
+       $sheet->cell('B1', function($cells) {
+   
+         $cells->setFontSize(13);
+       
+       });
+
+
+       $sheet->cell('C1', function($cells) {
+   
+         $cells->setFontSize(21);
+         //$cells->setFontWeight('light');
+       
+       });
+
+       $sheet->cell('F1', function($cells) {
+   
+         $cells->setFontWeight('bold');
+       
+       });
+
+       $sheet->cell('M1', function($cells) {
+   
+         $cells->setFontWeight('bold');
+       
+       });
+        
        $celda = 'A'. $i;
        $sheet->cell($celda, function($cells) {
    
        // Set all borders (top, right, bottom, left)
        $cells->setBorder('thin', 'thin', 'none', 'thin');
-       $cells->setFontWeight('bold');
-       $cells->setFontSize(13);
+       //$cells->setFontWeight('bold');
+       $cells->setFontSize(24);
        $cells->setBackground('#D9D9D9');
          });
        
@@ -909,36 +954,88 @@ class AjaxController extends BaseController{
 
        });
 
+       $celda = 'C'. $i;
+       $sheet->cell($celda, function($cells) use($varios_pellets) {
+       if ($varios_pellets){
+         $cells->setFontSize(24); 
+       } else {
+         $cells->setFontSize(24);
+       }
+       
+         });
+
        $celda = 'C'. ($i+1);
-       $sheet->cell($celda, function($cells) {
+       $sheet->cell($celda, function($cells) use($varios_pellets){
   
        // Set all borders (top, right, bottom, left)
        $cells->setFontWeight('bold');
        $cells->setBackground('#D9D9D9');
-       $cells->setFontSize(13);
+       if ($varios_pellets){
+         $cells->setFontSize(13); 
+       } else {
+         $cells->setFontSize(24);
+       }
+       
 
+       });
+
+       $celda = 'F'. ($i);
+       $sheet->cell($celda, function($cells) use($varios_pellets){
+  
+       // Set all borders (top, right, bottom, left)
+       //$cells->setFontWeight('bold');
+       //$cells->setBackground('#D9D9D9');
+       if ($varios_pellets){
+         $cells->setFontSize(16); 
+       } else {
+         $cells->setFontSize(24);
+       }
        });
        $celda = 'F'. ($i+1);
-       $sheet->cell($celda, function($cells) {
+       $sheet->cell($celda, function($cells) use($varios_pellets){
   
        // Set all borders (top, right, bottom, left)
        $cells->setFontWeight('bold');
        $cells->setBackground('#D9D9D9');
-       $cells->setFontSize(13);
+       if ($varios_pellets){
+         $cells->setFontSize(13); 
+       } else {
+         $cells->setFontSize(24);
+       }
 
        });
+
+       $celda = 'M'. ($i);
+       $sheet->cell($celda, function($cells) use($varios_pellets){
+  
+       // Set all borders (top, right, bottom, left)
+       //$cells->setFontWeight('bold');
+       //$cells->setBackground('#D9D9D9');
+       if ($varios_pellets){
+         $cells->setFontSize(16); 
+       } else {
+         $cells->setFontSize(24);
+       }
+       });
+
        $celda = 'M'. ($i+1);
-       $sheet->cell($celda, function($cells) {
+       $sheet->cell($celda, function($cells) use($varios_pellets){
   
        // Set all borders (top, right, bottom, left)
        $cells->setFontWeight('bold');
        $cells->setBackground('#D9D9D9');
-       $cells->setFontSize(13);
+       if ($varios_pellets){
+         $cells->setFontSize(13); 
+       } else {
+         $cells->setFontSize(24);
+       }
 
 
        });
        
        $i= $i+2;
+       $varios_pellets = false;
+
     }
    // Actualizamos los totales 
     // Totalizamos cada toma
