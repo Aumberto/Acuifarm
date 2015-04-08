@@ -169,11 +169,13 @@ class PedidoController extends BaseController{
      $piensos = Pienso::where('proveedor_id', '=', $proveedor_id)->orderby('nombre')->get();
 
      $pedido_total=PedidoDetalle::with('pedido')->where('pedido_id','=',$id)->sum('total');
+     /* Comentamos para no actualizar el precio del pedido
      if ($pedido_total <> $pedido->importe)
      {
         $pedido->importe = $pedido_total;
         $pedido->save();
      }
+     */
 
      $pedido_total_cantidad=PedidoDetalle::with('pedido')->where('pedido_id','=',$id)->sum('cantidad');
   	 // Obtenemos el listado de piensos de dicho proveedor de pienso
