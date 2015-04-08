@@ -836,3 +836,17 @@ where fecha >= '2015-03-01'
   and unitname = jaula
   and groupid = lote
 group by  week(fecha, 3), fecha, granja, granja_id, jaula, jaula_id, lote, lote_id, diametro_pienso, proveedor, stock_avg_ini, stock_count_ini
+
+
+Select almacenes.nombre as almacen, piensos.id, piensos.nombre as pienso, 
+                                      sum(cantidad) as cantidad, max(fecha)
+                                          from movimientos_almacenes, almacenes, piensos
+                                         where almacenes.id = movimientos_almacenes.almacen_id
+                                           and piensos.id   = movimientos_almacenes.pienso_id
+                                           and movimientos_almacenes.fecha <= '2015-03-09'
+                                           and piensos.nombre = 'L-4 ALTERNA 2P'
+                                           and almacenes.nombre = 'Martín e Hijos'
+                                      group by almacenes.nombre, piensos.id, piensos.nombre order by almacenes.nombre, piensos.nombre desc
+
+
+                                      SELECT * FROM estadillos WHERE fecha = '2015-03-19' order by id

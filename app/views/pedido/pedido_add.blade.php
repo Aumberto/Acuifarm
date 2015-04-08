@@ -89,11 +89,11 @@
         if (Hoy.getDay() < 5)
          {
            //alert(Hoy.getDay())
-           var numdias = (5 - Hoy.getDay())+8+6;
+           var numdias = (5 - Hoy.getDay())+8+2;
            //var nuevafecha = new Date(Hoy + milisegundos);
            
          }else{
-           var numdias = (6 - Hoy.getDay())+6+8+6;
+           var numdias = (6 - Hoy.getDay())+6+8+2;
          }
          nuevafecha = new Date(Hoy.setDate(Hoy.getDate()+numdias));
          var dd = nuevafecha.getDate();

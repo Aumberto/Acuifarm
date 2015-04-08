@@ -204,7 +204,7 @@
         var Hoy = new Date(año + '/' + mes + '/' + dia);
         //alert(Hoy.getDay())
         
-         nuevafecha = new Date(Hoy.setDate(Hoy.getDate()+6));
+         nuevafecha = new Date(Hoy.setDate(Hoy.getDate()+2));
          var dd = nuevafecha.getDate();
          var mm = nuevafecha.getMonth() + 1;
          var yyyy = nuevafecha.getFullYear();
