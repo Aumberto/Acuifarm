@@ -180,7 +180,7 @@ $('#id_semana').change(function()
                    {
                     for (var i = 0; i< data.length; i++)
                     {
-                      var stock_final = parseInt(data[i].stock_real) + parseInt(data[i].pedidos)  + parseInt(data[i].pedidos_acumulados) - parseInt(data[i].consumo_simulado) - parseInt(data[i].consumo_simulado_acumulado);
+                      var stock_final = parseInt(data[i].stock_real) + parseInt(data[i].pedidos) + parseInt(data[i].pedidosobsoletos) + parseInt(data[i].pedidos_acumulados) - parseInt(data[i].consumo_simulado) - parseInt(data[i].consumo_simulado_acumulado);
                       //alert(stock_final);
                       // Si el stock_final es < 0, el intervalo rojo será hasta que lleguemos a cero
                       if (stock_final < 0)

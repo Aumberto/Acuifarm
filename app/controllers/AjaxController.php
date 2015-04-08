@@ -462,7 +462,6 @@ class AjaxController extends BaseController{
                                                          and ps.proveedor_id = pp.id
                                                          and p.fecha_descarga > ?
                                                          and p.fecha_descarga >= ? and p.fecha_descarga <= ?
-                                                         
                                                     group by pp.nombre, tp.diametro ) ,0) as pedidos, 
                                               ifnull((Select sum(cantidad)
                                                         from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
@@ -473,8 +472,17 @@ class AjaxController extends BaseController{
                                                          and ps.proveedor_id = pp.id
                                                          and p.fecha_descarga > ?
                                                          and p.fecha_descarga < ?
-                                                         
-                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos_acumulados
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos_acumulados,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga <= ?
+                                                         and p.estado <> ?
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidosobsoletos
                                         from proveedores_pienso, tamanio_pellets
                                        where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
                                        order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha_real, 
@@ -491,7 +499,7 @@ class AjaxController extends BaseController{
                                                                                                             $fecha_final_semana_actual,
                                                                                                             
                                                                                                             $fecha_real,
-                                                                                                            $fecha_inicial_semana_actual));
+                                                                                                            $fecha_inicial_semana_actual, $fecha_real, 'Descargado'));
 
 
 
