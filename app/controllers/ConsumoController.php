@@ -248,6 +248,8 @@
           
           //echo $num_semana;
           //echo $fecha->format('Y-m-d');
+          echo $fecha_ini_semana->format('Y-m-d');
+          echo $fecha_fin_semana->format('Y-m-d');
           
             $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
                                               ifnull((Select sum(cantidad)
@@ -276,26 +278,14 @@
                                                          and pd.pienso_id = ps.id
                                                          and tp.id = ps.diametro_pellet_id
                                                          and ps.proveedor_id = pp.id
-                                                         and p.fecha_descarga > ?
-                                                         and p.fecha_descarga >= ?
-                                                         and p.fecha_descarga <= ?
-                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos,
-                                              ifnull((Select sum(cantidad)
-                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
-                                                       where tamanio_pellets.id = tp.id
-                                                         and pd.pedido_id = p.id  
-                                                         and pd.pienso_id = ps.id
-                                                         and tp.id = ps.diametro_pellet_id
-                                                         and ps.proveedor_id = pp.id
-                                                         and p.fecha_descarga <= ?
                                                          and p.fecha_descarga >= ?
                                                          and p.fecha_descarga <= ?
                                                          and p.estado <> ?
-                                                    group by pp.nombre, tp.diametro ) ,0) as pedidosObsoletos
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos
                                         from proveedores_pienso, tamanio_pellets
                                        where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
-                                       order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $fecha_inicial, $fecha_fin_semana, $fecha, $fecha_inicial, 
-                                                                                                            $fecha_fin_semana, $fecha, $fecha_inicial, $fecha_fin_semana, 'Descargado'));
+                                       order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $fecha_inicial, $fecha_fin_semana, $fecha_ini_semana, 
+                                                                                                            $fecha_fin_semana, 'Descargado'));
 /*
 $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
                                               ifnull((Select sum(cantidad)
@@ -342,8 +332,8 @@ $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.dia
                ${'fila'.$x}[2] = $dato_stock->diametro;
                ${'fila'.$x}[3] = $dato_stock->stock_real;
                ${'fila'.$x}[4] = $dato_stock->consumo_simulado;
-               ${'fila'.$x}[5] = ($dato_stock->pedidos) + ($dato_stock->pedidosObsoletos) ;
-               ${'fila'.$x}[6] = ($dato_stock->stock_real)+ ($dato_stock->pedidos) + ($dato_stock->pedidosObsoletos) - ($dato_stock->consumo_simulado);
+               ${'fila'.$x}[5] = ($dato_stock->pedidos) ;
+               ${'fila'.$x}[6] = ($dato_stock->stock_real)+ ($dato_stock->pedidos) - ($dato_stock->consumo_simulado);
                /*
                if ((($dato_stock->consumo_simulado)*2) - ($dato_stock->stock_real)+ ($dato_stock->pedidos) - ($dato_stock->consumo_simulado) < 0 )
                {
@@ -358,9 +348,9 @@ $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.dia
              else
              {
                ${'fila'.$x}[$j] = $dato_stock->consumo_simulado;
-               ${'fila'.$x}[$j+1] = ($dato_stock->pedidos) + ($dato_stock->pedidosObsoletos);
+               ${'fila'.$x}[$j+1] = ($dato_stock->pedidos) ;
                //echo ' A la j le sumamos 1 ' . ($j+1); 
-               ${'fila'.$x}[$j+2] = ${'fila'.$x}[$j-1] + ($dato_stock->pedidos) + ($dato_stock->pedidosObsoletos) - ($dato_stock->consumo_simulado);
+               ${'fila'.$x}[$j+2] = ${'fila'.$x}[$j-1] + ($dato_stock->pedidos) - ($dato_stock->consumo_simulado);
                /*
                if ((($dato_stock->consumo_simulado)*2) - (${'fila'.$x}[$j-2] + ($dato_stock->pedidos) - ($dato_stock->consumo_simulado)) < 0)
                {
