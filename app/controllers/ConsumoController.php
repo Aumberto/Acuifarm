@@ -248,9 +248,9 @@
           
           //echo $num_semana;
           //echo $fecha->format('Y-m-d');
-          echo $fecha_ini_semana->format('Y-m-d');
-          echo $fecha_fin_semana->format('Y-m-d');
-          
+          //echo $fecha_ini_semana->format('Y-m-d');
+          //echo $fecha_fin_semana->format('Y-m-d');
+
             $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
                                               ifnull((Select sum(cantidad)
                                                         from movimientos_almacenes ma, almacenes a, piensos p , tamanio_pellets tp, proveedores_pienso pp
