@@ -278,6 +278,7 @@
                                                          and pd.pienso_id = ps.id
                                                          and tp.id = ps.diametro_pellet_id
                                                          and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga > ?
                                                          and p.fecha_descarga >= ?
                                                          and p.fecha_descarga <= ?
                                                          and p.estado <> ?
@@ -292,12 +293,22 @@
                                                          and p.fecha_descarga >= ?
                                                          and p.fecha_descarga <= ?
                                                          and p.estado = ?
-                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos_descargado_futuro
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos_descargado_futuro,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga <= ?
+                                                         and p.estado <> ?
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos_no_descargados
                                         from proveedores_pienso, tamanio_pellets
                                        where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
-                                       order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $fecha_inicial, $fecha_fin_semana, $fecha_ini_semana, 
+                                       order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $fecha_inicial, $fecha_fin_semana, $fecha, $fecha_ini_semana, 
                                                                                                             $fecha_fin_semana, 'Descargado', $fecha_inicial, 
-                                                                                                            $fecha_fin_semana, 'Descargado'));
+                                                                                                            $fecha_fin_semana, 'Descargado', $fecha, 'Descargado'));
 /*
 $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
                                               ifnull((Select sum(cantidad)
@@ -344,8 +355,8 @@ $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.dia
                ${'fila'.$x}[2] = $dato_stock->diametro;
                ${'fila'.$x}[3] = $dato_stock->stock_real;
                ${'fila'.$x}[4] = $dato_stock->consumo_simulado;
-               ${'fila'.$x}[5] = ($dato_stock->pedidos) + ($dato_stock->pedidos_descargado_futuro);
-               ${'fila'.$x}[6] = ($dato_stock->stock_real)+ ($dato_stock->pedidos) + ($dato_stock->pedidos_descargado_futuro) - ($dato_stock->consumo_simulado);
+               ${'fila'.$x}[5] = ($dato_stock->pedidos) + ($dato_stock->pedidos_descargado_futuro) + ($dato_stock->pedidos_no_descargados);
+               ${'fila'.$x}[6] = ($dato_stock->stock_real)+ ($dato_stock->pedidos) + ($dato_stock->pedidos_descargado_futuro) + ($dato_stock->pedidos_no_descargados) - ($dato_stock->consumo_simulado);
                /*
                if ((($dato_stock->consumo_simulado)*2) - ($dato_stock->stock_real)+ ($dato_stock->pedidos) - ($dato_stock->consumo_simulado) < 0 )
                {
