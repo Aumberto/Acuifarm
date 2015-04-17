@@ -45,10 +45,11 @@ select {
 }
 
 .barra_lateral{
-	width: 300px;
+	width: 250px;
 	padding: 0%;
+
 	
-	float: left;
+	float: right;
 	
 }
 
@@ -62,11 +63,11 @@ select {
 #container3, #container4 {
 	width: 825px;
 }
-#container, #container1{
-	width: 40%;
+#container, #container1, #container2, #container5{
+	width: 75%;
     height: 300px;
     border: 1px solid #000;
-    padding: 20px;
+    padding: 10px;
     margin: 10px;
     float: left;
     position: relative;
@@ -183,15 +184,31 @@ left: 68%; /* 1/4 Ancho del enlace + 4 veces ancho enlace */
 
 
 /* By removing the float:left; each calendar will stack vertically */
+ /* #calendar-container .ui-datepicker-multi .ui-datepicker-group { float:none; }
+
+/* This is 100% by default, which we now set to a specific pixel value so the container looks right */
+/* #calendar-container .ui-datepicker-inline.ui-datepicker.ui-widget { width:10px; }
+
+/* In my case this value was originally 33.3% (100% / 3 calendars). I want each calendar to fill the parent container */
+ /* #calendar-container .ui-datepicker-multi-3 .ui-datepicker-group { width:33%; }
+
+#calendar-container .ui-datepicker-inline .ui-datepicker .ui-widget .ui-widget-content .ui-helper-clearfix .ui-corner-all .ui-datepicker-multi-3 .ui-datepicker-multi { width:33%; } */
+
+
+/* Nuevos estilos */
+/* By removing the float:left; each calendar will stack vertically */
 #calendar-container .ui-datepicker-multi .ui-datepicker-group { float:none; }
 
 /* This is 100% by default, which we now set to a specific pixel value so the container looks right */
-#calendar-container .ui-datepicker-inline.ui-datepicker.ui-widget { width:50px; }
+#calendar-container .ui-datepicker-inline.ui-datepicker.ui-widget { width:100%; }
 
 /* In my case this value was originally 33.3% (100% / 3 calendars). I want each calendar to fill the parent container */
-#calendar-container .ui-datepicker-multi-3 .ui-datepicker-group { width:30%; }
+#calendar-container .ui-datepicker-multi-3 .ui-datepicker-group { width:100%; }
 
-#calendar-container .ui-datepicker-inline .ui-datepicker .ui-widget .ui-widget-content .ui-helper-clearfix .ui-corner-all .ui-datepicker-multi-3 .ui-datepicker-multi { width:30%; }
+.ui-datepicker-multi-2 .ui-datepicker-group {
+    width: auto;
+}
+
 
 #progressbar {
     margin-top: 20px;

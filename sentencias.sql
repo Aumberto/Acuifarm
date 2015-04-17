@@ -830,7 +830,7 @@ order by jaula
 *******************************************************************  Estadillos ***********************************************************
 Select week(fecha, 3), month(fecha), fecha, granja, granja_id, jaula, jaula_id, lote, lote_id, diametro_pienso, proveedor, stock_avg_ini, stock_count_ini, sum(cantidad)
 from consumos, produccion_simulado
-where fecha >= '2015-04-01'
+where fecha >= '2015-04-15'
   and fecha = date
   and site = granja
   and unitname = jaula
@@ -897,3 +897,161 @@ Select proveedores_pienso.nombre, tamanio_pellets.diametro,
                                         from proveedores_pienso, tamanio_pellets
                                        where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
                                        order by proveedores_pienso.nombre, tamanio_pellets.diametro
+
+
+
+Select * from produccion_real where date = '2015-04-08' and unitname in ('J006', 'J015')
+
+Select * from produccion_simulado where date >= '2015-04-08' and unitname in ('J006', 'J015')
+
+
+Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
+                                              ifnull((Select sum(cantidad)
+                                                        from movimientos_almacenes ma, almacenes a, piensos p , tamanio_pellets tp, proveedores_pienso pp
+                                                       where a.id = ma.almacen_id
+                                                         and p.id   = ma.pienso_id
+                                                         and p.diametro_pellet_id = tp.id
+                                                         and ma.fecha <= ?
+                                                         and pp.id = p.proveedor_id
+                                                         and tamanio_pellets.id = tp.id
+                                                    group by pp.nombre, tp.diametro),0) as stock_real, 
+                                              ifnull((Select sum(cantidad)
+                                                        from piensos p , tamanio_pellets tp, proveedores_pienso pp, consumos c
+                                                       where c.proveedor_id = pp.id
+                                                         and c.pienso_id = p.id
+                                                         and tp.id = p.diametro_pellet_id
+                                                         and tamanio_pellets.id = tp.id
+                                                         and fecha > ?
+                                                         and fecha  >= ?
+                                                         and fecha  <= ?
+                                                    group by pp.nombre, tp.diametro),0) as consumo_simulado,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga > ?
+                                                         and p.fecha_descarga >= ?
+                                                         and p.fecha_descarga <= ?
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga <= ?
+                                                         and p.fecha_descarga >= ?
+                                                         and p.fecha_descarga <= ?
+                                                         and p.estado <> ?
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidosObsoletos
+                                        from proveedores_pienso, tamanio_pellets
+                                       where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
+                                       order by proveedores_pienso.nombre, tamanio_pellets.diametro
+
+
+
+
+                                       Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
+                                              ifnull((Select sum(cantidad)
+                                                        from movimientos_almacenes ma, almacenes a, piensos p , tamanio_pellets tp, proveedores_pienso pp
+                                                       where a.id = ma.almacen_id
+                                                         and p.id   = ma.pienso_id
+                                                         and p.diametro_pellet_id = tp.id
+                                                         and ma.fecha <= '2015-04-14'
+                                                         and pp.id = p.proveedor_id
+                                                         and tamanio_pellets.id = tp.id
+                                                    group by pp.nombre, tp.diametro),0) as stock_real, 
+                                              ifnull((Select sum(cantidad)
+                                                        from piensos p , tamanio_pellets tp, proveedores_pienso pp, consumos c
+                                                       where c.proveedor_id = pp.id
+                                                         and c.pienso_id = p.id
+                                                         and tp.id = p.diametro_pellet_id
+                                                         and tamanio_pellets.id = tp.id
+                                                         and fecha > '2015-04-14'
+                                                         and fecha  >= '2015-04-13'
+                                                         and fecha  <= '2015-04-19'
+                                                    group by pp.nombre, tp.diametro),0) as consumo_simulado,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga > '2015-04-14'
+                                                         and p.fecha_descarga >= '2015-04-13'
+                                                         and p.fecha_descarga <= '2015-04-19'
+                                                         and p.estado <> 'Descargado'
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga >  '2015-04-14'
+                                                         and p.fecha_descarga <= '2015-04-19'
+                                                         and p.estado = 'Descargado'
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos_descargado_futuro,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga <=  '2015-04-14'
+                                                         and p.estado <> 'Descargado'
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos_no_descargados
+                                        from proveedores_pienso, tamanio_pellets
+                                       where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
+                                       order by proveedores_pienso.nombre, tamanio_pellets.diametro
+
+
+                                       where('pagado', '<>', '1')->orWhere(function($query)
+                                                             {
+                                                               $query->where('pagado', '=', '1')->where('estado', '<>', 'Descargado');
+                                                             })->orderby('proveedor_id')->orderby('fecha_descarga')->get();
+
+                                       Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
+                                              ifnull((Select sum(cantidad)
+                                                        from movimientos_almacenes ma, almacenes a, piensos p , tamanio_pellets tp, proveedores_pienso pp
+                                                       where a.id = ma.almacen_id
+                                                         and p.id   = ma.pienso_id
+                                                         and p.diametro_pellet_id = tp.id
+                                                         and ma.fecha <= '2015-04-14'
+                                                         and pp.id = p.proveedor_id
+                                                         and tamanio_pellets.id = tp.id
+                                                    group by pp.nombre, tp.diametro),0) as stock_real, 
+                                              ifnull((Select sum(cantidad)
+                                                        from piensos p , tamanio_pellets tp, proveedores_pienso pp, consumos c
+                                                       where c.proveedor_id = pp.id
+                                                         and c.pienso_id = p.id
+                                                         and tp.id = p.diametro_pellet_id
+                                                         and tamanio_pellets.id = tp.id
+                                                         and fecha = DATE_ADD('2015-04-14', INTERVAL 1 DAY)
+                                                    group by pp.nombre, tp.diametro),0) as consumo_simulado
+                                        from proveedores_pienso, tamanio_pellets
+                                      
+
+
+
+
+
+
+
+
+
+Select pp.nombre, tp.diametro, p.codigo, pedido.num_pedido
+  from proveedores_pienso pp, tamanio_pellets tp, piensos p, pedidos_detalles pd, pedidos
+  where tp.proveedor_pienso_id = pp.id
+    and p.diametro_pellet_id = tp.id
+    and pd.pienso_id = p.id
+    and pd.pedido_id = pedidos.id
+    and pp.id = 1
+    order by tp.diametro

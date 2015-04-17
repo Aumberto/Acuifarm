@@ -194,6 +194,149 @@ class AjaxController extends BaseController{
 
     }
 
+    public function GraficaStatusContenedores()
+    {
+       //Leemos los parámetros que recibimos
+        $post_proveedor      = Input::get('proveedor_id');
+        
+        // Obtenemos la fecha de la última importación de datos reales
+        $fecha_ultima_actualizacion = ProduccionReales::orderby('date', 'desc')->first();
+        $fecha = new DateTime($fecha_ultima_actualizacion->date);
+
+        // Obtenemos los datos del proveedor de pienso
+        $proveedor_pienso = Proveedorpienso::find($post_proveedor);
+
+        // Obtenemos todos los contenedores del proveedor cuyo estado sea igual a "Pendiente de descarga"
+        $consulta = DB::select('Select pp.nombre, p.num_pedido, tp.diametro, sum(cantidad)
+                                  from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                 where pd.pedido_id = p.id  
+                                   and pd.pienso_id = ps.id
+                                   and tp.id = ps.diametro_pellet_id
+                                   and ps.proveedor_id = pp.id
+                                   and pp.id = ?
+                                   and p.estado = ?
+                              group by pp.nombre, p.num_pedido, tp.diametro
+                              order by p.num_pedido, tp.diametro', array($proveedor_pienso->id, 'Pendiente de descarga'));
+
+    }
+
+
+    public function GraficaStatusStockFinal()
+    {
+        //Leemos los parámetros que recibimos
+        $post_proveedor      = Input::get('proveedor_id');
+        
+        // Obtenemos la fecha de la última importación de datos reales
+        $fecha_ultima_actualizacion = ProduccionReales::orderby('date', 'desc')->first();
+        $fecha = new DateTime($fecha_ultima_actualizacion->date);
+
+        // Obtenemos los datos del proveedor de pienso
+        $proveedor_pienso = Proveedorpienso::find($post_proveedor);
+        //var_dump($fecha);
+        // Calculamos el stock final teórico durante los próximos 7 días a partir del último stock real.
+        $stock_teorico = array();
+        $categorias    = array();
+        for ($i=1; $i<=7; $i++)
+        {
+          
+           $resultado_status = DB::select('Select proveedores_pienso.nombre as nombre, tamanio_pellets.diametro as diametro, 
+                                              ifnull((Select sum(cantidad)
+                                                        from movimientos_almacenes ma, almacenes a, piensos p , tamanio_pellets tp, proveedores_pienso pp
+                                                       where a.id = ma.almacen_id
+                                                         and p.id   = ma.pienso_id
+                                                         and p.diametro_pellet_id = tp.id
+                                                         and ma.fecha <= ?
+                                                         and pp.id = p.proveedor_id
+                                                         and tamanio_pellets.id = tp.id
+                                                    group by pp.nombre, tp.diametro),0) as stock_real, 
+                                              ifnull((Select sum(cantidad)
+                                                        from piensos p , tamanio_pellets tp, proveedores_pienso pp, consumos c
+                                                       where c.proveedor_id = pp.id
+                                                         and c.pienso_id = p.id
+                                                         and tp.id = p.diametro_pellet_id
+                                                         and tamanio_pellets.id = tp.id
+                                                         and fecha = DATE_ADD( ?, INTERVAL 1 DAY)
+                                                    group by pp.nombre, tp.diametro),0) as consumo_simulado
+                                        from proveedores_pienso, tamanio_pellets
+                                      where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
+                                        and proveedores_pienso.id = ?
+                                      order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $proveedor_pienso->id));
+
+           //var_dump($resultado_status);
+           $x = 0;
+           
+           foreach($resultado_status as $resultado)
+             {
+                switch ($resultado->diametro) {
+                  case '1.50':
+                     $color = '#4F81BD';
+                  break;
+                  case '1.90':
+                     $color = '#953735';
+                  break;
+                  case '2.00':
+                     $color = '#77933C';
+                  break;
+                  case '3.00':
+                     $color = '#77933C';
+                  break;
+                  case '4.00':
+                     $color = '#604A7B';
+                  break;
+                  case '4.50':
+                     $color = '#604A7B';
+                  break;
+                  case '6.00':
+                     $color = '#31859C';
+                  break;
+                  case '6.50':
+                     $color = '#31859C';
+                  break;
+                  case '8.00':
+                     $color = '#F79646';
+                  break;
+                  case '10.00':
+                     $color = '#95B3D7';
+                  break;
+                  case '9.00':
+                     $color = '#95B3D7';
+                  break;
+                  
+                  default:
+                    $color = '#000000';
+                    break;
+                }
+
+
+                if ($i==1)
+                 {
+                   $stock = $resultado->stock_real - $resultado->consumo_simulado;
+                   $data = array($stock);
+                   $datos = array('name' => $resultado->diametro,
+                                  'color' => $color, 
+                                  'data' => $data); 
+
+                   array_push($stock_teorico, $datos);
+                 } else {
+                     
+                     $stock = $stock_teorico[$x]['data'][$i-2] - $resultado->consumo_simulado;
+                     $stock_teorico[$x]['data'][] = $stock;
+                 }
+               $x++;
+             } 
+          $fecha->modify('+1 day');
+          array_push($categorias, $fecha->format('j'). "/" .$fecha->format('n'). "/" .$fecha->format('Y'));
+          
+        }
+       //print_r($stock_teorico);
+       $graph_data = array('categories'        => $categorias, 
+                           'stock_teorico'     => $stock_teorico,
+                           'titulo'            => 'Stock final teórico diario',
+                           'subtitulo'         => $proveedor_pienso->nombre);
+
+        // devolvemos los datos en formato json
+        return json_encode($graph_data);
+    }
     public function GraficaConsumoRealModeloPropuesta()
     {
         //Leemos los parámetros que recibimos
