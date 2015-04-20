@@ -114,7 +114,7 @@ $(function () {
                                    series: [{},{},{},{},{},{},{}]};
                                    $.ajax({
                    url: "/acuifarm/public/ajax/grafica/status/contenedores",
-                   data: {'proveedor_id' :  1},
+                   data: {'proveedor_id' :  2},
                    type:'post',
                    dataType: "json",
                    success: function(data){
