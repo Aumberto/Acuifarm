@@ -198,7 +198,7 @@ class AjaxController extends BaseController{
     {
        //Leemos los parámetros que recibimos
         $post_proveedor      = Input::get('proveedor_id');
-        //$post_proveedor = 1;
+        //$post_proveedor = 2;
         //Declaramos las variables donde almacenaremos los datos de las gráficas
         $contenido_contenedores = array();
         $categorias = array();
@@ -233,6 +233,7 @@ class AjaxController extends BaseController{
                                     where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
                                       and proveedores_pienso.id = ?
                                  order by tamanio_pellets.diametro', array($contenedor->id, $proveedor_pienso->id, $proveedor_pienso->id));
+           $x=0;
            foreach($consulta as $resultado)
              {
                 switch ($resultado->diametro) 
@@ -277,7 +278,7 @@ class AjaxController extends BaseController{
                 }
                 if ($i==0)
                  {
-                   $data = array($resultado->cantidad);
+                   $data = array( (int)$resultado->cantidad);
                    $datos = array('name' => $resultado->diametro,
                                   'color' => $color, 
                                   'data' => $data); 
@@ -286,9 +287,9 @@ class AjaxController extends BaseController{
                  } 
                 else 
                  {         
-                   $stock_teorico[$i]['data'][] = $resultado->cantidad;
+                   $contenido_contenedores[$x]['data'][] = (int)$resultado->cantidad;
                  }
-              
+                 $x++;
               }
           $i++;
           
