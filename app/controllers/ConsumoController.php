@@ -381,9 +381,9 @@ $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.dia
              else
              {
                ${'fila'.$x}[$j] = $dato_stock->consumo_simulado;
-               ${'fila'.$x}[$j+1] = ($dato_stock->pedidos) + ($dato_stock->pedidos_descargado_futuro);
+               ${'fila'.$x}[$j+1] = ($dato_stock->pedidos) /*+ ($dato_stock->pedidos_descargado_futuro) */;
                //echo ' A la j le sumamos 1 ' . ($j+1); 
-               ${'fila'.$x}[$j+2] = ${'fila'.$x}[$j-1] + ($dato_stock->pedidos) + ($dato_stock->pedidos_descargado_futuro) - ($dato_stock->consumo_simulado);
+               ${'fila'.$x}[$j+2] = ${'fila'.$x}[$j-1] + ($dato_stock->pedidos) /* + ($dato_stock->pedidos_descargado_futuro)  */- ($dato_stock->consumo_simulado);
                /*
                if ((($dato_stock->consumo_simulado)*2) - (${'fila'.$x}[$j-2] + ($dato_stock->pedidos) - ($dato_stock->consumo_simulado)) < 0)
                {
