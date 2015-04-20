@@ -341,11 +341,21 @@ class AjaxController extends BaseController{
                                                          and tp.id = p.diametro_pellet_id
                                                          and tamanio_pellets.id = tp.id
                                                          and fecha = DATE_ADD( ?, INTERVAL 1 DAY)
-                                                    group by pp.nombre, tp.diametro),0) as consumo_simulado
+                                                    group by pp.nombre, tp.diametro),0) as consumo_simulado,
+                                              ifnull((Select sum(cantidad)
+                                                        from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
+                                                       where tamanio_pellets.id = tp.id
+                                                         and pd.pedido_id = p.id  
+                                                         and pd.pienso_id = ps.id
+                                                         and tp.id = ps.diametro_pellet_id
+                                                         and ps.proveedor_id = pp.id
+                                                         and p.fecha_descarga = DATE_ADD( ?, INTERVAL 1 DAY)
+                                                         and p.estado = ?
+                                                    group by pp.nombre, tp.diametro ) ,0) as pedidos_descargados
                                         from proveedores_pienso, tamanio_pellets
                                       where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
                                         and proveedores_pienso.id = ?
-                                      order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $proveedor_pienso->id));
+                                      order by proveedores_pienso.nombre, tamanio_pellets.diametro', array($fecha, $fecha, $fecha, 'Descargado', $proveedor_pienso->id));
 
            //var_dump($resultado_status);
            $x = 0;
@@ -395,7 +405,7 @@ class AjaxController extends BaseController{
 
                 if ($i==1)
                  {
-                   $stock = $resultado->stock_real - $resultado->consumo_simulado;
+                   $stock = $resultado->stock_real + $resultado->pedidos_descargados - $resultado->consumo_simulado;
                    $data = array($stock);
                    $datos = array('name' => $resultado->diametro,
                                   'color' => $color, 
@@ -404,7 +414,7 @@ class AjaxController extends BaseController{
                    array_push($stock_teorico, $datos);
                  } else {
                      
-                     $stock = $stock_teorico[$x]['data'][$i-2] - $resultado->consumo_simulado;
+                     $stock = $stock_teorico[$x]['data'][$i-2] - $resultado->consumo_simulado + $resultado->pedidos_descargados;
                      $stock_teorico[$x]['data'][] = $stock;
                  }
                $x++;
