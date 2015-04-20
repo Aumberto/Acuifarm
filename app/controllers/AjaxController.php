@@ -198,7 +198,7 @@ class AjaxController extends BaseController{
     {
        //Leemos los parámetros que recibimos
         $post_proveedor      = Input::get('proveedor_id');
-        
+        //$post_proveedor = 1;
         //Declaramos las variables donde almacenaremos los datos de las gráficas
         $contenido_contenedores = array();
         $categorias = array();

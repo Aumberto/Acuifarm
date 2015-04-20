@@ -125,8 +125,9 @@ $(function () {
                                             contenedores_skretting.title.text = data.titulo;
                                             contenedores_skretting.subtitle.text = data.subtitulo;
                                             //var i;
-                                            //console.log(data.categories);
+                                            console.log(data.contenido_contenedores);
                                             
+                                            /*
                                             for (i=0; i<data.contenido_contenedores.length; i++)
                                              {
                                                 //console.log(data.stock_teorico[i].data);
@@ -136,7 +137,10 @@ $(function () {
                                                 //contenedores_skretting.series[i].data = 10;
                                                 contenedores_skretting.series[i].color = data.contenido_contenedores[i].color;
                                              }
-                                            
+                                            */
+                                            contenedores_skretting.series[0].name = '1.5';
+                                            contenedores_skretting.series[0].data = [1500];
+                                            contenedores_skretting.series[0].color = '#953735';
                                             $('#container1').highcharts(contenedores_skretting);
                                             
                                            }
