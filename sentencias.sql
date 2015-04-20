@@ -1055,3 +1055,48 @@ Select pp.nombre, tp.diametro, p.codigo, pedido.num_pedido
     and pd.pedido_id = pedidos.id
     and pp.id = 1
     order by tp.diametro
+
+
+
+Select pedidos.num_pedido, tamanio_pellets.diametro, ifnull(pedidos_detalles.cantidad,0)
+  from (pedidos_detalles, pedidos) right join (piensos, tamanio_pellets) on pedidos_detalles.pienso_id = piensos.id and pedidos.estado = 'Pendiente de descarga' and  pedidos.id = pedidos_detalles.pedido_id
+  where piensos.proveedor_id = 2
+  and piensos.diametro_pellet_id = tamanio_pellets.id
+  group by pedidos.num_pedido, tamanio_pellets.diametro
+
+  -- Vamos a sumar por diametro los piensos de los pedidos pendiente de descarga
+  Select sum(pedidos_detalles.cantidad)
+    from tamanio_pellets, piensos, pedidos_detalles, pedidos
+   where piensos.diametro_pellet_id = tamanio_pellets.id
+     and pedidos.id = pedidos_detalles.pedido_id
+     and pedidos_detalles.pienso_id = piensos.id
+     and pedidos.id = 148
+     and piensos.proveedor_id = 1
+     group by pedidos.id,  pedidos.num_pedido, tamanio_pellets.diametro
+
+-- Esta es la buena. Primero buscamos todos los pedidos que cumplen la condicion de 'Pendiente de descarga' y para cada uno de ellos lanzamos la siguiente consulta. De esta manera elaboramos la matriz que necesitamos.
+     Select id, num_pedido
+       from pedidos
+       where proveedor_id = 1
+       and estado =  'Pendiente de descarga'
+
+
+
+     Select proveedores_pienso.nombre, tamanio_pellets.diametro, 
+                                              ifnull((Select sum(pedidos_detalles.cantidad)
+                                                        from tamanio_pellets tp, piensos, pedidos_detalles, pedidos
+                                                       where piensos.diametro_pellet_id = tp.id
+                                                         and pedidos.id = pedidos_detalles.pedido_id
+                                                         and pedidos_detalles.pienso_id = piensos.id
+                                                         and pedidos.id = 148
+                                                         and piensos.proveedor_id = 1
+                                                         and tp.id = tamanio_pellets.id
+                                                    group by pedidos.id,  pedidos.num_pedido, tamanio_pellets.diametro),0) as stock_real
+      from proveedores_pienso, tamanio_pellets
+     where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
+     and proveedores_pienso.id=1
+     order by tamanio_pellets.diametro
+   
+
+
+

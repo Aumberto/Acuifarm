@@ -199,6 +199,10 @@ class AjaxController extends BaseController{
        //Leemos los parámetros que recibimos
         $post_proveedor      = Input::get('proveedor_id');
         
+        //Declaramos las variables donde almacenaremos los datos de las gráficas
+        $contenido_contenedores = array();
+        $categorias = array();
+
         // Obtenemos la fecha de la última importación de datos reales
         $fecha_ultima_actualizacion = ProduccionReales::orderby('date', 'desc')->first();
         $fecha = new DateTime($fecha_ultima_actualizacion->date);
@@ -207,16 +211,96 @@ class AjaxController extends BaseController{
         $proveedor_pienso = Proveedorpienso::find($post_proveedor);
 
         // Obtenemos todos los contenedores del proveedor cuyo estado sea igual a "Pendiente de descarga"
-        $consulta = DB::select('Select pp.nombre, p.num_pedido, tp.diametro, sum(cantidad)
-                                  from pedidos_detalles pd, pedidos p, piensos ps, tamanio_pellets tp, proveedores_pienso pp
-                                 where pd.pedido_id = p.id  
-                                   and pd.pienso_id = ps.id
-                                   and tp.id = ps.diametro_pellet_id
-                                   and ps.proveedor_id = pp.id
-                                   and pp.id = ?
-                                   and p.estado = ?
-                              group by pp.nombre, p.num_pedido, tp.diametro
-                              order by p.num_pedido, tp.diametro', array($proveedor_pienso->id, 'Pendiente de descarga'));
+        $pedidos = Pedido::where('estado', '=', 'Pendiente de descarga')->where('proveedor_id', '=', $proveedor_pienso->id)->get();
+
+        // Para cada uno de los pedidos, calculamos la cantidad de cada uno de los piensos.
+        $i = 0; // Nos servirá para saber que estamos en la primera vuelta del bucle, que es la que llevará el nombre de los tipos de granos
+        foreach($pedidos as $contenedor)
+        {
+           array_push($categorias, $contenedor->num_pedido);
+
+           $consulta = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.diametro as diametro, 
+                                          ifnull((Select sum(pedidos_detalles.cantidad)
+                                                    from tamanio_pellets tp, piensos, pedidos_detalles, pedidos
+                                                   where piensos.diametro_pellet_id = tp.id
+                                                     and pedidos.id = pedidos_detalles.pedido_id
+                                                     and pedidos_detalles.pienso_id = piensos.id
+                                                     and pedidos.id = ?
+                                                     and piensos.proveedor_id = ?
+                                                     and tp.id = tamanio_pellets.id
+                                                group by pedidos.id,  pedidos.num_pedido, tamanio_pellets.diametro),0) as cantidad
+                                     from proveedores_pienso, tamanio_pellets
+                                    where proveedores_pienso.id = tamanio_pellets.proveedor_pienso_id
+                                      and proveedores_pienso.id = ?
+                                 order by tamanio_pellets.diametro', array($contenedor->id, $proveedor_pienso->id, $proveedor_pienso->id));
+           foreach($consulta as $resultado)
+             {
+                switch ($resultado->diametro) 
+                {
+                  case '1.50':
+                     $color = '#4F81BD';
+                  break;
+                  case '1.90':
+                     $color = '#953735';
+                  break;
+                  case '2.00':
+                     $color = '#77933C';
+                  break;
+                  case '3.00':
+                     $color = '#77933C';
+                  break;
+                  case '4.00':
+                     $color = '#604A7B';
+                  break;
+                  case '4.50':
+                     $color = '#604A7B';
+                  break;
+                  case '6.00':
+                     $color = '#31859C';
+                  break;
+                  case '6.50':
+                     $color = '#31859C';
+                  break;
+                  case '8.00':
+                     $color = '#F79646';
+                  break;
+                  case '10.00':
+                     $color = '#95B3D7';
+                  break;
+                  case '9.00':
+                     $color = '#95B3D7';
+                  break;
+                  
+                  default:
+                    $color = '#000000';
+                    break;
+                }
+                if ($i==0)
+                 {
+                   $data = array($resultado->cantidad);
+                   $datos = array('name' => $resultado->diametro,
+                                  'color' => $color, 
+                                  'data' => $data); 
+
+                   array_push($contenido_contenedores, $datos);
+                 } 
+                else 
+                 {         
+                   $stock_teorico[$i]['data'][] = $resultado->cantidad;
+                 }
+              
+              }
+          $i++;
+          
+        }
+        //print_r($stock_teorico);
+       $graph_data = array('categories'                 => $categorias, 
+                           'contenido_contenedores'     => $contenido_contenedores,
+                           'titulo'                     => 'Contenedores pendientes de descargar',
+                           'subtitulo'                  => $proveedor_pienso->nombre);
+
+        // devolvemos los datos en formato json
+        return json_encode($graph_data);
 
     }
 

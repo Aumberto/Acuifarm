@@ -56,7 +56,7 @@ $(function () {
                                            }
           }); 
 
-var stock_final_biomar = {
+           var stock_final_biomar = {
                                    chart: {zoomType: 'xy', type: 'column'},
                                    credits: {enabled: false},
                                    title: {text:'' , x: -20},
@@ -92,6 +92,52 @@ var stock_final_biomar = {
                                              }
                                             
                                             $('#container5').highcharts(stock_final_biomar);
+                                            
+                                           }
+          });
+           var contenedores_skretting = {
+                                   chart: { type: 'bar'},
+                                   credits: {enabled: false},
+                                   title: {text:'' , x: -20},
+                                   subtitle: {text: '', x: -20},
+                                   xAxis: {categories: [{}]},
+                                   yAxis: [{ title: { text:'Kg.'}}],
+                                   plotOptions: {
+                                                  series: {
+                                                           stacking: 'normal'
+                                                          }
+                                   },
+                                   tooltip: {
+                valueSuffix: 'Kg.'
+            },
+                                   
+                                   series: [{},{},{},{},{},{},{}]};
+                                   $.ajax({
+                   url: "/acuifarm/public/ajax/grafica/status/contenedores",
+                   data: {'proveedor_id' :  1},
+                   type:'post',
+                   dataType: "json",
+                   success: function(data){
+                                            //option.chart.type = 'spline';
+                                            //alert(data);
+                                            contenedores_skretting.xAxis.categories = data.categories;
+                                            //stock_final_biomar.xAxis.type = 'datetime';
+                                            contenedores_skretting.title.text = data.titulo;
+                                            contenedores_skretting.subtitle.text = data.subtitulo;
+                                            //var i;
+                                            //console.log(data.categories);
+                                            
+                                            for (i=0; i<data.contenido_contenedores.length; i++)
+                                             {
+                                                //console.log(data.stock_teorico[i].data);
+                                                contenedores_skretting.series[i].name = data.contenido_contenedores[i].name;
+                                                contenedores_skretting.series[i].data = data.contenido_contenedores[i].data;
+                                                console.log(data.contenido_contenedores[i].data);
+                                                //contenedores_skretting.series[i].data = 10;
+                                                contenedores_skretting.series[i].color = data.contenido_contenedores[i].color;
+                                             }
+                                            
+                                            $('#container1').highcharts(contenedores_skretting);
                                             
                                            }
           });
@@ -156,7 +202,7 @@ var stock_final_biomar = {
                 color: '#95B3D7'
             }]
         });
-
+    /*
     $('#container1').highcharts({
         chart: {
             type: 'bar'
@@ -214,7 +260,7 @@ var stock_final_biomar = {
             data: [0, 0],
             color: '#95B3D7'
         }]
-    });
+    });*/
      //$('#container2').highcharts(stock_final_skretting);
      $('#calendar-container').datepicker({numberOfMonths: [3,1] });
    

@@ -74,6 +74,7 @@
 <div class='container'>
   <div class='header'>
   <ul class='nav nav-pills pull-right'>
+    <li>{{HTML::link('', 'Inicio')}}</li>
    <li>{{HTML::link('propuesta', 'Propuestas')}}</li>
    <li>{{HTML::link('traslado', 'Traslados')}}</li>
    <li>{{HTML::link('estadillos', 'Estadillos')}}</li>
