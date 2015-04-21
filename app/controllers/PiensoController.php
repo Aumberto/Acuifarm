@@ -4,7 +4,7 @@
 
 		public function getIndex(){
 			// Listado de todos los piensos
-			$piensos = Pienso::orderBY('proveedor_id')->orderBY('diametro_pellet_id')->paginate();
+			$piensos = Pienso::orderby('proveedor_id')->orderBy('diametro_pellet_id')->paginate();
 
 			return View::make('pienso.pienso_list')->with('piensos', $piensos);
 		}	

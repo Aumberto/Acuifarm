@@ -97,32 +97,36 @@
      <input type="text" id="amount9" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
 <div id='slider10' class='slider'></div>
-  <p><label for="amount10">SKRETTING ESPAÑA, S.A. 1.50  Número de Palets:</label>
+  <p><label for="amount10">SKRETTING ESPAÑA, S.A. 1.10  Número de Palets:</label>
      <input type="text" id="amount10" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
 <div id='slider11' class='slider'></div>
-  <p><label for="amount11">SKRETTING ESPAÑA, S.A. 1.90  Número de Palets:</label>
+  <p><label for="amount11">SKRETTING ESPAÑA, S.A. 1.50  Número de Palets:</label>
      <input type="text" id="amount11" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
 <div id='slider12' class='slider'></div>
-  <p><label for="amount12">SKRETTING ESPAÑA, S.A. 2.00  Número de Palets:</label>
+  <p><label for="amount12">SKRETTING ESPAÑA, S.A. 1.90  Número de Palets:</label>
      <input type="text" id="amount12" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
 <div id='slider13' class='slider'></div>
-  <p><label for="amount13">SKRETTING ESPAÑA, S.A. 4.00  Número de Palets:</label>
+  <p><label for="amount13">SKRETTING ESPAÑA, S.A. 2.00  Número de Palets:</label>
      <input type="text" id="amount13" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
 <div id='slider14' class='slider'></div>
-  <p><label for="amount14">SKRETTING ESPAÑA, S.A. 6.00  Número de Palets:</label>
+  <p><label for="amount14">SKRETTING ESPAÑA, S.A. 4.00  Número de Palets:</label>
      <input type="text" id="amount14" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
   <div id='slider15' class='slider'></div>
-  <p><label for="amount15">SKRETTING ESPAÑA, S.A. 8.00  Número de Palets:</label>
+  <p><label for="amount15">SKRETTING ESPAÑA, S.A. 6.00  Número de Palets:</label>
      <input type="text" id="amount15" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
   <div id='slider16' class='slider'></div>
-  <p><label for="amount16">SKRETTING ESPAÑA, S.A. 10.00  Número de Palets:</label>
+  <p><label for="amount16">SKRETTING ESPAÑA, S.A. 8.00  Número de Palets:</label>
      <input type="text" id="amount16" readonly style="border:0; color:#f6931f; font-weight:bold;">
+  </p>
+  <div id='slider17' class='slider'></div>
+  <p><label for="amount17">SKRETTING ESPAÑA, S.A. 10.00  Número de Palets:</label>
+     <input type="text" id="amount17" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
   <script>
   $.fn.addRange = function (min, max, color) {

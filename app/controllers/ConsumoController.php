@@ -533,7 +533,7 @@ $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.dia
             }
 
           // Obtenemos el listado de almacenes
-            $almacenes = Almacen::where('id', '=', '2')->orwhere('id', '=', '3')->get();
+            $almacenes = Almacen::where('id', '=', '2')->orwhere('id', '=', '3')->orwhere('id', '=', '6')->get();
           return View::make('consumo.almacenes')->with('semanas', $dias)
                                                 ->with('datos', $matriz)
                                                 ->with('granja', $granja)
