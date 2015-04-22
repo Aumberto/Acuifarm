@@ -72,6 +72,10 @@ class ProduccionController extends BaseController
             else
             {
                 // Debemos eliminar los datos simulados que hay de la jaula y lote a partir de hoy
+                $datos_a_eliminar = DB::select('Delete from produccion_simulado 
+                                                      where date >=? 
+                                                        and unitname = ? 
+                                                        and groupid = ?', array($fecha_ini, $produccion_real->unitname, $produccion_real->groupid));
             }
             
             // Actualizamos los datos de consumos
@@ -99,6 +103,10 @@ class ProduccionController extends BaseController
             else
             {
                 // Debemos eliminar los datos simulados que hay de la jaula y lote a partir de hoy
+                $datos_a_eliminar = DB::select('Delete from consumos
+                                                      where fecha >=?
+                                                        and jaula = ?
+                                                        and lote = ?', array($fecha_ini, $produccion_real->unitname, $produccion_real->groupid));
             }
         }
 
