@@ -150,6 +150,9 @@
         modal: true,
         width: 900,
         position: {my: "center", at: "center"},
+        open: function(event, ui) {
+                     $(this).css({'max-height': $(document).height()-200, 'overflow-y': 'auto'});
+         },
         buttons: {
         Cerrar: function() {
           $( this ).dialog( "close" );
@@ -161,6 +164,9 @@
         modal: true,
         width: 900,
         position: {my: "center", at: "center"},
+        open: function(event, ui) {
+                     $(this).css({'max-height': $(document).height()-200, 'overflow-y': 'auto'});
+         },
         buttons: {
         Cerrar: function() {
           $(this).dialog( "close" );
@@ -251,8 +257,8 @@
                    type:'post',
                    dataType: "html",
                    success: function(data){
-
-                                          $('#v_consumos').html(data).dialog( "open" );
+                                            $('#v_consumos').dialog({position: { 'my': 'center', 'at': 'center' }});
+                                            $('#v_consumos').html(data).dialog( "open" );
                                            }
           });
           
@@ -340,7 +346,7 @@
                                             $('#container4').highcharts(options2);
                                            }
           });
-         
+          $('#dialog').dialog({position: { 'my': 'center', 'at': 'center' }});
           $('#dialog').dialog( "open" );
 
         });

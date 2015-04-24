@@ -53,6 +53,11 @@ select {
 	
 }
 
+.pellet{
+	text-decoration: underline;
+	cursor:pointer
+}
+
 .contenido{
 	width: 70%;
 	padding: 0%;

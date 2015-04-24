@@ -80,6 +80,7 @@ Route::post('ajax/cantidadalimentacion', array('uses' => 'AjaxController@UpdateA
 Route::post('ajax/grafica/comparativaconsumo', array('uses' => 'AjaxController@GraficaConsumoRealModeloPropuesta'));
 Route::post('ajax/grafica/status/stockfinal', array('uses' => 'AjaxController@GraficaStatusStockFinal'));
 Route::post('ajax/grafica/status/contenedores', array('uses' => 'AjaxController@GraficaStatusContenedores'));
+Route::post('ajax/grafica/consumo/semanal', array('uses' => 'AjaxController@GraficaConsumoSemanalGranjas'));
 Route::post('ajax/consumos', array('uses' => 'AjaxController@MostrarConsumoJaula'));
 Route::post('ajax/actualizarsimulacion', array('uses' => 'AjaxController@ActualizarSimulacion'));
 Route::post('ajax/estrategia', array('uses' => 'AjaxController@NuevaEstrategia'));

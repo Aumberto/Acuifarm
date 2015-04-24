@@ -35,7 +35,7 @@
                       (($i == 17) and $fila[$i] > 0) or (($i == 20) and $fila[$i] > 0) or (($i == 23) and $fila[$i] > 0)) 
                     <td class="success"><b>{{$fila[$i]}}</b></td>
                  @else
-                    <td>{{$fila[$i]}}</td>
+                    <td @if ($i == 2) class="pellet" proveedor='{{$fila[1]}}' @endif>{{$fila[$i]}}</td>
                  @endif
               @endif
               
@@ -128,6 +128,9 @@
   <p><label for="amount17">SKRETTING ESPAÑA, S.A. 10.00  Número de Palets:</label>
      <input type="text" id="amount17" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
+  <div id="dialog" title="Gráficas">
+  </div>
+
   <script>
   $.fn.addRange = function (min, max, color) {
   if (color == 'naranja')
@@ -159,6 +162,40 @@
   }
 };
 
+$('#dialog').dialog({
+        autoOpen : false,
+        modal: true,
+        width: 900,
+        position: {my: "center", at: "center"},
+        open: function(event, ui) {
+                     $(this).css({'max-height': $(document).height()-200, 'overflow-y': 'auto'});
+         },
+        buttons: {
+        Cerrar: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+      });
+$('.pellet').click(function(){
+  var pellet = $(this).text();
+  var proveedor = $(this).attr('proveedor');
+  var alerta = pellet + ' ' + proveedor
+  //alert(alerta);
+  $.ajax({
+          url: "/acuifarm/public/ajax/grafica/consumo/semanal",
+          data: {'proveedor' :  proveedor, 
+                 'pellet' : pellet
+                },
+          type:'post',
+          dataType: "json",
+          success: function(data){
+                                    $('#dialog').dialog({position: { 'my': 'center', 'at': 'center' }});
+                                    $('#dialog').html(data).dialog( "open" );        
+                                 }
+         });
+
+  
+});
 //var $slider = $('#slider0');
 //$slider.slider({
 //      value:3,

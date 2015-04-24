@@ -305,6 +305,37 @@ class AjaxController extends BaseController{
 
     }
 
+    public function GraficaConsumoSemanalGranjas()
+    {
+      //Leemos los parámetros que recibimos
+      $post_proveedor      = Input::get('proveedor');
+      $post_pellet        = Input::get('pellet');
+
+      //$post_proveedor = 2;
+      //Declaramos las variables donde almacenaremos los datos de las gráficas
+      $consumo_semanal = array();
+      $categorias = array();
+
+      // Obtenemos la fecha de la última importación de datos reales
+      $fecha_ultima_actualizacion = ProduccionReales::orderby('date', 'desc')->first();
+      $fecha = new DateTime($fecha_ultima_actualizacion->date);
+
+      // Obtenemos los datos del proveedor de pienso
+      $proveedor_pienso = Proveedorpienso::where('nombre', '=', $post_proveedor)->first();
+
+      // Obtenemos los datos del tamanño del pellets
+      $pellet = Pellet::where('proveedor_pienso_id', '=', $proveedor_pienso->id)->where('diametro', '=', (int)$post_pellet)->first();
+
+      $graph_data = array('categories'        => $categorias, 
+                           'consumo_semanal'  => $consumo_semanal,
+                           'titulo'           => 'Consumo Semanal',
+                           'subtitulo'        => 'Pellet ' . $pellet->diametro . '(' . $proveedor_pienso->nombre . ')');
+
+        // devolvemos los datos en formato json
+        return json_encode($graph_data);
+
+    }
+
 
     public function GraficaStatusStockFinal()
     {
