@@ -310,7 +310,8 @@ class AjaxController extends BaseController{
       //Leemos los parámetros que recibimos
       $post_proveedor      = Input::get('proveedor');
       $post_pellet        = Input::get('pellet');
-
+      //echo $post_pellet;
+      //echo $post_proveedor;
       //$post_proveedor = 2;
       //Declaramos las variables donde almacenaremos los datos de las gráficas
       $consumo_semanal = array();
@@ -319,17 +320,87 @@ class AjaxController extends BaseController{
       // Obtenemos la fecha de la última importación de datos reales
       $fecha_ultima_actualizacion = ProduccionReales::orderby('date', 'desc')->first();
       $fecha = new DateTime($fecha_ultima_actualizacion->date);
-
+      $fecha_real = new DateTime($fecha_ultima_actualizacion->date);
       // Obtenemos los datos del proveedor de pienso
       $proveedor_pienso = Proveedorpienso::where('nombre', '=', $post_proveedor)->first();
 
       // Obtenemos los datos del tamanño del pellets
-      $pellet = Pellet::where('proveedor_pienso_id', '=', $proveedor_pienso->id)->where('diametro', '=', (int)$post_pellet)->first();
+      $pellet = Pellet::where('proveedor_pienso_id', '=', $proveedor_pienso->id)->where('diametro', '=', $post_pellet)->first();
 
+      // Averiguamos la semana en la que nos encontramos
+      $semana_actual = Semana::where('first_day', '<=', $fecha)->where('last_day', '>=', $fecha)->orderby('first_day', 'desc')->first();
+
+      //$semana = $semana_actual->week;
+      $first_day = new DateTime($semana_actual->first_day);
+      $last_day = new DateTime($semana_actual->last_day);
+
+      // Calculamos los consumos para las siguientes 5 semanas
+      for ($i=0; $i<7; $i++)
+      {
+         $semana = Semana::where('first_day', '<=', $first_day)->where('last_day', '>=', $last_day)->orderby('first_day', 'desc')->first();
+         $resultado_status = DB::select('select nombre, 
+                                                ifnull((Select sum(cantidad)
+                                                          from piensos p , tamanio_pellets tp, proveedores_pienso pp, consumos c
+                                                         where c.proveedor_id = pp.id
+                                                           and c.pienso_id = p.id
+                                                           and tp.id = p.diametro_pellet_id
+                                                           and tp.id = ?
+                                                           and c.granja_id = granjas.id
+                                                           and fecha   > ?
+                                                           and fecha  >= ?
+                                                           and fecha  <= ?
+                                                      group by pp.nombre, tp.diametro),0) as consumo_simulado 
+                                           from granjas 
+                                       order by nombre', array($pellet->id, $fecha_real, $first_day, $last_day));
+      $x = 0;
+      foreach($resultado_status as $consumo)
+       {
+          switch ($consumo->nombre) {
+                
+                  case 'Procria':
+                     $color = '#604A7B';
+                  break;
+                  
+                  case 'Melenara':
+                     $color = '#31859C';
+                  break;
+                  
+                  case 'Pre-Engorde':
+                     $color = '#95B3D7';
+                  break;
+                  
+                  default:
+                    $color = '#000000';
+                    break;
+                }
+          if ($i==0)
+          {
+            //$stock = $resultado->stock_real + $resultado->pedidos_descargados - $resultado->consumo_simulado;
+            $data = array((int)$consumo->consumo_simulado);
+            $datos = array('name' => $consumo->nombre,
+                           'color' => $color, 
+                           'data' => $data); 
+
+            array_push($consumo_semanal, $datos);
+          } else {
+            //$stock = $stock_teorico[$x]['data'][$i-2] - $resultado->consumo_simulado + $resultado->pedidos_descargados;
+            $consumo_semanal[$x]['data'][] = (int)$consumo->consumo_simulado;
+          }
+        $x++;
+       }
+        array_push($categorias, $semana->week);
+        $first_day->modify('+7 day');
+        $last_day->modify('+7 day');
+      }
+
+      
+      
+      //print_r($consumo_semanal);
+      //print_r($categorias);
       $graph_data = array('categories'        => $categorias, 
                            'consumo_semanal'  => $consumo_semanal,
                            'titulo'           => 'Consumo Semanal',
-                           'subtitulo'        => 'Pellet ' . $pellet->diametro . '(' . $proveedor_pienso->nombre . ')');
+                           'subtitulo'        => 'Grano ' . $pellet->diametro . '(' . $proveedor_pienso->nombre . ')');
 
         // devolvemos los datos en formato json
         return json_encode($graph_data);

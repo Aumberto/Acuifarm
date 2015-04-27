@@ -129,6 +129,7 @@
      <input type="text" id="amount17" readonly style="border:0; color:#f6931f; font-weight:bold;">
   </p>
   <div id="dialog" title="Gráficas">
+    <div id="grafica"></div>
   </div>
 
   <script>
@@ -165,7 +166,7 @@
 $('#dialog').dialog({
         autoOpen : false,
         modal: true,
-        width: 900,
+        width: 600,
         position: {my: "center", at: "center"},
         open: function(event, ui) {
                      $(this).css({'max-height': $(document).height()-200, 'overflow-y': 'auto'});
@@ -181,16 +182,37 @@ $('.pellet').click(function(){
   var proveedor = $(this).attr('proveedor');
   var alerta = pellet + ' ' + proveedor
   //alert(alerta);
-  $.ajax({
+  var consumo_grafica = {
+                          chart: {zoomType: 'xy', type: 'column'},
+                          credits: {enabled: false},
+                          title: {text:'' , x: -20},
+                          subtitle: {text: '', x: -20},
+                          xAxis: {categories: [{}]},
+                          yAxis: [{ title: { text:'Kg.'}}],
+                          
+                          tooltip: {
+                                     formatter: function () { return '<b>Semana ' + this.x + '</b><br/>' + this.series.name + ': ' + this.y + '<br/>' +
+                                                              'Total: ' + this.point.stackTotal;
+                                                            }
+                                   },
+                          plotOptions: { series: { stacking: 'normal' } },
+                          series: [{},{},{},{},{},{}]};
+ $.ajax({
           url: "/acuifarm/public/ajax/grafica/consumo/semanal",
           data: {'proveedor' :  proveedor, 
                  'pellet' : pellet
                 },
           type:'post',
           dataType: "json",
-          success: function(data){
-                                    $('#dialog').dialog({position: { 'my': 'center', 'at': 'center' }});
-                                    $('#dialog').html(data).dialog( "open" );        
+          success: function(data){  
+                                   consumo_grafica.xAxis.categories = data.categories;
+                                   //consumo_grafica.xAxis.type = 'datetime';
+                                   consumo_grafica.title.text = data.titulo;
+                                   consumo_grafica.subtitle.text = data.subtitulo;
+                                   consumo_grafica.series = data.consumo_semanal;
+                                   $('#grafica').highcharts(consumo_grafica);
+                                   $('#dialog').dialog({position: { 'my': 'center', 'at': 'center' }});
+                                   $('#dialog').dialog( "open" );        
                                  }
          });
 

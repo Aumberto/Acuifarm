@@ -78,6 +78,10 @@ select {
     position: relative;
 }
 
+#grafica {
+	width: 550px;
+}
+
 
 .datos_reales {
 	background: white;
