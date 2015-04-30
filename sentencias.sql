@@ -1183,5 +1183,161 @@ select nombre,
 
 
 
+--
+[
+        [{
+            name: 'Recomendación',
+            y: 28,
+            color: colors[0],
+            drilldown: {
+                name: ['Recomendación', 'Area de Oportunidad', 'Observación'],
+                type: 'column',
+                categories: ['Geofísica', 'Geología', 'Petrofísica'],
+                data: [
+                    [{
+                        name: 'Txt 1',
+                        y: 28,
+                        color: colors[0]
+                    }, {
+                        name: 'Txt 2',
+                        y: 30,
+                        color: colors[0]
+                    }, {
+                        name: 'Txt 3',
+                        y: 19,
+                        color: colors[0]
+                    }],[{
+                        name: 'Txt 4',
+                        y: 50,
+                        color: colors[0]
+                    }, {
+                        name: 'Txt 2',
+                        y: 30,
+                        color: colors[0]
+                    }, {
+                        name: 'Txt 3',
+                        y: 19,
+                        color: colors[0]
+                    }]
+                ]
+            }
+        }, {
+            name: 'Recomendación',
+            y: 30,
+            color: colors[0]
+        }, {
+            name: 'Recomendación',
+            y: 19,
+            color: colors[0]
+        }],
+        [{
+            name: 'Area de Oportunidad',
+            y: 3,
+            color: colors[1]
+        }, {
+            name: 'Area de Oportunidad',
+            y: 5,
+            color: colors[1]
+        }, {
+            name: 'Area de Oportunidad',
+            y: 2,
+            color: colors[1]
+        }],
+        [{
+            name: 'Observación',
+            y: 1,
+            color: colors[2]
+        }, {
+            name: 'Observación',
+            y: 2,
+            color: colors[2]
+        }, {
+            name: 'Observación',
+            y: 0,
+            color: colors[2]
+        }]
 
 
+data = [{  y: 65.11,
+           color: colors[0],
+           drilldown: { categories: ['MSIE 6.0', 'MSIE 7.0', 'MSIE 8.0', 'MSIE 9.0'],
+                       series: [{
+                                  name: 'MSIE versions 2000',
+                                  data: [10.85, 7.35, 33.06, 2.81],
+                                  color: colors[2],
+                                  //stack:0
+                                },{
+                                  name: 'MSIE versions 2010',
+                                  data: [1, 5, 10, 15],
+                                  color: colors[0],
+                                  //stack:0
+                                }]
+                    }
+        }, {
+            y: 21.63,
+            color: colors[1],
+            drilldown: {
+                        name: 'Firefox versions',
+                        categories: ['Firefox 2.0', 'Firefox 3.0', 'Firefox 3.5', 'Firefox 3.6', 'Firefox 4.0'],
+                        series: [{
+                            name: 'Firefox versions 2000',
+                            data: [10.85, 7.35, 33.06, 2.81],
+                            color: colors[1]
+                        },{
+                            name: 'Firefox versions 2010',
+                            data: [1, 5, 10, 15],
+                            color: colors[5]
+                        }]
+                    }
+                }, {
+                    y: 11.94,
+                    color: colors[2],
+                    
+                    drilldown: {
+                        name: 'Chrome versions',
+                        categories: ['Chrome 5.0', 'Chrome 6.0', 'Chrome 7.0', 'Chrome 8.0', 'Chrome 9.0',
+                            'Chrome 10.0', 'Chrome 11.0', 'Chrome 12.0'],
+                        series: [{
+                            name: 'Chrome versions 2000',
+                            data: [10.85, 7.35, 33.06, 2.81],
+                            color: colors[1]
+                        },{
+                            name: 'Chrome versions 2010',
+                            data: [1, 5, 10, 15],
+                            color: colors[2]
+                        }]
+                    }
+                }, {
+                    y: 7.15,
+                    color: colors[3],
+                    drilldown: {
+                        name: 'Safari versions',
+                        categories: ['Safari 5.0', 'Safari 4.0', 'Safari Win 5.0', 'Safari 4.1', 'Safari/Maxthon',
+                            'Safari 3.1', 'Safari 4.1'],
+                        series: [{
+                            name: 'Safari versions 2000',
+                            data: [10.85, 7.35, 33.06, 2.81],
+                            color: colors[4]
+                        },{
+                            name: 'Safari versions 2010',
+                            data: [1, 5, 10, 15],
+                            color: colors[3]
+                        }]
+                    }
+                }, {
+                    y: 2.14,
+                    color: colors[4],
+                    drilldown: {
+                        name: 'Opera versions',
+                        categories: ['Opera 9.x', 'Opera 10.x', 'Opera 11.x'],
+                        series: [{
+                            name: 'Opera versions 2000',
+                            data: [10.85, 7.35, 33.06, 2.81],
+                            color: colors[1]
+                        },{
+                            name: 'Opera versions 2010',
+                            data: [1, 5, 10, 15],
+                            color: colors[4]
+                        }]
+                    }
+                }];

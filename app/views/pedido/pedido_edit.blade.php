@@ -151,6 +151,7 @@
         $( "#fecha_carga" ).prop( "readonly", true );
         $( "#fecha_llegada" ).prop( "readonly", true );
         $( "#fecha_descarga" ).prop( "readonly", true );
+        $("input.checkbox_estado").attr("disabled", true); 
       }
 
 
