@@ -72,7 +72,7 @@ class ProduccionController extends BaseController
             else
             {
                 // Debemos eliminar los datos simulados que hay de la jaula y lote a partir de hoy
-                $datos_a_eliminar = DB::select('Delete from produccion_simulado 
+                $datos_a_eliminar = DB::statement('Delete from produccion_simulado 
                                                       where date >=? 
                                                         and unitname = ? 
                                                         and groupid = ?', array($fecha_ini, $produccion_real->unitname, $produccion_real->groupid));
@@ -103,7 +103,7 @@ class ProduccionController extends BaseController
             else
             {
                 // Debemos eliminar los datos simulados que hay de la jaula y lote a partir de hoy
-                $datos_a_eliminar = DB::select('Delete from consumos
+                $datos_a_eliminar = DB::statement('Delete from consumos
                                                       where fecha >=?
                                                         and jaula = ?
                                                         and lote = ?', array($fecha_ini, $produccion_real->unitname, $produccion_real->groupid));
@@ -526,13 +526,13 @@ class ProduccionController extends BaseController
                     if ($dato_produccion_simulado->groupid <> $lote)
                   {
                      // Debemos eliminar los datos de esa jaula y lote desde hoy en adelante.
-                    $datos_a_eliminar = DB::select('Delete from produccion_simulado 
+                    $datos_a_eliminar = DB::statement('Delete from produccion_simulado 
                                                           where date >=? 
                                                             and unitname = ? 
                                                             and groupid = ?', array($fecha_inicial, $dato_produccion_simulado->unitname, $dato_produccion_simulado->groupid));
                     // Debemos eliminar los datos de consumo de esa jaula y lote desde hoy en adelante.
 
-                    $datos_a_eliminar = DB::select('Delete from consumos
+                    $datos_a_eliminar = DB::statement('Delete from consumos
                                                           where fecha >=?
                                                           and jaula = ?
                                                           and lote = ?', array($fecha_inicial, $dato_produccion_simulado->unitname, $dato_produccion_simulado->groupid));
