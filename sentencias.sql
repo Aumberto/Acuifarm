@@ -830,7 +830,7 @@ order by jaula
 *******************************************************************  Estadillos ***********************************************************
 Select week(fecha, 3), month(fecha), fecha, granja, granja_id, jaula, jaula_id, lote, lote_id, diametro_pienso, proveedor, stock_avg_ini, stock_count_ini, sum(cantidad)
 from consumos, produccion_simulado
-where fecha >= '2015-04-20'
+where fecha >= '2015-05-01'
   and fecha = date
   and site = granja
   and unitname = jaula

@@ -49,7 +49,7 @@
     <input  class="checkbox_estado" type='radio' id='estado_en_preparacion' name='estado' value='En preparación' @if ($pedido->estado == 'En preparación') checked='checked' @endif/> En preparación
     <input  class="checkbox_estado" type='radio' id='estado_en_transito' name='estado' value='En tránsito' @if ($pedido->estado == 'En tránsito') checked='checked' @endif/> En tránsito
     <input  class="checkbox_estado" type='radio' id='estado_en_pendiente_descarga' name='estado' value='Pendiente de descarga' @if ($pedido->estado == 'Pendiente de descarga') checked='checked' @endif/> Pendiente de descarga
-    <input  class="checkbox_estado" type='radio' id='estado_en_descargado' name='estado' value='Descargado' @if ($pedido->estado == 'Descargado') checked='checked' @endif/> Descargado 
+    <input  class="checkbox_estado" type='radio' id='estado_en_descargado' name='estado' value='Descargado' @if ($pedido->estado == 'Descargado') checked='checked' OnFocus="this.blur()" @endif/> Descargado 
   </div>
 </div>
 
@@ -151,7 +151,7 @@
         $( "#fecha_carga" ).prop( "readonly", true );
         $( "#fecha_llegada" ).prop( "readonly", true );
         $( "#fecha_descarga" ).prop( "readonly", true );
-        $("input.checkbox_estado").attr("disabled", true); 
+        $("input.checkbox_estado").attr("readonly", true); 
       }
 
 

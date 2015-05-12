@@ -253,9 +253,22 @@ class PedidoController extends BaseController{
        {
          $pedido->pagado = 0;
        }
-
+       //print_r(Input::get('estado'));
+       /*if (Input::get('estado') === NULL)
+        {
+          $pedido->estado =$estado_pedido_antes_actualizar;
+        }
+        */
+        if ($estado_pedido_antes_actualizar <> 'Descargado')
+        {
+           $pedido->estado = Input::get('estado');
+        }
+        else
+        {
+           $pedido->estado = 'Descargado';
+        }
        
-       $pedido->estado = Input::get('estado');
+       //$pedido->estado = Input::get('estado');
        $pedido->save();
 
        if ((Input::get('estado') == 'Descargado') and ($estado_pedido_antes_actualizar <> 'Descargado'))
