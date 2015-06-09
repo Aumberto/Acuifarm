@@ -76,7 +76,7 @@ return array(
 
 		'sqlsrv' => array(
 			'driver'   => 'sqlsrv',
-			'host'     => 'sbdcanarias',
+			'host'     => '192.168.2.246',
 			'database' => 'fishtalk',
 			'username' => 'sa',
 			'password' => '',

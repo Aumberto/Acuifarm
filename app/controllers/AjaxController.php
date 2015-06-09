@@ -690,7 +690,7 @@ class AjaxController extends BaseController{
       $pc = new ProduccionController();
       $fecha_inicial = new DateTime($produccion_simulado->date);
       $fecha_final = new DateTime($produccion_simulado->date);
-      $fecha_final->modify('+60 day');
+      $fecha_final->modify('+15 day');
       $pc->actualizarSimulacionIntervalo($produccion_simulado->site, 
                                                     $produccion_simulado->unitname, 
                                                     $produccion_simulado->groupid, 
@@ -702,7 +702,7 @@ class AjaxController extends BaseController{
       $consumo = new ConsumoController;
       $fecha_inicial = new DateTime($produccion_simulado->date);
       $fecha_final = new DateTime($produccion_simulado->date);
-      $fecha_final->modify('+60 day');
+      $fecha_final->modify('+15 day');
       $consumo->ActualizarConsumoSimuladoIII($produccion_simulado->unitname, 
                                              $fecha_inicial, 
                                              $fecha_final,0);

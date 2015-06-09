@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtp.mailgun.org',
+	'host' => 'correo.sarenet.es',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => null, 'name' => null),
+	'from' => array('address' => 'noreply@tinamenor.es', 'name' => 'Acuifarm'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return array(
 	|
 	*/
 
-	'username' => null,
+	'username' => 'ajimenez.adsa@tinamenor.es',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return array(
 	|
 	*/
 
-	'password' => null,
+	'password' => '4532',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -106,7 +106,7 @@ return array(
 	|
 	*/
 
-	'sendmail' => '/usr/sbin/sendmail -bs',
+	'sendmail' => 'C:\xampp\sendmails -bs',
 
 	/*
 	|--------------------------------------------------------------------------

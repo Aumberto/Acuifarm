@@ -2252,7 +2252,6 @@ $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.dia
           //echo 'Vamos a eliminar los registros';
           $consumos_a_eliminar = Consumo::where('jaula', '=', $jaula)
                                          ->where('fecha', '>=', $fecha_inicial)
-                                         ->orderby('fecha')
                                          ->delete();
           //echo ' Registros eliminados';
           /*
@@ -2435,6 +2434,41 @@ $datos_stock = DB::select('Select proveedores_pienso.nombre, tamanio_pellets.dia
                                           where fecha = ?
                                       group by fecha, proveedor, granja, diametro_pienso, pienso_id
                                       order by fecha, proveedor, granja, diametro_pienso, pienso_id', array($fecha));
+
+          foreach ($ConsumosReales as $consumoreal)
+          {
+            //Buscamos el id del almacén
+            $almacen = Almacen::where('nombre', '=', $consumoreal->granja)->first();
+
+            //Creamos un nuevo objeto movimientos_almacenes
+            $nuevo_registro = new MovimientosAlmacen();
+            $nuevo_registro->almacen_id      = $almacen->id;
+            $nuevo_registro->tipo_movimiento = 'Salida';
+            $nuevo_registro->descripcion     = 'Consumo';
+            $nuevo_registro->pienso_id       = $consumoreal->pienso_id;
+            $nuevo_registro->cantidad        = ($consumoreal->consumo_real) * -1 ;
+            $nuevo_registro->fecha           = $consumoreal->fecha;
+            $nuevo_registro->save();
+          }
+        }
+
+        public function ProcesarConsumosRealesFechaConcreta($fecha)
+        {
+          //$fecha= '2014-10-15';
+          //Buscamos el último valor real introducido
+          //$fecha = DB::table('produccion_real')->max('date');
+          $ConsumosReales = DB::select('Select fecha, proveedor, granja, diametro_pienso, 
+                                               pienso_id, sum(cantidad) as consumo_real 
+                                          from consumo_real
+                                          where fecha = ?
+                                      group by fecha, proveedor, granja, diametro_pienso, pienso_id
+                                      order by fecha, proveedor, granja, diametro_pienso, pienso_id', array($fecha));
+
+          // Antes de insertar los movimientos de almacén, eliminamos todos los consumos que haya en dicha tabla de este día
+          $datos_a_eliminar = DB::statement('Delete from movimientos_almacenes 
+                                                   where fecha = ? 
+                                                     and descripcion = ? 
+                                                     and tipo_movimiento = ?', array($fecha, 'Consumo', 'Salida'));
 
           foreach ($ConsumosReales as $consumoreal)
           {

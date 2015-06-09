@@ -109,6 +109,8 @@ Route::post('almacenes/movimientos/nuevo', array('uses' => 'AlmacenController@In
 Route::get('almacenes/movimientos/nuevo', array('uses' => 'AlmacenController@InsertarMovimiento'));
 Route::get('almacenes/comprobacion', array('uses' => 'AlmacenController@AjusteAutomaticoAlmacenesPienso'));
 Route::post('almacenes/comprobacion', array('uses' => 'AlmacenController@AjusteAutomaticoAlmacenesPienso'));
+Route::get('almacenes/importarstock', array('uses' => 'AlmacenController@ImportarStock'));
+Route::post('almacenes/importarstock', array('uses' => 'AlmacenController@ImportarStock'));
 
 // Rutas para los traslados
 Route::get('/traslado', array('uses' => 'TrasladoController@getIndex'));
@@ -136,3 +138,12 @@ Route::post('ayunos', array('uses' => 'AyunoController@getIndex'));
 // Rutas para los estadillos
 Route::get('estadillos', array('uses' => 'EstadilloController@getIndex'));
 Route::post('estadillos', array('uses' => 'EstadilloController@getIndex'));
+
+// Prueba de fishtalk
+Route::get("fishtalk", function(){
+    $users = DB::connection('sqlsrv')->select("select * from consumo where date = '20150520'");
+    var_dump($users);
+});
+
+// Rutas para importación de datos
+Route::get('importacion/automatica', array('uses' => 'ProduccionController@ImportacionAutomatica'));

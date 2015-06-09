@@ -9,7 +9,246 @@ class ProduccionController extends BaseController
         return View::make('produccion.index');
 	}
 
-	public function actualizarSimulacion()
+    public function ImportacionAutomatica()
+    {
+        // Buscamos el último día que hemos importado datos reales.
+        $ultima_fecha_real = DB::table('produccion_real')->max('date');
+        //$ultima_fecha_real = new DateTime($ultima_fecha_real);
+        //print_r($ultima_fecha_real);
+        // Buscamos si existen datos exportados de Fishtalk posterior a la última fecha que hemos importado
+        //$fechas_exportadas = FishtalkConsumo::where('Date', '>', $ultima_fecha_real)->groupby('Date');
+        $fechas_exportadas = DB::connection('sqlsrv')->select("select date from consumo where date > convert(datetime, ?, 120) group by date order by date asc", array($ultima_fecha_real));
+        //print_r($fechas_exportadas);
+
+        
+        if (count($fechas_exportadas)>0)
+        {
+            //print_r($fechas_exportadas);
+            // Eliminamos todos los registros de la tabla produccion_real mayores a la última fecha real
+            $datos_a_eliminar = DB::statement('Delete from produccion_real 
+                                                      where date > ? ', array($ultima_fecha_real));
+
+            // Eliminamos todos los registros de la tabla consumo_real mayores a la última fecha real
+            $datos_a_eliminar = DB::statement('Delete from consumo_real 
+                                                      where fecha > ? ', array($ultima_fecha_real));
+
+            // Importamos los datos de consumo real
+            $consumos_fishtalk = DB::connection('sqlsrv')->select("Select date, site, cage, feedtype, supplier, groupid, 
+                                                                         productcode, sum(amount) as cantidad
+                                                                    from consumo 
+                                                                   where date > convert(datetime, ?, 120)
+                                                                     and site in (?, ?)
+                                                                group by site, cage, groupid, feedtype, supplier, productcode, date
+                                                                order by date, site, cage", array($ultima_fecha_real, 'Melenara', 'Procria'));
+            // Cada uno de los registros obtenidos anteriormente, debemos insertarlos en la tabla consumo_real
+            foreach ($consumos_fishtalk as $consumo_fishtalk)
+             {
+                
+                // Obtenemos los datos de la jaula
+                $jaula = Jaula::where('nombre', '=', $consumo_fishtalk->cage)->first();
+
+                // Obtenemos los datos del lote pez
+                $lote = Lote::where('nombre', '=', $consumo_fishtalk->groupid)->first();
+
+                // Obtenemos los datos del pienso
+                $pienso = Pienso::where('codigo', '=', $consumo_fishtalk->productcode)->first();
+
+                //print_r($consumo_fishtalk->productcode);
+
+                //print_r($consumo_fishtalk->date);
+                //$var = "08/14/2012 1:05:18 PM";
+                //echo date('Y-m-d H:i:s', strtotime($consumo_fishtalk->date));
+                
+                $registro_nuevo = new ConsumosReales;
+                $registro_nuevo->granja_id          = $jaula->granja_id;
+                $registro_nuevo->granja             = $jaula->granja->nombre;
+                $registro_nuevo->jaula_id           = $jaula->id;
+                $registro_nuevo->jaula              = $jaula->nombre;
+                $registro_nuevo->lote_id            = $lote->id;
+                $registro_nuevo->lote               = $lote->nombre;
+                $registro_nuevo->proveedor_id       = $pienso->proveedor_id;
+                $registro_nuevo->proveedor          = $pienso->proveedor->nombre;
+                $registro_nuevo->pienso_id          = $pienso->id;
+                $registro_nuevo->pienso             = $pienso->nombre;
+                $registro_nuevo->codigo_pienso      = $pienso->codigo;
+                $registro_nuevo->diametro_pienso    = $pienso->pellet->diametro;
+                $registro_nuevo->diametro_pienso_id = $pienso->diametro_pellet_id;
+                $registro_nuevo->cantidad           = $consumo_fishtalk->cantidad;
+                $registro_nuevo->fecha              = date('Y-m-d H:i:s', strtotime($consumo_fishtalk->date));
+                $registro_nuevo->save();
+                
+             }
+
+            // Importamos los datos de producción real
+             $produccion_fishtalk = DB::connection('sqlsrv')->select("Select Date, Site, UnitName, GroupID, Stock_Count, Stock_Avg, Stock_Bio, Inputs_Count, Inputs_Avg, 
+                                                                             Inputs_Bio, Mortality_Count, Mortality_Avg, Mortality_Bio, Harvested_Count, Harvested_Avg, 
+                                                                             Harvested_Bio, Culling_Count, Culling_Avg, Culling_Bio, Deviation_Count, Deviation_Avg, Deviation_Bio, feeduse
+                                                                        FROM  produccion
+                                                                       where date > convert(datetime, ?, 120)
+                                                                         and site in (?, ?)
+                                                                    order by date, site, unitname", array($ultima_fecha_real, 'Melenara', 'Procria'));
+
+             
+             $i = 0;
+             foreach($produccion_fishtalk as $pf)
+              {
+                
+
+                $registro_nuevo = new ProduccionReales;
+                $registro_nuevo->date             = date('Y-m-d H:i:s', strtotime($pf->Date));
+                $registro_nuevo->site             = $pf->Site;
+                $registro_nuevo->unitname         = $pf->UnitName;
+                $registro_nuevo->groupid          = $pf->GroupID;
+                $registro_nuevo->input_count      = $pf->Inputs_Count;
+                $registro_nuevo->input_avg        = $pf->Inputs_Avg;
+                $registro_nuevo->input_bio        = $pf->Inputs_Bio;
+                $registro_nuevo->mortality_count  = $pf->Mortality_Count;
+                $registro_nuevo->mortality_avg    = $pf->Mortality_Avg;
+                $registro_nuevo->mortality_bio    = $pf->Mortality_Bio;
+                $registro_nuevo->harvested_count  = $pf->Harvested_Count;
+                $registro_nuevo->harvested_avg    = $pf->Harvested_Avg;
+                $registro_nuevo->harvested_bio    = $pf->Harvested_Bio;
+                $registro_nuevo->culling_count    = $pf->Culling_Count;
+                $registro_nuevo->culling_avg      = $pf->Culling_Avg;
+                $registro_nuevo->culling_bio      = $pf->Culling_Bio;
+                $registro_nuevo->deviation_count  = $pf->Deviation_Count;
+                $registro_nuevo->deviation_avg    = $pf->Deviation_Avg;
+                $registro_nuevo->deviation_bio    = $pf->Deviation_Bio;
+                $registro_nuevo->stock_count_fin  = $pf->Stock_Count;
+                $registro_nuevo->stock_avg_fin    = $pf->Stock_Avg;
+                $registro_nuevo->stock_bio_fin    = $pf->Stock_Bio;
+                $registro_nuevo->save();
+                $i++;
+
+                
+              }
+              print_r($i);
+            //Actualizamos primero los valores iniciales de los datos de producción real
+        
+            $actualizacion_datos_iniciales = DB::update('Update produccion_real pr1, produccion_real pr2 
+                                                     set pr1.stock_count_ini = pr2.stock_count_fin, 
+                                                         pr1.stock_avg_ini = pr2.stock_avg_fin, 
+                                                         pr1.stock_bio_ini = pr2.stock_bio_fin 
+                                                   where pr1.stock_count_ini = 0
+                                                     and pr2.unitname = pr1.unitname 
+                                                     and pr2.groupid  =  pr1.groupid 
+                                                     and pr1.date = DATE_ADD(pr2.date, INTERVAL 1 DAY)');
+           
+           // Actualizamos la simulación para cada uno de los dias importados
+            echo "Comenzamos a actualizar la simulación....";
+            $j=1;
+            foreach($fechas_exportadas as $fecha_exportada)
+            {
+                echo "simulación" . $j;
+                
+                $j++;
+                // Fecha del último día de dato real
+                $fecha_simulacion = date('Y-m-d H:i:s', strtotime($fecha_exportada->date));
+                $consumo = new ConsumoController;
+                $this->actualizarSimulacionFecha($fecha_simulacion);
+                $consumo->ProcesarConsumosRealesFechaConcreta($fecha_simulacion);
+                //print_r($fecha_simulacion);
+            }
+             
+             
+             // Enviamos el correo de confirmación de actualización
+             $data = array("email" => "omontes");
+             $fecha_correo = new DateTime($fecha_simulacion);
+             Mail::send('estatus.estatus', $data,  function($message) use($fecha_correo)
+              {
+                 $message->to(array('ajimenez.adsa@tinamenor.es', 'aumberto.jimenez@gmail.com', 'melenara.adsa@tinamenor.es', 'procria@tinamenor.es', 'eharo@tinamenor.es'))->subject('Acuifarm actualizado a ' . $fecha_correo->format('d-m-Y'));
+              }); 
+        }
+        else
+        {
+            print_r("No hay nada nuevo que exportar");
+            $data = array("email" => "omontes");
+            $fecha_correo =  new DateTime($ultima_fecha_real);
+            Mail::send('estatus.estatus', $data,  function($message) use($fecha_correo)
+              {
+                 $message->to(array('ajimenez.adsa@tinamenor.es', 'aumberto.jimenez@gmail.com'))->subject('Acuifarm ya está actualizado a ' . $fecha_correo->format('d-m-Y') . '. No hace falta actualizar');
+              });
+        } 
+    }
+
+	public function actualizarSimulacionFecha($fecha)
+    {
+        
+       // Recuperamos todos los registros de produccion real que coinciden con dicha fecha
+       
+        $producciones_reales = ProduccionReales::where('date', '=', $fecha)
+                                             ->orderBy('site')
+                                             ->orderBy('unitname')
+                                             ->orderBy('groupid')
+                                             ->get();
+        
+        // Para cada uno de los registros, actualizamos a partir de hoy 60 días
+        
+        foreach ($producciones_reales as $produccion_real)
+        {
+             
+             $fecha_ini = new DateTime($fecha);
+             //var_dump($fecha_ini);
+             $fecha_ini->modify('+1 day');
+             //var_dump($fecha_ini);
+             $fecha_temp = new DateTime($fecha);
+             $fecha_temp->modify('+1 day');
+             $dias_actualizar = $this->DiasActualiza($fecha_ini);
+
+             $fecha_fin = $fecha_temp->modify('+' . $dias_actualizar . ' day');
+            
+            if (($produccion_real->stock_count_fin) > 0)
+             {
+               $this->actualizarSimulacionIntervalo($produccion_real->site, 
+                                                    $produccion_real->unitname, 
+                                                    $produccion_real->groupid, 
+                                                    $produccion_real->stock_count_fin, 
+                                                    $produccion_real->stock_avg_fin, 
+                                                    $fecha_ini, 
+                                                    $fecha_fin);
+            } 
+            else
+            {
+                // Debemos eliminar los datos simulados que hay de la jaula y lote a partir de hoy
+                $datos_a_eliminar = DB::statement('Delete from produccion_simulado 
+                                                      where date >=? 
+                                                        and unitname = ? 
+                                                        and groupid = ?', array($fecha_ini, $produccion_real->unitname, $produccion_real->groupid));
+            }
+            
+            // Actualizamos los datos de consumos
+            $consumo = new ConsumoController;
+            $fecha_ini = new DateTime($fecha);
+            $fecha_ini->modify('+1 day');
+            $fecha_temp = new DateTime($fecha);
+            $fecha_temp->modify('+1 day');
+            $dias_actualizar = $this->DiasActualiza($fecha_ini);
+
+            $fecha_fin = $fecha_temp->modify('+' . $dias_actualizar . ' day');
+            
+            if (($produccion_real->stock_count_fin) > 0)
+
+            {
+                $consumo->ActualizarConsumoSimuladoIII($produccion_real->unitname, 
+                                                    $fecha_ini, 
+                                                    $fecha_fin,0);
+            }
+            else
+            {
+                // Debemos eliminar los datos simulados que hay de la jaula y lote a partir de hoy
+                $datos_a_eliminar = DB::statement('Delete from consumos
+                                                      where fecha >=?
+                                                        and jaula = ?
+                                                        and lote = ?', array($fecha_ini, $produccion_real->unitname, $produccion_real->groupid));
+            }
+        }
+
+        
+        
+                           
+    } // end function
+
+    public function actualizarSimulacion()
     {
 		//Buscamos el último valor real introducido
 		$fecha = DB::table('produccion_real')->max('date');
