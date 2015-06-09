@@ -1,0 +1,93 @@
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="http://github.highcharts.com/modules/drilldown.js"></script>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Stacked column chart'
+        },
+        xAxis: {
+            categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Total fruit consumption'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -30,
+            verticalAlign: 'top',
+            y: 25,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.x + '</b><br/>' +
+                    this.series.name + ': ' + this.y + '<br/>' +
+                    'Total: ' + this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                    style: {
+                        textShadow: '0 0 3px black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'John',
+            data: [{x: 0, y:5, drilldown: 'animals'}, {x: 1, y:3}, {x: 2, y:4}, {x: 3, y:7}, {x: 4, y:2}]
+        }, {
+            name: 'Jane',
+            data: [2, 2, 3, 2, 1]
+        }, {
+            name: 'Joe',
+            data: [3, 4, 4, 2, 5]
+        }], 
+        drilldown: {
+            series:[{  id:'animals', 
+                     type: 'bar', 
+                    xAxis: {
+                             categories: ['18/05', '19/05', '20/05', '21/05', '22/05']}, 
+                     data: [{x: 0, y:5}, {x: 1, y:3}, {x: 2, y:4}, {x: 3, y:7}, {x: 4, y:2}]}]
+        }
+    });
+});
+
+
+
+data: [{
+    x: 1,
+    y: 5,
+    name: "Point2",
+    color: "#00FF00"
+}, {
+    x: 1,
+    y: 9,
+    name: "Point1",
+    color: "#FF00FF"
+}]
