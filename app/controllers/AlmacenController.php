@@ -179,7 +179,7 @@
                Excel::load('public/importacion.xls', function($reader) use ($fecha_fichero, $resultado_ajuste_stock) {
 
                  // reader methods
-                
+                 // Probar esto: $reader->get()->groupBy('firstname');
                 $result=$reader->get();
                 foreach($result as $linea)
                   {
