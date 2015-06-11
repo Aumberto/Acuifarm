@@ -58,6 +58,7 @@
      	                                     and piensos.id   = movimientos_almacenes.pienso_id
      	                                     and movimientos_almacenes.fecha <= ?
      	                                group by almacenes.nombre, piensos.id, piensos.nombre order by almacenes.nombre, piensos.nombre desc', array($fecha));
+          /*
           $almacen = '';
           $pienso = '';
           $primerafila = True;
@@ -180,7 +181,7 @@
           array_push($stock_almacen_pienso, $datos_jaula);
           $datos_granja = array('granja' => $granja,
                                 'jaulas' =>  $stock_almacen_pienso);
-          array_push($stock_almacen, $datos_granja);
+          array_push($stock_almacen, $datos_granja); */
 
      	return View::make('almacen.stock')->with('estado_almacen', $estado_almacen)->with('fecha', $fecha->format('d-m-Y'));
      }
