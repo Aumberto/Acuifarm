@@ -75,9 +75,25 @@
   <div class='header'>
   <ul class='nav nav-pills pull-right'>
     <li>{{HTML::link('', 'Inicio')}}</li>
-   <li>{{HTML::link('propuesta', 'Propuestas')}}</li>
-   <li>{{HTML::link('traslado', 'Traslados')}}</li>
-   <li>{{HTML::link('estadillos', 'Estadillos')}}</li>
+   <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Alimentación<span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+            <li>{{HTML::link('ayunos', 'Ayunos')}}</li>
+            <li>{{HTML::link('estadillos', 'Estadillos')}}</li>
+            <li>{{HTML::link('propuesta', 'Estrategias')}}</li>
+    </ul>
+   </li>
+   <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Almacenes<span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+            <li>{{HTML::link('almacenes/stock', 'Stock actual')}}</li>
+            <li>{{HTML::link('almacenes/importarstock', 'Importar stock')}}</li>
+            
+    </ul>
+   </li>
+
+   
+   
    <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pedidos<span class="caret"></span></a>
      <ul class="dropdown-menu" role="menu">
@@ -90,6 +106,7 @@
    </li>
    <li>{{HTML::link('consumo/proveedores', 'Stock Proveedores')}}</li>
    <li>{{HTML::link('consumo/almacenes', 'Stock Almacenes')}}</li>
+
    <li class="dropdown">
      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Mantenimiento<span class="caret"></span></a>
      <ul class="dropdown-menu" role="menu">
