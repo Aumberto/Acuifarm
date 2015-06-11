@@ -15,11 +15,14 @@
       </form>
       
    
-    <div class="table-responsive">
-    <table class="table table-striped table-bordered">
-      <thead>
+    
+
+@foreach($ayuno_granja as $ayuno)
+<div class="table-responsive">
+<h3>{{$ayuno['granja']}}</h3>
+ <table class="table table-striped table-bordered">
+    <thead>
       <tr>
-        <th class="text-center">Granja</th>
         <th class="text-center">Jaula</th>
         <th class="text-center">Lote</th>
         <th class="text-center">Número de peces</th>
@@ -28,19 +31,21 @@
       </tr>
     </thead>
     <tbody>
-      @foreach($datos as $dato)
-      <tr>
-        <td class="text-center">{{$dato->site}}</td>
-        <td class="text-center">{{$dato->unitname}}</td>
-        <td class="text-center">{{$dato->groupid}} </td> 
-        <td class="text-right">{{$dato->stock_count_ini}} </td>
-        <td class="text-right">{{$dato->stock_avg_ini}} gr. </td>
-        <td class="text-center"><input type="checkbox" class='ayuno' value='{{$dato->ayuno}}' @if ($dato->ayuno == 1) checked="checked" @endif data-id='{{$dato->id}}'></td>
-      </tr>
+      @foreach($ayuno['ayuno_granja'] as $detalle_ayuno)
+        <tr>
+          <td class="text-center">{{$detalle_ayuno['unitname']}}</td>
+          <td class="text-center">{{$detalle_ayuno['groupid']}}</td>
+          <td class="text-center">{{$detalle_ayuno['stock_count_ini']}}</td>
+          <td class="text-center">{{$detalle_ayuno['stock_avg_ini']}}</td>
+          <td class="text-center"><input type="checkbox" class='ayuno' value='{{$detalle_ayuno['ayuno']}}' @if ($detalle_ayuno['ayuno'] == 1) checked="checked" @endif data-id='{{$detalle_ayuno['id']}}'></td>
+        </tr>
       @endforeach
     </tbody>
-    </table>
-    </div>
+</table>
+</div>
+
+@endforeach
+
   </div>
   <div id='cargando'><div id='imagen-cargando'>Actualizando <img src="/acuifarm/public/images/ajax-loader.gif"></div></div>
   <script>
