@@ -48,142 +48,57 @@
      {
           // Obtenemos la fecha de la última importación de datos reales
           $fecha_ultima_actualizacion = ProduccionReales::orderby('date', 'desc')->first();
-
           $fecha = new DateTime($fecha_ultima_actualizacion->date);
-     	//$fecha='2014-10-07';
-     	$estado_almacen = DB::select('Select almacenes.nombre as almacen, piensos.id, piensos.nombre as pienso, 
-     		                              sum(cantidad) as cantidad, max(fecha)
+     	    
+     	    $estado_almacen = DB::select('Select almacenes.nombre as almacen, piensos.id as id, piensos.nombre as pienso, 
+     		                                       sum(cantidad) as cantidad, max(fecha)
      	                                    from movimientos_almacenes, almacenes, piensos
      	                                   where almacenes.id = movimientos_almacenes.almacen_id
      	                                     and piensos.id   = movimientos_almacenes.pienso_id
      	                                     and movimientos_almacenes.fecha <= ?
-     	                                group by almacenes.nombre, piensos.id, piensos.nombre order by almacenes.nombre, piensos.nombre desc', array($fecha));
-          /*
-          $almacen = '';
-          $pienso = '';
+     	                                group by almacenes.nombre, piensos.id, piensos.nombre 
+                                        having sum(cantidad) <> 0 
+                                      order by almacenes.nombre, piensos.nombre desc', array($fecha));
+          
+          $almacen ='';
           $primerafila = True;
+          $stock_almacen_array = array();
           $stock_almacen = array();
-          $stock_almacen_pienso = array();
-          $stock_almacen_pienso_array = array();
-          $jaula_consumos = array();
-
           foreach ($estado_almacen as $linea_stock) 
-          {
-            if ($almacen <> $linea_stock->almacen)
-             {
-                if ($primerafila)
-                 {
-                    $primerafila = False;
-                    $jaula_consumos = array();
-                    $datos_consumo = array('pellet' => $linea_stock->diametro_pienso,
-                                           'cantidad' => $linea_stock->cantidad);
-                    array_push($jaula_consumos, $datos_consumo);
-                    $almacen = $linea_stock->almacen;
-                    $granja = $linea_stock->granja;
-                    $lote = $linea_stock->lote;
-                    $stock_count_ini = $linea_stock->stock_count_ini;
-                    $stock_avg_ini = $linea_stock->stock_avg_ini;
-                    $stock_bio_ini = $linea_stock->stock_bio_ini;
-                    $cantidad_toma = $linea_stock->cantidad_toma;
-                    $num_tomas = $linea_stock->num_tomas;
-                    $porcentaje_primera_toma = $linea_stock->porcentaje_primera_toma;
-                    $estadillo_id = $linea_stock->estadillo_id;
-
-                 }
-                else
-                 {
-                    $datos_jaula = array('jaula' => $jaula,
-                                      'lote' => $lote,
-                                      'consumos' => $jaula_consumos,
-                                      'stock_count_ini' => $stock_count_ini,
-                                      'stock_avg_ini' => $stock_avg_ini,
-                                      'stock_bio_ini' => $stock_bio_ini,
-                                      'cantidad_toma' => $cantidad_toma,
-                                      'num_tomas' => $num_tomas, 
-                                      'porcentaje_primera_toma' => $porcentaje_primera_toma, 
-                                      'estadillo_id' => $estadillo_id);
-                    array_push($stock_almacen_pienso, $datos_jaula);
-                    $datos_granjas = array('granja' => $granja,
-                                           'jaulas' => $stock_almacen_pienso);
-                    array_push($stock_almacen, $datos_granjas);
-                    $stock_almacen_pienso = array();
-                    $jaula_consumos = array();
-                    $datos_consumo = array('pellet' => $linea_stock->diametro_pienso,
-                                           'cantidad' => $linea_stock->cantidad);
-                    array_push($jaula_consumos, $datos_consumo);
-                    //echo 'Cambio de granja: granja actual ' . $granja . ' nueva granja: ' . $linea_estadillo->granja;
-                    //print_r($datos_granjas) ;
-                    $jaula = $linea_stock->jaula;
-                    $granja = $linea_stock->granja;
-                    $lote = $linea_stock->lote;
-                    $stock_count_ini = $linea_stock->stock_count_ini;
-                    $stock_avg_ini = $linea_stock->stock_avg_ini;
-                    $stock_bio_ini = $linea_stock->stock_bio_ini;
-                    $cantidad_toma = $linea_stock->cantidad_toma;
-                    $num_tomas = $linea_stock->num_tomas;
-                    $porcentaje_primera_toma = $linea_stock->porcentaje_primera_toma;
-                    $estadillo_id = $linea_stock->estadillo_id;
-
-                 }
-                
-             }
-            else
-             {
-              if ($jaula <> $linea_stock->jaula)
+           {
+             if ($almacen <> $linea_stock->almacen)
                {
-                 $datos_jaula = array('jaula' => $jaula,
-                                      'lote' => $lote,
-                                      'consumos' => $jaula_consumos,
-                                      'stock_count_ini' => $stock_count_ini,
-                                      'stock_avg_ini' => $stock_avg_ini,
-                                      'stock_bio_ini' => $stock_bio_ini,
-                                      'cantidad_toma' => $cantidad_toma,
-                                      'num_tomas' => $num_tomas, 
-                                      'porcentaje_primera_toma' => $porcentaje_primera_toma, 
-                                      'estadillo_id' => $estadillo_id);
-                 array_push($stock_almacen_pienso, $datos_jaula);
-                 $jaula_consumos = array();
-                 //$estadillos_granja_jaula = array();
-                 $datos_consumo = array('pellet' => $linea_stock->diametro_pienso,
-                                        'cantidad' => $linea_stock->cantidad);
-                 array_push($jaula_consumos, $datos_consumo);
-                 //echo 'Nueva jaula: actual ' . $jaula . ' nueva: ' . $linea_estadillo->jaula;
-                 $jaula = $linea_stock->jaula;
-                 $lote = $linea_stock->lote;
-                 $stock_count_ini = $linea_stock->stock_count_ini;
-                 $stock_avg_ini = $linea_stock->stock_avg_ini;
-                 $stock_bio_ini = $linea_stock->stock_bio_ini;
-                 $cantidad_toma = $linea_stock->cantidad_toma;
-                 $num_tomas = $linea_stock->num_tomas;
-                 $porcentaje_primera_toma = $linea_stock->porcentaje_primera_toma;
-                 $estadillo_id = $linea_stock->estadillo_id;
+                 if ($primerafila)
+                   {
+                     $primerafila = False;
+                   }
+                 else
+                   {
+                     $datos_almacen = array('almacen' => $almacen,
+                                            'stock'   => $stock_almacen_array);
+                     array_push($stock_almacen, $datos_almacen);
+                     $stock_almacen_array = array();
+                   }
+                 $almacen = $linea_stock->almacen;
+                 $datos_pienso = array( 'id'             => $linea_stock->id,
+                                        'pienso'         => $linea_stock->pienso,
+                                        'cantidad'       => $linea_stock->cantidad);
+                 array_push($stock_almacen_array, $datos_pienso);
                }
-               else
+             else
                {
-                $datos_consumo = array('pellet' => $linea_stock->diametro_pienso,
-                                       'cantidad' => $linea_stock->cantidad);
-                array_push($jaula_consumos, $datos_consumo);
+                 $datos_pienso = array( 'id'             => $linea_stock->id,
+                                        'pienso'         => $linea_stock->pienso,
+                                        'cantidad'       => $linea_stock->cantidad);
+                 array_push($stock_almacen_array, $datos_pienso);
                }
+           }
+          $datos_almacen = array('almacen' => $almacen,
+                                 'stock'   => $stock_almacen_array);
+          array_push($stock_almacen, $datos_almacen);
+          
 
-             }  
-                      
-          }
-          $datos_jaula = array('jaula' => $jaula,
-                                      'lote' => $lote,
-                                      'consumos' => $jaula_consumos,
-                                      'stock_count_ini' => $stock_count_ini,
-                                      'stock_avg_ini' => $stock_avg_ini,
-                                      'stock_bio_ini' => $stock_bio_ini,
-                                      'cantidad_toma' => $cantidad_toma,
-                                      'num_tomas' => $num_tomas, 
-                                      'porcentaje_primera_toma' => $porcentaje_primera_toma, 
-                                      'estadillo_id' => $estadillo_id);
-          array_push($stock_almacen_pienso, $datos_jaula);
-          $datos_granja = array('granja' => $granja,
-                                'jaulas' =>  $stock_almacen_pienso);
-          array_push($stock_almacen, $datos_granja); */
-
-     	return View::make('almacen.stock')->with('estado_almacen', $estado_almacen)->with('fecha', $fecha->format('d-m-Y'));
+     	return View::make('almacen.stock')->with('estado_almacen', $estado_almacen)->with('fecha', $fecha->format('d-m-Y'))->with('stock_almacen', $stock_almacen);
      }
 
      public function AjusteAutomaticoAlmacenesPienso(){
