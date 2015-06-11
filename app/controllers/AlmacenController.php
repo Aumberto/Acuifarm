@@ -58,6 +58,129 @@
      	                                     and piensos.id   = movimientos_almacenes.pienso_id
      	                                     and movimientos_almacenes.fecha <= ?
      	                                group by almacenes.nombre, piensos.id, piensos.nombre order by almacenes.nombre, piensos.nombre desc', array($fecha));
+          $almacen = '';
+          $pienso = '';
+          $primerafila = True;
+          $stock_almacen = array();
+          $stock_almacen_pienso = array();
+          $stock_almacen_pienso_array = array();
+          $jaula_consumos = array();
+
+          foreach ($estado_almacen as $linea_stock) 
+          {
+            if ($almacen <> $linea_stock->almacen)
+             {
+                if ($primerafila)
+                 {
+                    $primerafila = False;
+                    $jaula_consumos = array();
+                    $datos_consumo = array('pellet' => $linea_stock->diametro_pienso,
+                                           'cantidad' => $linea_stock->cantidad);
+                    array_push($jaula_consumos, $datos_consumo);
+                    $almacen = $linea_stock->almacen;
+                    $granja = $linea_stock->granja;
+                    $lote = $linea_stock->lote;
+                    $stock_count_ini = $linea_stock->stock_count_ini;
+                    $stock_avg_ini = $linea_stock->stock_avg_ini;
+                    $stock_bio_ini = $linea_stock->stock_bio_ini;
+                    $cantidad_toma = $linea_stock->cantidad_toma;
+                    $num_tomas = $linea_stock->num_tomas;
+                    $porcentaje_primera_toma = $linea_stock->porcentaje_primera_toma;
+                    $estadillo_id = $linea_stock->estadillo_id;
+
+                 }
+                else
+                 {
+                    $datos_jaula = array('jaula' => $jaula,
+                                      'lote' => $lote,
+                                      'consumos' => $jaula_consumos,
+                                      'stock_count_ini' => $stock_count_ini,
+                                      'stock_avg_ini' => $stock_avg_ini,
+                                      'stock_bio_ini' => $stock_bio_ini,
+                                      'cantidad_toma' => $cantidad_toma,
+                                      'num_tomas' => $num_tomas, 
+                                      'porcentaje_primera_toma' => $porcentaje_primera_toma, 
+                                      'estadillo_id' => $estadillo_id);
+                    array_push($stock_almacen_pienso, $datos_jaula);
+                    $datos_granjas = array('granja' => $granja,
+                                           'jaulas' => $stock_almacen_pienso);
+                    array_push($stock_almacen, $datos_granjas);
+                    $stock_almacen_pienso = array();
+                    $jaula_consumos = array();
+                    $datos_consumo = array('pellet' => $linea_stock->diametro_pienso,
+                                           'cantidad' => $linea_stock->cantidad);
+                    array_push($jaula_consumos, $datos_consumo);
+                    //echo 'Cambio de granja: granja actual ' . $granja . ' nueva granja: ' . $linea_estadillo->granja;
+                    //print_r($datos_granjas) ;
+                    $jaula = $linea_stock->jaula;
+                    $granja = $linea_stock->granja;
+                    $lote = $linea_stock->lote;
+                    $stock_count_ini = $linea_stock->stock_count_ini;
+                    $stock_avg_ini = $linea_stock->stock_avg_ini;
+                    $stock_bio_ini = $linea_stock->stock_bio_ini;
+                    $cantidad_toma = $linea_stock->cantidad_toma;
+                    $num_tomas = $linea_stock->num_tomas;
+                    $porcentaje_primera_toma = $linea_stock->porcentaje_primera_toma;
+                    $estadillo_id = $linea_stock->estadillo_id;
+
+                 }
+                
+             }
+            else
+             {
+              if ($jaula <> $linea_stock->jaula)
+               {
+                 $datos_jaula = array('jaula' => $jaula,
+                                      'lote' => $lote,
+                                      'consumos' => $jaula_consumos,
+                                      'stock_count_ini' => $stock_count_ini,
+                                      'stock_avg_ini' => $stock_avg_ini,
+                                      'stock_bio_ini' => $stock_bio_ini,
+                                      'cantidad_toma' => $cantidad_toma,
+                                      'num_tomas' => $num_tomas, 
+                                      'porcentaje_primera_toma' => $porcentaje_primera_toma, 
+                                      'estadillo_id' => $estadillo_id);
+                 array_push($stock_almacen_pienso, $datos_jaula);
+                 $jaula_consumos = array();
+                 //$estadillos_granja_jaula = array();
+                 $datos_consumo = array('pellet' => $linea_stock->diametro_pienso,
+                                        'cantidad' => $linea_stock->cantidad);
+                 array_push($jaula_consumos, $datos_consumo);
+                 //echo 'Nueva jaula: actual ' . $jaula . ' nueva: ' . $linea_estadillo->jaula;
+                 $jaula = $linea_stock->jaula;
+                 $lote = $linea_stock->lote;
+                 $stock_count_ini = $linea_stock->stock_count_ini;
+                 $stock_avg_ini = $linea_stock->stock_avg_ini;
+                 $stock_bio_ini = $linea_stock->stock_bio_ini;
+                 $cantidad_toma = $linea_stock->cantidad_toma;
+                 $num_tomas = $linea_stock->num_tomas;
+                 $porcentaje_primera_toma = $linea_stock->porcentaje_primera_toma;
+                 $estadillo_id = $linea_stock->estadillo_id;
+               }
+               else
+               {
+                $datos_consumo = array('pellet' => $linea_stock->diametro_pienso,
+                                       'cantidad' => $linea_stock->cantidad);
+                array_push($jaula_consumos, $datos_consumo);
+               }
+
+             }  
+                      
+          }
+          $datos_jaula = array('jaula' => $jaula,
+                                      'lote' => $lote,
+                                      'consumos' => $jaula_consumos,
+                                      'stock_count_ini' => $stock_count_ini,
+                                      'stock_avg_ini' => $stock_avg_ini,
+                                      'stock_bio_ini' => $stock_bio_ini,
+                                      'cantidad_toma' => $cantidad_toma,
+                                      'num_tomas' => $num_tomas, 
+                                      'porcentaje_primera_toma' => $porcentaje_primera_toma, 
+                                      'estadillo_id' => $estadillo_id);
+          array_push($stock_almacen_pienso, $datos_jaula);
+          $datos_granja = array('granja' => $granja,
+                                'jaulas' =>  $stock_almacen_pienso);
+          array_push($stock_almacen, $datos_granja);
 
      	return View::make('almacen.stock')->with('estado_almacen', $estado_almacen)->with('fecha', $fecha->format('d-m-Y'));
      }
