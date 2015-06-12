@@ -4,7 +4,7 @@ class PropuestaAlimentacionController extends BaseController{
 
   public function getIndex(){
 
-  	 $propuestas = CabeceraPropuestaAlimentacion::orderBy('fecha_ini')->orderBy('granja')->get();
+  	 $propuestas = CabeceraPropuestaAlimentacion::orderBy('fecha_ini', 'desc')->orderBy('granja')->get();
   	 return View::make('propuesta.propuesta_list')->with('propuestas', $propuestas);
   }
 
