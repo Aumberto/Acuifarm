@@ -298,13 +298,17 @@
                                 {
                                   foreach ($estado_almacen as $linea_almacen) 
                                    {
-                                     $nuevo_registro->almacen_id =$objeto_almacen->id;
-                                     $nuevo_registro->tipo_movimiento = "Entrada";
-                                     $nuevo_registro->descripcion ="Ajuste automático procedente de archivo";
-                                     $nuevo_registro->pienso_id =$objeto_pienso->id;
-                                     $nuevo_registro->cantidad = $cantidad - $linea_almacen->cantidad;
-                                     $nuevo_registro->fecha = $fecha_fichero;
-                                     $nuevo_registro->save();
+                                    if ($cantidad - (int)$linea_almacen->cantidad <> 0)
+                                    {
+                                       $nuevo_registro->almacen_id =$objeto_almacen->id;
+                                       $nuevo_registro->tipo_movimiento = "Entrada";
+                                       $nuevo_registro->descripcion ="Ajuste automático procedente de archivo";
+                                       $nuevo_registro->pienso_id =$objeto_pienso->id;
+                                       $nuevo_registro->cantidad = $cantidad - (int)$linea_almacen->cantidad;
+                                       $nuevo_registro->fecha = $fecha_fichero;
+                                       $nuevo_registro->save();
+                                     }
+
                                    }
                                 }
 
@@ -332,6 +336,78 @@
 
                        }
                       //echo 'Almacén: ' . $nombre_almacen . ' Alimento: ' . $nombre_alimento . ' cantidad: ' . $cantidad;
+
+                               echo ' Alimento: ' . $nombre_alimento . ' Almacén: ' . $nombre_almacen . ' cantidad: ' . $cantidad;
+                               // Aquí debemos actualizar los datos
+                               switch ($nombre_almacen) {
+                                 case 'MeH':
+                                    $almacen = 'Martín e Hijos';
+                                   break;
+                                 
+                                 case 'Salinetas':
+                                   if ($granja == 'Melenara')
+                                    {
+                                       $almacen = 'Melenara';
+                                    } 
+                                   else 
+                                    {
+                                       $almacen = 'Procria';
+                                    }
+                                   break;
+                               }
+
+                               // Para cada linea, buscamos la cantidad de pienso en el almacén
+                               $estado_almacen = DB::select('Select almacenes.nombre as almacen, piensos.id, piensos.nombre as pienso, 
+                                                                    sum(cantidad) as cantidad, max(fecha)
+                                                               from movimientos_almacenes, almacenes, piensos
+                                                              where almacenes.id = movimientos_almacenes.almacen_id
+                                                                and piensos.id   = movimientos_almacenes.pienso_id
+                                                                and movimientos_almacenes.fecha <= ?
+                                                                and almacenes.nombre = ?
+                                                                and piensos.nombre = ?
+                                                           group by almacenes.nombre, piensos.id, piensos.nombre order by almacenes.nombre, piensos.nombre desc', array($fecha_fichero, $almacen, $nombre_alimento));
+
+                               $nuevo_registro_importacion_stock = new ImportacionStock();
+                               $nuevo_registro = new MovimientosAlmacen();
+                               // Obtenemos el id del almacen
+                               $objeto_almacen = Almacen::where('nombre', '=', $almacen)->first();
+                               // Obtenemos el id del pienso
+                               $objeto_pienso = Pienso::where('nombre', '=', $nombre_alimento)->first();
+
+                               if (count($estado_almacen) < 1)
+                                {
+                                 //echo 'No existe el pieso ' .$linea->alimento. ' en el almacen ' .$linea->almacen;
+                                 if (count($objeto_pienso)>0)
+                                  {
+                                    $nuevo_registro->almacen_id =$objeto_almacen->id;
+                                    $nuevo_registro->tipo_movimiento = "Entrada";
+                                    $nuevo_registro->descripcion ="Ajuste automático procedente de archivo";
+                                    $nuevo_registro->pienso_id =$objeto_pienso->id;
+                                    $nuevo_registro->cantidad =$cantidad;
+                                    $nuevo_registro->fecha = $fecha_fichero;
+                                    $nuevo_registro->save();
+                                  }
+                                } 
+                               else 
+                                {
+                                  foreach ($estado_almacen as $linea_almacen) 
+                                   {
+                                     if ($cantidad - (int)$linea_almacen->cantidad <> 0)
+                                     {
+                                        $nuevo_registro->almacen_id =$objeto_almacen->id;
+                                        $nuevo_registro->tipo_movimiento = "Entrada";
+                                        $nuevo_registro->descripcion ="Ajuste automático procedente de archivo";
+                                        $nuevo_registro->pienso_id =$objeto_pienso->id;
+                                        $nuevo_registro->cantidad = $cantidad - (int)$linea_almacen->cantidad;
+                                        $nuevo_registro->fecha = $fecha_fichero;
+                                        $nuevo_registro->save();
+                                     }
+                                   }
+                                }
+
+                               $nombre_almacen = $linea->nombre;
+                               $nombre_alimento = $linea->tipo_de_alimento;
+                               $cantidad = $linea->amount_kg;
                     }
                     //echo 'Almacén ' . $nombre_almacen . ' Alimento: ' ; //. $linea->tipo_de_alimento . ' cantidad: '; //. $linea->Amount_[kg];
                     /*
