@@ -7,7 +7,7 @@
 
 		public function proveedor()
  		{
- 			return $this->belongsTo('Proveedorpienso', 'granja_id');
+ 			return $this->belongsTo('Proveedorpienso', 'proveedor_pienso_id');
  		}
 
 	}
