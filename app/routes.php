@@ -147,3 +147,12 @@ Route::get("fishtalk", function(){
 
 // Rutas para importación de datos
 Route::get('importacion/automatica', array('uses' => 'ProduccionController@ImportacionAutomatica'));
+
+// Rutas para los rangos de alimentación
+Route::get('rangos', array('uses' => 'RangoController@getIndex'));
+Route::get('rangos/cabecera/ver/{id}', array('uses' => 'RangoController@getVer'));
+Route::post('rangos/cabecera/add', array('uses' => 'RangoController@getAddCabecera'));
+Route::get('rangos/cabecera/delete/{id}', array('uses' => 'RangoController@getDeleteCabecera'));
+// Rutas para añadir detalles a los rangos
+Route::post('rangos/detalle/add', array('uses' => 'RangoController@getAddDetalle'));
+Route::get('rangos/detalle/delete/{id}', array('uses' => 'RangoController@getDeleteDetalle'));
