@@ -112,6 +112,7 @@
      <ul class="dropdown-menu" role="menu">
             <li>{{HTML::link('pienso', 'Piensos')}}</li>
             <li>{{HTML::link('proveedor', 'Proveedores')}}</li>
+            <li>{{HTML::link('rangos', 'Rangos de alimentación')}}</li>
             <li><a href="#">Tablas de Piensos</a></li>
             <li class="divider"></li>
             <li><a href="#">Separated link</a></li>
